@@ -12,7 +12,7 @@ $XButton2:: {
     elapsed := A_TickCount - start
 
     ; 0.4초 이상 1초 미만
-    if (elapsed >= 250 && elapsed < 800) {
+    if (elapsed >= 300 && elapsed < 800) {
 
         ; Visual Studio에서만 실행
         if WinActive("ahk_exe devenv.exe") {

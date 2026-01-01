@@ -6,11 +6,11 @@ $XButton1:: {
     KeyWait "XButton1"
     elapsed := A_TickCount - start
 
-    if (elapsed < 250) {
+    if (elapsed < 300) {
         ; 짧게 누름 → 원래 뒤로 가기
         Send "{XButton1}"
     }
-    else if (elapsed >= 250 && elapsed < 600) {
+    else if (elapsed >= 300 && elapsed < 600) {
         ; 중간 길이 → Ctrl + W
         Send "^w"
     }
