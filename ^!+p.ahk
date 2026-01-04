@@ -24,10 +24,10 @@
     ; 비주얼 스튜디오 환경에서만 짧게/중간 길이
     ; ========================================
     if WinActive("ahk_exe devenv.exe") {
-        if (elapsed < 500) {
+        if (elapsed < 250) {
             Send "{Right}"              ; 짧게 누르면 오른쪽 방향키
         }
-        else if (elapsed >= 500 && elapsed < 1000) {
+        else if (elapsed >= 250 && elapsed < 550) {
             Send "^!{F12}"             ; 중간 길이 → Ctrl + Alt + F12
         }
         ; 1000ms 이상 → 아무 것도 안 함
@@ -54,10 +54,10 @@
     ; 비주얼 스튜디오 환경에서만 짧게/중간 길이
     ; ========================================
     if WinActive("ahk_exe devenv.exe") {
-        if (elapsed < 500) {
+        if (elapsed < 250) {
             Send "{Left}"               ; 짧게 누르면 왼쪽 방향키
         }
-        else if (elapsed >= 500 && elapsed < 1000) {
+        else if (elapsed >= 250 && elapsed < 550) {
             Send "{F12}"             ; 중간 길이 → Ctrl + Alt + F12
         }
         ; 1000ms 이상 → 아무 것도 안 함

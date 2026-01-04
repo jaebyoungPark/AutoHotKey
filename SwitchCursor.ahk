@@ -1,5 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
 
+;디스플레이 퓨전 -> 기능 ->마우스 커서를 다음 모니터로 이동 (ctrl + win + .)
+
+
 $RButton::
 {
     start := A_TickCount
