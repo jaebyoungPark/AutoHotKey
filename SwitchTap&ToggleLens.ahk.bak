@@ -1,0 +1,29 @@
+﻿#Requires AutoHotkey v2.0
+
+;----------------------------
+; Chrome에서 Alt + 마우스 클릭 매핑
+;----------------------------
+
+; Alt + 좌클릭 → Ctrl+Shift+Tab (Chrome 전용)
+!LButton:: {
+    if WinActive("ahk_exe chrome.exe") {
+        Send "^+{Tab}"
+    } else {
+        Send "!{LButton}"
+    }
+}
+
+; Alt + 우클릭 → 시간에 따라 분기 (Chrome 전용)
+!RButton:: {
+    start := A_TickCount
+    KeyWait "RButton"
+    elapsed := A_TickCount - start
+
+    if WinActive("ahk_exe chrome.exe") {
+        ; 짧게 클릭 → Ctrl + Tab
+        if (elapsed < 200) {
+            Send "^{Tab}"
+        }
+        ; 200ms 이상 → 아무 동작 안 함
+    }
+}
