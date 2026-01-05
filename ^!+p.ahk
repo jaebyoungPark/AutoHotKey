@@ -38,24 +38,23 @@
 
 
 
-
 ^!+o:: {
     start := A_TickCount
-    KeyWait "o"                     ; 키를 뗄 때까지 대기
+    KeyWait "o"
     elapsed := A_TickCount - start
 
     ; =================
     ; 유튜브 환경
     ; =================
     if InStr(WinGetTitle("A"), "YouTube") {
-        SendInput("+,")   ; 재생속도 내리기
+        SendInput("+,")
         return
     }
     ; =================
     ; Udemy 환경
     ; =================
     else if InStr(WinGetTitle("A"), "Udemy") {
-        SendInput("+{Left}")  ; 재생속도 내리기
+        SendInput("+{Left}")
         return
     }
 
@@ -63,10 +62,16 @@
     ; 언리얼 엔진 환경
     ; ========================================
     else if InStr(WinGetTitle("A"), "Unreal Editor") {
-        if (elapsed < 250) {
-            SendInput("{F7}")     ; 컴파일
-            Sleep 120             ; 컴파일 트리거 안정화
+
+        ; 짧게 → 컴파일 + 세이브
+        if (elapsed < 200) {
+            SendInput("{F7}")     ; Compile
+            Sleep 120
             SendInput("^s")       ; Save
+        }
+        ; 중간 길이 → Shift + F1
+        else if (elapsed >= 200 && elapsed < 450) {
+            SendInput("+{F1}")    ; Shift + F1
         }
         return
     }
@@ -76,10 +81,10 @@
     ; ========================================
     if WinActive("ahk_exe devenv.exe") {
         if (elapsed < 250) {
-            Send "{Left}"               ; 짧게 누르면 왼쪽 방향키
+            Send "{Left}"
         }
         else if (elapsed >= 250 && elapsed < 550) {
-            Send "{F12}"                ; 중간 길이
+            Send "{F12}"
         }
     }
 }
