@@ -12,7 +12,7 @@ $^+=:: {
 
     elapsed := A_TickCount - start  ; 누른 시간(ms) 계산
 
-    if (elapsed >= 250 && elapsed < 600) {
+    if (elapsed >= 200 && elapsed < 500) {
         ; 0.4~0.8초 사이 → Win + Tab
         Send("{LWin down}{Tab down}")
         Sleep 50

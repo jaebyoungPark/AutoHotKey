@@ -24,7 +24,7 @@ $RButton::
         }
 
         ; 0.25초 넘어가면 루프 탈출
-        if ((A_TickCount - start) > 250)
+        if ((A_TickCount - start) > 200)
             break
     }
 
@@ -41,7 +41,7 @@ $RButton::
     KeyWait "RButton"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed < 0.25)
+    if (elapsed < 0.20)
     {
         ; 기본 우클릭
         Send "{RButton}"
