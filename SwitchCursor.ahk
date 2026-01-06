@@ -1,8 +1,5 @@
 ﻿#Requires AutoHotkey v2.0
 
-;디스플레이 퓨전 -> 기능 ->마우스 커서를 다음 모니터로 이동 (ctrl + win + .)
-
-
 $RButton::
 {
     start := A_TickCount
@@ -23,12 +20,12 @@ $RButton::
             break
         }
 
-        ; 0.25초 넘어가면 루프 탈출
+        ; 0.2초 넘어가면 루프 탈출
         if ((A_TickCount - start) > 200)
             break
     }
 
-    ; 🔹 드래그라면 즉시 시스템에 맡김
+    ; 🔹 드래그면 시스템에 맡김
     if (isDrag)
     {
         Send "{RButton Down}"
@@ -48,7 +45,16 @@ $RButton::
     }
     else if (elapsed < 3.5)
     {
-        ; Ctrl + Win + .
-        Send "^#."
+        ; 🔀 mintty(Git Bash) 분기
+        if WinActive("ahk_class mintty")
+        {
+            ; Git Bash 붙여넣기
+            Send "+{Insert}"
+        }
+        else
+        {
+            ; Ctrl + Win + .
+            Send "^#."
+        }
     }
 }

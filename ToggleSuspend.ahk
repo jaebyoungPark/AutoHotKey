@@ -9,19 +9,24 @@
 
     elapsed := A_TickCount - start  ; 누른 시간 계산
 
-    if (elapsed >= 250 && elapsed < 600) {  
+    if (elapsed >= 250 && elapsed < 600) {
         MySuspended := !MySuspended
 
         for key in HotkeyList
             Hotkey(key, "", MySuspended ? "Off" : "On")
 
+        ; 🔊 사운드
         if MySuspended
-            SoundBeep(1200,150)
+            SoundBeep(1200, 150)
         else
-            SoundBeep(800,150)
+            SoundBeep(800, 150)
+
+        ; 👁️ 토글 상태 문구 표시 (잠깐)
+        ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
+        SetTimer(() => ToolTip(), -800)
     }
     else if (elapsed < 250) {
-        ; 0.25초 미만으로 짧게 눌렀을 때 Left 키 보내기
+        ; 짧게 누르면 Left
         SendInput("{Left}")
     }
 }
