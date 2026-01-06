@@ -3,11 +3,15 @@
 ; 토글 상태 변수 (true로 시작하여 첫 실행시 U가 되도록)
 global toggleState := true
 
-; Ctrl + Alt + 마우스 휠 업을 Visual Studio에서만 감지
-#HotIf WinActive("ahk_exe devenv.exe")
+; Ctrl + Alt + 마우스 휠 업 (모든 창에서 감지)
 ^!WheelUp::
 {
     global toggleState
+    
+    ; Visual Studio가 활성화되어 있는지 확인
+    if !WinActive("ahk_exe devenv.exe") {
+        return  ; Visual Studio가 아니면 아무것도 하지 않음
+    }
     
     if (toggleState) {
         ; 주석 해제 (U) - 두 번 실행
@@ -65,4 +69,3 @@ global toggleState := true
     ; 토글 상태 전환
     toggleState := !toggleState
 }
-#HotIf
