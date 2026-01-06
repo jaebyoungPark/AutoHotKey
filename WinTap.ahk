@@ -1,25 +1,14 @@
-﻿;---------------------------------
-; Ctrl + Shift + =  → Win + Tab (Task View) 또는 Right
-; AHK v2
-;---------------------------------
+﻿#Requires AutoHotkey v2.0
 
-$^+=:: {
-    start := A_TickCount  ; 누른 시각 기록
+^+F10:: {
+    ; Win 누르고
+    Send("{LWin down}")
+    Sleep 50  ; 50ms 대기
 
-    ; F11처럼 키가 떼어질 때까지 루프
-    while GetKeyState("=", "P")
-        Sleep 10
+    ; Tab 누르기
+    Send("{Tab}")
+    Sleep 50  ; 50ms 대기
 
-    elapsed := A_TickCount - start  ; 누른 시간(ms) 계산
-
-    if (elapsed >= 200 && elapsed < 500) {
-        ; 0.4~0.8초 사이 → Win + Tab
-        Send("{LWin down}{Tab down}")
-        Sleep 50
-        Send("{Tab up}{LWin up}")
-    }
-    else if (elapsed < 250) {
-        ; 0.4초 미만 → Right 키
-        SendInput("{Right}")
-    }
+    ; Win 떼기
+    Send("{LWin up}")
 }

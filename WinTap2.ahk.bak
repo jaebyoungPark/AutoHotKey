@@ -1,0 +1,5 @@
+﻿#Requires AutoHotkey v2.0
+
+^+F10:: {
+    Send "#^{Tab}"  ; ❌ 잘못된 예 아님 주의
+}
