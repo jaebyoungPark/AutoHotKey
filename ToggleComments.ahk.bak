@@ -1,0 +1,40 @@
+﻿#Requires AutoHotkey v2.0
+
+toggle := false   ; 전역 변수
+
+^+WheelUp::
+{
+    global toggle  ; 여기서 전역 변수임을 선언
+     
+    ; 현재 활성 윈도우가 Visual Studio인지 확인
+    if InStr(WinGetTitle("A"), "Visual Studio")
+    {
+        if !toggle
+        {
+            ; 주석 처리: Ctrl 누르고 O 누르고 떼고, C 누르고 떼고
+            Send("{Ctrl down}")
+            Sleep 30
+            Send("o")
+            Sleep 30
+            Send("{Ctrl up}")
+            Sleep 30
+            Send("c")
+            Sleep 30
+            toggle := true
+        }
+        else
+        {
+            ; 주석 해제: Ctrl 누르고 O 누르고 떼고, U 누르고 떼고
+            Send("{Ctrl down}")
+            Sleep 30
+            Send("o")
+            Sleep 30
+            Send("{Ctrl up}")
+            Sleep 30
+            Send("u")
+            Sleep 30
+            toggle := false
+        }
+    }
+    return
+}
