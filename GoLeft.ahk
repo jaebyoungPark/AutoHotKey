@@ -14,5 +14,7 @@
     else if (elapsed >= 250 && elapsed <= 500) {
         ; 250~500ms → Ctrl + Win + /
         SendInput("^#{/}")  ; ^ = Ctrl, # = Win
+	Sleep 30
+	Send "^#."
     }
 }

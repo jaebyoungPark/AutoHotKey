@@ -37,6 +37,15 @@ magnifierOn1 := false
             Send "{Right}"
         else if (elapsed >= 250 && elapsed < 550)
             Send "^!{F12}"
+        return
+    }
+
+    ; ------------------------------
+    ; 언리얼 엔진 환경
+    ; ------------------------------
+    if WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe UnrealEditor.exe") {
+        Send "^ "   ; Ctrl + Space
+        return
     }
 }
 
