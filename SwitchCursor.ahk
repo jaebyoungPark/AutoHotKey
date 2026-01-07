@@ -43,7 +43,7 @@ $RButton::
         ; 기본 우클릭
         Send "{RButton}"
     }
-    else if (elapsed < 3.5)
+    else if (elapsed < 0.55)
     {
         ; 🔀 mintty(Git Bash) 분기
         if WinActive("ahk_class mintty")

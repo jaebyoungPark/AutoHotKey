@@ -136,29 +136,33 @@ else if InStr(title, "Udemy") {
         return
     }
 
-    ; ------------------------------
-    ; 언리얼 엔진 환경
-    ; ------------------------------
-    title := ""
-    try title := WinGetTitle("A")
+; ------------------------------
+; 언리얼 엔진 환경
+; ------------------------------
+CoordMode "Mouse", "Screen"  ; 👈 화면 좌표 기준 설정
 
-    if InStr(title, "Unreal Editor") {
-        if (elapsed < 200) {
-            ToolTip "컴파일 후 저장"
-            SetTimer(() => ToolTip(), -700)
+title := ""
+try title := WinGetTitle("A")
 
-            SendInput("{F7}")
-            Sleep 150
-            SendInput("^s")
-        } 
-        else if (elapsed >= 200 && elapsed < 450) {
-            ToolTip "Escape"
-            SetTimer(() => ToolTip(), -700)
+if InStr(title, "Unreal Editor") {
+    if (elapsed < 200) {
+        ToolTip "컴파일 후 저장"
+        SetTimer(() => ToolTip(), -700)
 
-            SendInput("+{F1}")
-        }
-        return
+        SendInput("{F7}")
+        Sleep 150
+        SendInput("^s")
+    } 
+    else if (elapsed >= 200 && elapsed < 450) {
+        ToolTip "Escape"
+        SetTimer(() => ToolTip(), -700)
+
+        SendInput("+{F1}")
+        Sleep 50
+        MouseMove 546, 78, 0   ; ✔ 정상
     }
+    return
+}
 
     ; ------------------------------
     ; 비주얼 스튜디오 환경
