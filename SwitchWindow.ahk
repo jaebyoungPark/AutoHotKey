@@ -1,4 +1,6 @@
-﻿$^RButton::
+﻿HotkeyList := ["$^RButton"]
+
+$^RButton::
 {
     start := A_TickCount
 

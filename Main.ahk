@@ -1,31 +1,15 @@
 ﻿; 메인 스크립트
-#Include ToggleSuspend.ahk
 
-#Include CloseTap.ahk
-#Include OpenBookmark.ahk
-#Include InputNumPad.ahk
-#Include WinTap.ahk
-#Include SwitchCPP.ahk
-#Include ^!+p.ahk
-#Include ToggleSubstitute.ahk
-#Include ControlSound.ahk
-#Include SwitchTap.ahk
-#Include SwitchCursor.ahk
-#Include SwitchWindow.ahk
-#Include SpeedWheel.ahk
-#Include GoRight.ahk
-#Include ToggleComments.ahk
-#Include GoLeft.ahk
+#Include Includes.ahk
 
-;Test
-;#Include Test.ahk
-
-
+;HotkeyList := [""]
 
 MySuspended := false
 
 ; 배열에서 토글 키 제거, toggle 키는 절대 넣지마
-HotkeyList := ["^!+o", "^!+p", "$XButton1", "$^!+p", "$^+a", "$XButton2", "^F1", "^F2", "^F3", "^F4", "^F5", "^F6", "^F7", "^F8", "$^+=", "$MButton", "!WheelUp", "!WheelDown", "!LButton", "!RButton", "$^RButton", "$RButton", "+WheelUp", "+WheelDown", "^+F10", "^!WheelUp", "^+F11"]
+
+
+HotKeyList := ["$^1", "$^2"]
 
 ; "^+WheelUp" <-뭔지 몰라 일단 빼놓음
 

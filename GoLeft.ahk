@@ -1,4 +1,7 @@
-﻿^+F11:: {
+﻿HotkeyList := ["^+F11"]
+
+
+^+F11:: {
     start := A_TickCount  ; 누른 시각 기록
 
     ; F11이 떼어질 때까지 루프

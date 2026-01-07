@@ -1,6 +1,9 @@
 ﻿;----------------------------
 ; AHK v2: Ctrl+Shift+A 길게 누름 → Ctrl+B
 ;----------------------------
+
+HotkeyList := ["$^+a"]
+
 $^+a:: {
     if WinActive("ahk_exe chrome.exe"){
         start := A_TickCount        ; 누른 순간 시간 기록

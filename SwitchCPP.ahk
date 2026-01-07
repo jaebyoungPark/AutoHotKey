@@ -3,6 +3,8 @@
 ; 0.4초 ~ 1초 → VS Ctrl+K, Ctrl+O
 ;--------------------------------
 
+HotkeyList := ["$XButton2"]
+
 $XButton2:: {
     start := A_TickCount
 

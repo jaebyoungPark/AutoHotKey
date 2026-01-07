@@ -1,6 +1,9 @@
 ﻿;----------------------------
 ; 실제 핫키 정의
 ;----------------------------
+
+HotkeyList := ["$XButton1"]
+
 $XButton1:: {
     start := A_TickCount
     KeyWait "XButton1"

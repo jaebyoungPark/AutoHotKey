@@ -1,5 +1,7 @@
 ﻿#Requires AutoHotkey v2.0
 
+HotkeyList := ["^+F10"]
+
 ^+F10:: {
     ; Win 누르고
     Send("{LWin down}")

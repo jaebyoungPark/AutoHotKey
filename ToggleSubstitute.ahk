@@ -1,5 +1,7 @@
 ﻿#Requires AutoHotkey v2
 
+HotkeyList := ["$MButton"]
+
 $MButton::
 {
     start := A_TickCount  ; 버튼 누른 시각 기록

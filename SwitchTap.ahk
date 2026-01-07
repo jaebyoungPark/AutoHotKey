@@ -4,6 +4,10 @@
 ;----------------------------
 
 ; Alt + 좌클릭 → Ctrl+Shift+Tab (Chrome 전용)
+
+HotkeyList := ["!LButton", "!RButton"]
+
+
 !LButton:: {
     if WinActive("ahk_exe chrome.exe") {
         Send "^+{Tab}"

@@ -4,6 +4,9 @@
 global toggleState := true
 
 ; Ctrl + Alt + 마우스 휠 업 (모든 창에서 감지)
+
+HotkeyList := ["^!WheelUp"]
+
 ^!WheelUp::
 {
     global toggleState
