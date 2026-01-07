@@ -9,7 +9,7 @@
 #Include ^!+p.ahk
 #Include ToggleSubstitute.ahk
 #Include ControlSound.ahk
-#Include SwitchTap&ToggleLens.ahk
+#Include SwitchTap.ahk
 #Include SwitchCursor.ahk
 #Include SwitchWindow.ahk
 #Include SpeedWheel.ahk

@@ -6,7 +6,7 @@
 magnifierOn1 := false
 
 ; ==============================
-; Ctrl+Alt+P 핫키
+; Ctrl+Alt+Shift+P 핫키
 ; ==============================
 ^!+p:: {
     start := A_TickCount
@@ -17,6 +17,9 @@ magnifierOn1 := false
     ; 유튜브 환경
     ; ------------------------------
     if InStr(WinGetTitle("A"), "YouTube") {
+        ToolTip "▶ Speed Up"
+        SetTimer(() => ToolTip(), -700)
+
         SendInput("+.")   ; 재생속도 올리기
         return
     }
@@ -25,6 +28,9 @@ magnifierOn1 := false
     ; Udemy 환경
     ; ------------------------------
     else if InStr(WinGetTitle("A"), "Udemy") {
+        ToolTip "▶ Speed Up"
+        SetTimer(() => ToolTip(), -700)
+
         SendInput("+{Right}")  ; 재생속도 올리기
         return
     }
@@ -33,10 +39,18 @@ magnifierOn1 := false
     ; 비주얼 스튜디오 환경
     ; ------------------------------
     if WinActive("ahk_exe devenv.exe") {
-        if (elapsed < 250)
+        if (elapsed < 250) {
+            ToolTip "→"
+            SetTimer(() => ToolTip(), -600)
+
             Send "{Right}"
-        else if (elapsed >= 250 && elapsed < 550)
+        }
+        else if (elapsed >= 250 && elapsed < 550) {
+            ToolTip "Header"
+            SetTimer(() => ToolTip(), -600)
+
             Send "^!{F12}"
+        }
         return
     }
 
@@ -44,10 +58,20 @@ magnifierOn1 := false
     ; 언리얼 엔진 환경
     ; ------------------------------
     if WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe UnrealEditor.exe") {
+        ToolTip "Content Drawer"
+        SetTimer(() => ToolTip(), -700)
+
         Send "^ "   ; Ctrl + Space
         return
     }
 }
+
+
+
+
+
+
+
 
 #Requires AutoHotkey v2.0
 magnifierOn1 := false
@@ -84,48 +108,53 @@ magnifierOn1 := false
             return
         }
 
-        ; ------------------------------
-        ; 유튜브 (돋보기 조건 외)
-        ; ------------------------------
-        title := ""
-        try {
-            title := WinGetTitle("A")
-        } catch {
-            title := ""
-        }
+ title := ""
+try title := WinGetTitle("A")
 
-        if InStr(title, "YouTube") {
-            SendInput("+,")
-            return
-        }
+; ------------------------------
+; YouTube
+; ------------------------------
+if InStr(title, "YouTube") {
+    ToolTip "◀ Speed Down"
+    SetTimer(() => ToolTip(), -700)
 
-        ; ------------------------------
-        ; Udemy (돋보기 조건 외)
-        ; ------------------------------
-        else if InStr(title, "Udemy") {
-            SendInput("+{Left}")
-            return
-        }
+    SendInput("+,")   ; 유튜브 속도 ↓
+    return
+}
 
-        return  ; 그 외 Chrome → 아무 동작 없음
+; ------------------------------
+; Udemy
+; ------------------------------
+else if InStr(title, "Udemy") {
+    ToolTip "◀ Speed Down"
+    SetTimer(() => ToolTip(), -700)
+
+    SendInput("+{Left}")  ; 유데미 속도 ↓
+    return
+}
+
+        return
     }
 
     ; ------------------------------
     ; 언리얼 엔진 환경
     ; ------------------------------
     title := ""
-    try {
-        title := WinGetTitle("A")
-    } catch {
-        title := ""
-    }
+    try title := WinGetTitle("A")
 
     if InStr(title, "Unreal Editor") {
         if (elapsed < 200) {
+            ToolTip "컴파일 후 저장"
+            SetTimer(() => ToolTip(), -700)
+
             SendInput("{F7}")
-            Sleep 120
+            Sleep 150
             SendInput("^s")
-        } else if (elapsed >= 200 && elapsed < 450) {
+        } 
+        else if (elapsed >= 200 && elapsed < 450) {
+            ToolTip "Escape"
+            SetTimer(() => ToolTip(), -700)
+
             SendInput("+{F1}")
         }
         return
@@ -135,9 +164,17 @@ magnifierOn1 := false
     ; 비주얼 스튜디오 환경
     ; ------------------------------
     if WinActive("ahk_exe devenv.exe") {
-        if (elapsed < 250)
+        if (elapsed < 250) {
+            ToolTip "<-"
+            SetTimer(() => ToolTip(), -600)
+
             Send "{Left}"
-        else if (elapsed >= 250 && elapsed < 550)
+        }
+        else if (elapsed >= 250 && elapsed < 550) {
+            ToolTip "Def"
+            SetTimer(() => ToolTip(), -600)
+
             Send "{F12}"
+        }
     }
 }

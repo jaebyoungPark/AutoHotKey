@@ -7,65 +7,53 @@ global toggleState := true
 ^!WheelUp::
 {
     global toggleState
-    
+
     ; Visual Studio가 활성화되어 있는지 확인
     if !WinActive("ahk_exe devenv.exe") {
-        return  ; Visual Studio가 아니면 아무것도 하지 않음
+        return
     }
-    
+
     if (toggleState) {
-        ; 주석 해제 (U) - 두 번 실행
+        ; ==========================
+        ; 주석 해제 (U)
+        ; ==========================
+        ToolTip "주석 Toggle : UNCOMMENT (U)"
+        SetTimer(() => ToolTip(), -800)
+
         Loop 2 {
-            ; Ctrl 누른 상태 유지
             Send "{Ctrl down}"
             Sleep 50
-            
-            ; K 누르기
             Send "{k down}"
             Sleep 50
-            
-            ; K 떼기
             Send "{k up}"
             Sleep 50
-            
-            ; U 누르기 (주석 해제)
             Send "{u down}"
             Sleep 50
-            
-            ; U 떼기
             Send "{u up}"
             Sleep 50
-            
-            ; Ctrl 떼기
             Send "{Ctrl up}"
-            Sleep 100  ; 두 번째 실행 전 약간의 대기
+            Sleep 100
         }
     } else {
-        ; 주석 처리 (C) - 한 번 실행
-        ; Ctrl 누른 상태 유지
+        ; ==========================
+        ; 주석 처리 (C)
+        ; ==========================
+        ToolTip "주석 Toggle : COMMENT (C)"
+        SetTimer(() => ToolTip(), -800)
+
         Send "{Ctrl down}"
         Sleep 50
-        
-        ; K 누르기
         Send "{k down}"
         Sleep 50
-        
-        ; K 떼기
         Send "{k up}"
         Sleep 50
-        
-        ; C 누르기 (주석 처리)
         Send "{c down}"
         Sleep 50
-        
-        ; C 떼기
         Send "{c up}"
         Sleep 50
-        
-        ; Ctrl 떼기
         Send "{Ctrl up}"
     }
-    
+
     ; 토글 상태 전환
     toggleState := !toggleState
 }
