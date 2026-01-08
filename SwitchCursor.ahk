@@ -2,10 +2,10 @@
 
 HotKeyList := ["$RButton"]
 
-$RButton::
+$RButton:: 
 {
     start := A_TickCount
-    MouseGetPos &sx, &sy   ; 누른 순간 위치
+    MouseGetPos &sx, &sy   ; 처음 누른 지점 저장 (시작점)
 
     isDrag := false
 
@@ -13,9 +13,9 @@ $RButton::
     while GetKeyState("RButton", "P")
     {
         Sleep 10
-        MouseGetPos &cx, &cy
+        MouseGetPos &cx, &cy ; 실시간 위치 추적
 
-        ; 마우스가 일정 거리 이상 이동하면 드래그 판정
+        ; 5픽셀 이상 움직이면 드래그로 판정
         if (Abs(cx - sx) > 5 || Abs(cy - sy) > 5)
         {
             isDrag := true
@@ -27,7 +27,7 @@ $RButton::
             break
     }
 
-    ; 🔹 드래그면 시스템에 맡김
+    ; 드래그 판정 시 로직
     if (isDrag)
     {
         Send "{RButton Down}"
@@ -36,28 +36,27 @@ $RButton::
         return
     }
 
-    ; 버튼 떼기까지 대기
+    ; 버튼 떼는 순간까지 대기
     KeyWait "RButton"
+    
+    ; 떼는 순간 마우스 위치 저장
+    MouseGetPos &ex, &ey  ; ex, ey = End X, End Y (도착점)
+    
     elapsed := (A_TickCount - start) / 1000.0
 
     if (elapsed < 0.20)
     {
-        ; 기본 우클릭
         Send "{RButton}"
     }
     else if (elapsed < 0.55)
     {
-        ; 🔀 mintty(Git Bash) 분기
         if WinActive("ahk_class mintty")
         {
-            ; Git Bash 붙여넣기
             Send "+{Insert}"
         }
         else
         {
-            ; Ctrl + Win + .
-            Send "^#."
+            Send "^#."  ; 단축키 실행
         }
     }
 }
-

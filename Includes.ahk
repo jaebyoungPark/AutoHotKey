@@ -15,6 +15,7 @@
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
 
+
 ;ctrl + 숫자
 #Include Ctrl+1.ahk
 #Include Ctrl+2.ahk
