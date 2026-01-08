@@ -152,8 +152,12 @@ if InStr(title, "Unreal Editor") {
         SetTimer(() => ToolTip(), -700)
 
         SendInput("{F7}")
-        Sleep 150
-        SendInput("^s")
+        Sleep 250
+        ; Ctrl+S를 다운/업 방식으로 보내기
+	Send("{Ctrl down}")  ; Ctrl 누름
+	Send("{s down}")     ; S 누름
+	Send("{s up}")       ; S 떼기
+	Send("{Ctrl up}")    ; Ctrl 떼기
     } 
     else if (elapsed >= 200 && elapsed < 450) {
         ToolTip "Escape"
