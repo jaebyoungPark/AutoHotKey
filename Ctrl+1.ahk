@@ -6,6 +6,6 @@ $^1::
     if !WinActive("ahk_exe devenv.exe")
         return
     
-    SendText 'UE_LOG(LogTemp, Warning, TEXT(":%s"), *.ToString());'
-    Send "{Left 21}"  ; 커서를 : 앞으로 이동
+    SendText 'UE_LOG(LogTemp, Warning, TEXT(" : %s"), *.ToString());'
+    Send "{Left 23}"  ; 커서를 : 앞으로 이동
 }
