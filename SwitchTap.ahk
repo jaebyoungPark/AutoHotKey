@@ -5,6 +5,9 @@
 ; ========================================
 
 ; Alt + 좌클릭
+
+HotKeyList := ["!LButton", "!RButton"]
+
 !LButton::
 {
     if WinActive("ahk_exe chrome.exe")

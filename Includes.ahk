@@ -4,7 +4,7 @@
 #Include OpenBookmark.ahk
 #Include WinTap.ahk
 #Include SwitchCPP.ahk
-#Include ^!+p.ahk
+#Include MediaSpeed.ahk
 #Include ToggleSubstitute.ahk
 #Include ControlSound.ahk
 #Include SwitchTap.ahk
@@ -14,6 +14,7 @@
 #Include GoRight.ahk
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
+#Include OpenMemory.ahk
 
 
 ;ctrl + 숫자
