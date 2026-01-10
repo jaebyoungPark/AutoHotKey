@@ -7,7 +7,7 @@ HotkeyList := ["!WheelUp", "!WheelDown"]
 !WheelUp:: {
     Loop 4 {
         Click "WheelUp"
-        Sleep 25
+        Sleep 15
     }
 }
 
@@ -15,6 +15,6 @@ HotkeyList := ["!WheelUp", "!WheelDown"]
 !WheelDown:: {
     Loop 4 {
         Click "WheelDown"
-        Sleep 25
+        Sleep 15
     }
 }
