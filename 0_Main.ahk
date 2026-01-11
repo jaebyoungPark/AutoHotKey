@@ -1,6 +1,6 @@
 ﻿; 메인 스크립트
 
-#Include Includes.ahk
+#Include 0_Includes.ahk
 
 
 

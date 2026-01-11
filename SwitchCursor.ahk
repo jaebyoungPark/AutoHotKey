@@ -67,7 +67,7 @@ $RButton::
             
             ; 마우스 위치에 Here + 웃는 얼굴 표시
             MouseGetPos &mx, &my
-            ToolTip "Here 😀", mx, my
+            ToolTip "Here I am😀", mx, my
             
             Sleep 600 ; 0.6초 표시
             ToolTip ; 제거

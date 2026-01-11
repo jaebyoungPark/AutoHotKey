@@ -20,6 +20,8 @@
 ;ctrl + 숫자
 #Include Ctrl+1.ahk
 #Include Ctrl+2.ahk
+#Include Ctrl+3.ahk
+
 
 ;Test
 ;#Include Test.ahk
