@@ -6,11 +6,8 @@
 
 MySuspended := false
 
-; 배열에서 토글 키 제거, toggle 키는 절대 넣지마
 
-; [""] 은 안됨. [] 만이 가능함
 
-HotKeyList := []
+HotKeyList := ["RButton", "$XButton1", "^+WheelUp","^+WheelDown","$^1", "$^2", "^3", "^+F11", "$^+=", "^!+p", "^!+o", "$^+a", "^+1","^+2","^+3","^+4", "!WheelUp", "!WheelDown", "XButton2", "!LButton", "!RButton", "$^RButton", "^!WheelUp", "^!WheelDown", "$MButton", "^+F10"]
 
-; "^+WheelUp" <-뭔지 몰라 일단 빼놓음
 
