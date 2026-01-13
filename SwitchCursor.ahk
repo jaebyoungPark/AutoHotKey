@@ -16,7 +16,7 @@ RButton::
         MouseGetPos &cx, &cy ; 실시간 위치 추적
         
         ; 5픽셀 이상 움직이면 드래그로 판정
-        if (Abs(cx - sx) > 2 || Abs(cy - sy) > 2)
+        if (Abs(cx - sx) > 4 || Abs(cy - sy) > 4)
         {
             isDrag := true
             break
@@ -44,7 +44,7 @@ RButton::
     
     elapsed := (A_TickCount - start) / 1000.0
     
-    if (elapsed < 0.15)
+    if (elapsed < 0.20)
     {
         Send "{RButton}"
     }
