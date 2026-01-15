@@ -8,6 +8,6 @@ MySuspended := false
 
 
 
-HotKeyList := ["RButton", "$XButton1", "^+WheelUp","^+WheelDown","$^1", "$^2", "^3", "^+F11", "$^+=", "^!+p", "^!+o", "$^+a", "^+1","^+2","^+3","^+4", "!WheelUp", "!WheelDown", "XButton2", "!LButton", "!RButton", "$^RButton", "^!WheelUp", "^!WheelDown", "$MButton", "^+F10"]
+HotKeyList := ["RButton", "$XButton1", "^+WheelUp","^+WheelDown","$^1", "$^2", "^3", "^4", "^+F11", "$^+=", "^!+p", "^!+o", "$^+a", "^+1","^+2","^+3","^+4", "!WheelUp", "!WheelDown", "XButton2", "!LButton", "!RButton", "$^RButton", "^!WheelUp", "^!WheelDown", "$MButton", "^+F10"]
 
 

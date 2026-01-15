@@ -50,9 +50,9 @@ RButton::
     }
     else if (elapsed < 0.55)
     {
+	
 
-            ; 단축키 먼저 실행
-            Send "^#."
+           SendInput "{Ctrl down}{Alt down}.{Alt up}{Ctrl up}"
             
             ; 잠깐 대기
             Sleep 15
