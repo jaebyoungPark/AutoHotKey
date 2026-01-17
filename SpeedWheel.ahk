@@ -51,9 +51,9 @@ WheelLoop() {
         Click WheelDir
         WheelQueue--
 
-	speed := 20 - (WheelStack - 1) * 5
-	if (speed < 3)
-  	  speed := 3
+	speed := 15 - (WheelStack - 1) * 5
+	if (speed < 1)
+  	  speed := 1
 
         Sleep speed
         return

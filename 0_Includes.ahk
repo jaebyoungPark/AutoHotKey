@@ -9,12 +9,15 @@
 #Include ControlSound.ahk
 #Include SwitchTap.ahk
 #Include SwitchCursor.ahk
-#Include SwitchWindow.ahk
+
 #Include SpeedWheel.ahk
 #Include GoRight.ahk
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
 #Include OpenMemory.ahk
+#Include PrintIf.ahk
+#Include LeftOrRight_VS.ahk
+#Include LeftOrRightWithShift_VS.ahk
 
 
 ;ctrl + 숫자
@@ -23,6 +26,12 @@
 #Include Ctrl+3.ahk
 #Include Ctrl+4.ahk
 
+;+! + 숫자
+#Include +!1.ahk
+
+;안정성 검증 필요
+#Include SpeedWheel_Hard.ahk
 
 ;Test
 ;#Include Test.ahk
+;#Include SwitchWindow.ahk
