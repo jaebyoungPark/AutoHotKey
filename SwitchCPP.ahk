@@ -5,7 +5,6 @@
 ; 0.25초 ~ 0.8초 → VS, Chrome, GOM64 처리
 ;--------------------------------
 
-HotkeyList := ["XButton2"]
 
 XButton2:: {
     start := A_TickCount
@@ -29,7 +28,7 @@ XButton2:: {
         ; Chrome에서만 실행
         ; ------------------------------
         else if WinActive("ahk_exe chrome.exe") {
-            Send "f"
+            SendInput "f"
         }
 
         ; ------------------------------

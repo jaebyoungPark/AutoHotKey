@@ -4,7 +4,7 @@
     ; 디버깅: 처음에 ^^ 표시
     ; --------------------
     ToolTip "^^"
-    SetTimer(() => ToolTip(), -800)  ; 0.8초 후 사라짐
+    SetTimer(() => ToolTip(), -200)  ; 0.2초 후 사라짐
 
     global MySuspended, HotkeyList
 
@@ -16,7 +16,7 @@
 
     elapsed := A_TickCount - start  ; 누른 시간 계산
 
-    if (elapsed >= 250 && elapsed < 600) {
+    if (elapsed >= 200 && elapsed < 800) {
         MySuspended := !MySuspended
 
         for key in HotkeyList

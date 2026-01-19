@@ -13,35 +13,26 @@ SmoothWheel(dir) {
 
     if (WheelRunning) {
 
-        ; 같은 방향 + 0.3초 이내 → 누적
         if (dir = WheelDir && (now - LastInputTime) <= 300) {
             WheelQueue += 6
             WheelStack++
         }
-        ; 반대 방향 → 초기화 후 1부터
-        else if (dir != WheelDir) {
-            WheelDir := dir
-            WheelQueue := 6
-            WheelStack := 1
-        }
-        ; 같은 방향이지만 시간 초과 → 새로 시작
         else {
+            WheelDir := dir
             WheelQueue := 6
             WheelStack := 1
         }
 
     } else {
-        ; 첫 입력
         WheelDir := dir
         WheelQueue := 6
         WheelStack := 1
         WheelRunning := true
-        SetTimer WheelLoop, 10
+        SetTimer WheelLoop, 1
     }
 
     LastInputTime := now
-
-    ToolTip "휠 누적: " WheelStack "단`n총 휠: " (WheelStack * 6)
+    ToolTip "휠 누적: " WheelStack "단"
 }
 
 WheelLoop() {
@@ -51,15 +42,28 @@ WheelLoop() {
         Click WheelDir
         WheelQueue--
 
-	speed := 15 - (WheelStack - 1) * 5
-	if (speed < 1)
-  	  speed := 1
+        ; ==========================
+        ; 💥 초가속 터보 계산식
+        ; ==========================
+        if (WheelStack <= 2) {
+            speed := 8
+        }
+        else if (WheelStack <= 4) {
+            speed := 4
+        }
+        else if (WheelStack <= 6) {
+            speed := 1
+        }
+        else {
+            speed := 0   ; 🔥 터보
+        }
 
-        Sleep speed
+        if (speed > 0)
+            Sleep speed
+
         return
     }
 
-    ; 입력 끊기면 종료
     if ((A_TickCount - LastInputTime) > 300) {
         WheelRunning := false
         WheelStack := 0

@@ -55,21 +55,21 @@ RButton::
            SendInput "{Ctrl down}{Alt down}.{Alt up}{Ctrl up}"
             
             ; 잠깐 대기
-            Sleep 15
+            ;Sleep 15
             
             ; 큰 폰트로 설정 (예: 32 크기)
-            A_DefaultGui := Gui()
-            A_DefaultGui.SetFont("s48", "Segoe UI Emoji")
+            ;A_DefaultGui := Gui()
+            ;A_DefaultGui.SetFont("s48", "Segoe UI Emoji")
             
             ; 마우스 위치에 Here + 웃는 얼굴 표시
-            MouseGetPos &mx, &my
-            ToolTip "Here I am😀", mx, my
+            ;MouseGetPos &mx, &my
+            ;ToolTip "Here I am😀", mx, my
             
-            Sleep 600 ; 0.6초 표시
-            ToolTip ; 제거
+            ;Sleep 600 ; 0.6초 표시
+            ;ToolTip ; 제거
             
             ; 폰트 원래대로 복원
-            A_DefaultGui.SetFont()
+            ;A_DefaultGui.SetFont()
         
     }
 }
