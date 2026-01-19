@@ -1,13 +1,12 @@
 ﻿#Requires AutoHotkey v2.0
 
 ; ==============================
-; Alt + Mouse Left
+; Ctrl + Mouse Left (Visual Studio only)
 ; ==============================
-!LButton::
+^LButton::
 {
-    ; Visual Studio가 아니면 원래 기능 유지
     if !WinActive("ahk_exe devenv.exe") {
-        Send "!{LButton}"
+        Send "^{LButton}"
         return
     }
 
@@ -16,21 +15,21 @@
     elapsed := (A_TickCount - start) / 1000.0
 
     if (elapsed <= 0.20) {
-        Send "{Left}"
+        ; 기존 Ctrl + 클릭 동작
+        Send "^{LButton}"
     }
-    else if (elapsed > 0.20 && elapsed < 0.5) {
-        Send "{Left 3}"
+    else if (elapsed > 0.20 && elapsed <= 0.60) {
+        Send "{Home}"
     }
 }
 
 ; ==============================
-; Alt + Mouse Right
+; Ctrl + Mouse Right (Visual Studio only)
 ; ==============================
-!RButton::
+^RButton::
 {
-    ; Visual Studio가 아니면 원래 기능 유지
     if !WinActive("ahk_exe devenv.exe") {
-        Send "!{RButton}"
+        Send "^{RButton}"
         return
     }
 
@@ -39,63 +38,60 @@
     elapsed := (A_TickCount - start) / 1000.0
 
     if (elapsed <= 0.20) {
-        Send "{Right}"
+        ; 기존 Ctrl + 클릭 동작
+        Send "^{RButton}"
     }
-    else if (elapsed > 0.20 && elapsed < 0.5) {
-        Send "{Right 3}"
+    else if (elapsed > 0.20 && elapsed <= 0.60) {
+        Send "{End}"
     }
 }
-
 
 
 #Requires AutoHotkey v2.0
 
 ; ==============================
-; Alt + Left
+; Ctrl + Left (Visual Studio only)
 ; ==============================
-!Left::
+^Left::
 {
-    ; Visual Studio가 아니면 원래 동작 유지
     if !WinActive("ahk_exe devenv.exe") {
-        Send "!{Left}"
+        Send "{Blind}^{Left}"
         return
     }
 
     start := A_TickCount
+
+    ; Left 키가 떼어질 때까지 기다림
     KeyWait "Left"
+
     elapsed := (A_TickCount - start) / 1000.0
 
-    ; 0.25초 이하 → 기존 동작
-    if (elapsed <= 0.20) {
-        Send "!{Left}"
-    }
-    ; 0.25 ~ 0.5초 → Left 4번
-    else if (elapsed > 0.20 && elapsed <= 0.6) {
-        Send "{Left 5}"
+    ; VS 기본 Ctrl+Left 차단
+    if (elapsed > 0.20 && elapsed <= 0.60) {
+        Send "{Home}"
+    } else {
+        Send "{Blind}^{Left}"
     }
 }
 
 ; ==============================
-; Alt + Right
+; Ctrl + Right (Visual Studio only)
 ; ==============================
-!Right::
+^Right::
 {
-    ; Visual Studio가 아니면 원래 동작 유지
     if !WinActive("ahk_exe devenv.exe") {
-        Send "!{Right}"
+        Send "{Blind}^{Right}"
         return
     }
 
     start := A_TickCount
     KeyWait "Right"
+
     elapsed := (A_TickCount - start) / 1000.0
 
-    ; 0.25초 이하 → 기존 동작
-    if (elapsed <= 0.20) {
-        Send "!{Right}"
-    }
-    ; 0.25 ~ 0.5초 → Right 4번
-    else if (elapsed > 0.20 && elapsed <= 0.6) {
-        Send "{Right 5}"
+    if (elapsed > 0.20 && elapsed <= 0.60) {
+        Send "{End}"
+    } else {
+        Send "{Blind}^{Right}"
     }
 }

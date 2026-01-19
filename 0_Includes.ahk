@@ -7,7 +7,6 @@
 #Include MediaSpeed.ahk
 #Include ToggleSubstitute.ahk
 #Include ControlSound.ahk
-#Include SwitchTap.ahk
 #Include SwitchCursor.ahk
 
 #Include SpeedWheel.ahk
@@ -18,7 +17,8 @@
 #Include PrintIf.ahk
 #Include LeftOrRight_VS.ahk
 #Include LeftOrRightWithShift_VS.ahk
-
+#Include HomeEnd_VS.ahk
+#Include LineSelect_VS.ahk
 
 ;ctrl + 숫자
 #Include Ctrl+1.ahk

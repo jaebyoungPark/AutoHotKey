@@ -1,12 +1,12 @@
 ﻿#Requires AutoHotkey v2.0
 
 ; ==============================
-; Ctrl + Shift + Mouse Left
+; Shift + Alt + Mouse Left
 ; ==============================
-^+LButton::
++!LButton::
 {
     if !WinActive("ahk_exe devenv.exe") {
-        Send "^+{LButton}"
+        Send "+!{LButton}"
         return
     }
 
@@ -18,17 +18,17 @@
         Send "+{Left}"
     }
     else if (elapsed > 0.20 && elapsed < 0.5) {
-        Send "+{Left 3}"
+        Send "+{Left 5}"
     }
 }
 
 ; ==============================
-; Ctrl + Shift + Mouse Right
+; Shift + Alt + Mouse Right
 ; ==============================
-^+RButton::
++!RButton::
 {
     if !WinActive("ahk_exe devenv.exe") {
-        Send "^+{RButton}"
+        Send "+!{RButton}"
         return
     }
 
@@ -40,7 +40,7 @@
         Send "+{Right}"
     }
     else if (elapsed > 0.20 && elapsed < 0.5) {
-        Send "+{Right 3}"
+        Send "+{Right 5}"
     }
 }
 
