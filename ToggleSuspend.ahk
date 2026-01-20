@@ -10,7 +10,7 @@
 
     start := A_TickCount  ; 누른 시각 기록
 
-    ; Ctrl+Shift+F11이 떼어질 때까지 루프
+  
     while GetKeyState("F9", "P")
         Sleep 10  ; 10ms 간격으로 확인
 
