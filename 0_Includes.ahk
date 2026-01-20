@@ -26,6 +26,7 @@
 #Include 1_GoBack.ahk
 #Include 1_GoHomeEnd.ahk
 #Include 1_Enter.ahk
+#Include 1_MouseWheel.ahk
 
 ;ctrl + 숫자
 #Include Ctrl+1.ahk

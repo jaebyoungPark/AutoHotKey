@@ -4,60 +4,61 @@
 CoordMode "Mouse", "Screen"
 
 ; ==============================
-; 🔧 전역 설정값 (경고 방지)
+; 🔧 전역 설정값
 ; ==============================
-global MoveStepSlow     := 8     ; ⏳ 초기 느린 이동
-global MoveStep         := 40    ; 🚀 가속 후 기본 이동
-global MoveStepFine     := 2     ; 🎯 미세 이동
+global MoveStepSlow      := 8
+global MoveStep          := 40
+global MoveStepFine      := 1.5
+global MoveStepUltraFine := 0.5    ; 🪡 미세조정 초반 초미세
 
-global MoveInterval     := 10
-global MoveIntervalFine := 5
+global MoveInterval      := 10
+global MoveIntervalFine  := 5
 
-global AccelTime        := 300   ; ⏱️ 가속 시작 시간(ms)
+global AccelTime         := 500    ; 일반 이동 가속 시작
+global PreAccelPause     := 150    ; 일반 이동 가속 직전 멈춤(ms)
+
+global FineAccelTime     := 200    ; 🧠 미세조정 가속 시작 (0.2초)
 
 ; ==============================
-; 🔒 Win 키 단독 동작 방지
+; 🔒 Win 키 단독 방지
 ; ==============================
 ~LWin::Return
 ~RWin::Return
 
 ; ==============================
-; 🖱 Win + 방향키 이동
+; 🖱 이동
 ; ==============================
 #Left::  MoveMouse(false)
 #Right:: MoveMouse(false)
 #Up::    MoveMouse(false)
 #Down::  MoveMouse(false)
 
-; ==============================
-; 🖱 Win + Ctrl + 방향키 (미세 이동)
-; ==============================
 #^Left::  MoveMouse(true)
 #^Right:: MoveMouse(true)
 #^Up::    MoveMouse(true)
 #^Down::  MoveMouse(true)
 
 ; ==============================
-; 🧠 커서 이동 함수 (DPI 안전)
+; 🧠 커서 이동
 ; ==============================
 MoveMouse(isFineMode := false)
 {
-    global MoveStepSlow, MoveStep, MoveStepFine
-    global MoveInterval, MoveIntervalFine, AccelTime
+    global MoveStepSlow, MoveStep, MoveStepFine, MoveStepUltraFine
+    global MoveInterval, MoveIntervalFine
+    global AccelTime, PreAccelPause, FineAccelTime
 
     startTime := A_TickCount
     interval  := isFineMode ? MoveIntervalFine : MoveInterval
+    paused := false  ; 일반 이동 가속 직전 정지 여부
 
-    ; 가상 화면 (물리 좌표)
-    VX := SysGet(76)
-    VY := SysGet(77)
-    VW := SysGet(78)
-    VH := SysGet(79)
-
+    VX := SysGet(76), VY := SysGet(77)
+    VW := SysGet(78), VH := SysGet(79)
     MaxX := VX + VW - 1
     MaxY := VY + VH - 1
 
     pt := Buffer(8)
+    accX := 0.0
+    accY := 0.0
 
     while (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
     {
@@ -71,42 +72,64 @@ MoveMouse(isFineMode := false)
 
         elapsed := A_TickCount - startTime
 
-        ; ⏱️ 가속 처리
+        ; 🎯 이동 단계 결정
         if (isFineMode)
-            step := MoveStepFine
-        else if (elapsed < AccelTime)
+        {
+            if (elapsed < FineAccelTime)
+                step := MoveStepUltraFine   ; 초반 초미세
+            else
+                step := MoveStepFine        ; 이후 살짝 가속
+        }
+        else if (elapsed < AccelTime - PreAccelPause)
+        {
             step := MoveStepSlow
+        }
+        else if (!paused && elapsed < AccelTime)
+        {
+            paused := true
+            Sleep PreAccelPause     ; 가속 직전 브레이크
+            continue
+        }
         else
+        {
             step := MoveStep
+        }
 
-        ; 현재 커서 위치 (물리 좌표)
+        ; 🪡 현재 커서 위치 읽기
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
 
-        ; 이동 계산
+        ; 🔄 소수 누적 계산
         if (isLeft)
-            x -= step
+            accX -= step
         if (isRight)
-            x += step
+            accX += step
         if (isUp)
-            y -= step
+            accY -= step
         if (isDown)
-            y += step
+            accY += step
 
-        ; 화면 경계 클램프
+        dx := Floor(accX)
+        dy := Floor(accY)
+        accX -= dx
+        accY -= dy
+
+        x += dx
+        y += dy
+
+        ; 📐 화면 범위 제한
         x := Clamp(x, VX, MaxX)
         y := Clamp(y, VY, MaxY)
 
-        ; DPI 안전 이동
+        ; 🖱 커서 이동
         DllCall("SetCursorPos", "Int", x, "Int", y)
-
         Sleep interval
     }
 }
 
 ; ==============================
-; 🔒 값 제한 함수
+; 📐 좌표 제한
 ; ==============================
 Clamp(val, min, max)
 {
