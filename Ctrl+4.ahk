@@ -1,5 +1,7 @@
 ﻿#Requires AutoHotkey v2.0
 
+; *Editor 의 Zoom -1 일 때만 가능*
+
 ^4::  ; Ctrl + 4
 {
     ; Unreal Editor에서만 동작
