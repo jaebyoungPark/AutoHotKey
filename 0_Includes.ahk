@@ -36,7 +36,7 @@
 #Include Ctrl+4.ahk
 
 ;+! + 숫자
-#Include +!1.ahk
+#Include cout.ahk
 
 ;안정성 검증 필요
 #Include SpeedWheel_Hard.ahk
