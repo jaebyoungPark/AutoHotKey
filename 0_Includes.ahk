@@ -22,12 +22,15 @@
 
 
 ;Keyboard
-#Include 1_MoveCursor.ahk
+;#Include 1_MoveCursor.ahk
 #Include 1_GoBack.ahk
 #Include 1_GoHomeEnd.ahk
 #Include 1_Enter.ahk
 #Include 1_MouseWheel.ahk
 #Include 1_MouseRightClick.ahk
+
+#Include 1_MoveCursor_New1.ahk
+#Include 1_MoveCursor_New2.ahk
 
 ;ctrl + 숫자
 #Include Ctrl+1.ahk

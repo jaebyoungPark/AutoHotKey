@@ -7,7 +7,7 @@ CoordMode "Mouse", "Screen"
 ; 🔧 전역 설정값
 ; ==============================
 global MoveStepSlow      := 5
-global MoveStep          := 40
+global MoveStep          := 30
 global MoveStepFine      := 1.5
 global MoveStepUltraFine := 0.5    ; 🪡 미세조정 초반 초미세
 
