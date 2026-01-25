@@ -52,7 +52,7 @@ RButton::
     {
 	
 
-           SendInput "{Ctrl down}{Alt down}.{Alt up}{Ctrl up}"
+           SendInput "{LWin down}{/ down}{/ up}{LWin up}"
             
             ; 잠깐 대기
             ;Sleep 15
