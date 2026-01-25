@@ -6,14 +6,16 @@ CoordMode "Mouse", "Screen"
 ; 🔧 전역 설정값
 ; ==============================
 
-; ▶ Win 단독 (가속 중간 속도)
-global MoveStepNormalSlow := 3.5    ; 처음 느린 속도
-global MoveStepNormalFast := 7     ; 가속 후 속도
-global NormalAccelTime   := 450    ; 가속 시작(ms)
+; ▶ Win 단독 (중간 가속)
+global MoveStepNormalSlow := 3.0
+global MoveStepNormalFast := 7.5
+global NormalAccelTime   := 350
 
-; ▶ Win + Alt (고속 고정)
-global MoveStepFast      := 30
-global MoveIntervalFast  := 8
+; ▶ Win + Alt (고속 가속)
+global MoveStepFastSlow := 11
+global MoveStepFastFast := 25
+global FastAccelTime   := 250
+global MoveIntervalFast := 8
 
 ; ▶ Win + Ctrl (미세 가속)
 global MoveStepFine      := 1.5
@@ -31,7 +33,7 @@ global MoveIntervalFine  := 5
 ~RWin::Return
 
 ; ==============================
-; 🖱 Win + 방향키 (가속 중간)
+; 🖱 Win + 방향키 (중간 가속)
 ; ==============================
 #Left::  MoveMouseNormal()
 #Right:: MoveMouseNormal()
@@ -47,15 +49,15 @@ global MoveIntervalFine  := 5
 #^Down::  MoveMouseFine()
 
 ; ==============================
-; 🖱 Win + Alt + 방향키 (고속)
+; 🖱 Win + Alt + 방향키 (고속 가속)
 ; ==============================
-#!Left::  MoveMouseFast()
-#!Right:: MoveMouseFast()
-#!Up::    MoveMouseFast()
-#!Down::  MoveMouseFast()
+#!Left::  MoveMouseFastAccel()
+#!Right:: MoveMouseFastAccel()
+#!Up::    MoveMouseFastAccel()
+#!Down::  MoveMouseFastAccel()
 
 ; ==============================
-; 🧠 Win 단독 (가속 이동)
+; 🧠 Win 단독 (중간 가속 이동)
 ; ==============================
 MoveMouseNormal()
 {
@@ -118,19 +120,15 @@ MoveMouseNormal()
 }
 
 ; ==============================
-; 🧠 Win + Alt (고속 이동)
+; 🧠 Win + Alt (고속 가속 이동)
 ; ==============================
-MoveMouseFast()
+MoveMouseFastAccel()
 {
-    global MoveStepFast, MoveIntervalFast
-    MoveMouseFixedSpeed(MoveStepFast, MoveIntervalFast)
-}
+    global MoveStepFastSlow, MoveStepFastFast
+    global FastAccelTime, MoveIntervalFast
 
-; ==============================
-; 🧠 고정 속도 공용 로직
-; ==============================
-MoveMouseFixedSpeed(step, interval)
-{
+    startTime := A_TickCount
+
     VX := SysGet(76), VY := SysGet(77)
     VW := SysGet(78), VH := SysGet(79)
     MaxX := VX + VW - 1
@@ -140,7 +138,7 @@ MoveMouseFixedSpeed(step, interval)
     accX := 0.0
     accY := 0.0
 
-    while (GetKeyState("LWin", "P"))
+    while (GetKeyState("LWin", "P") && GetKeyState("Alt", "P"))
     {
         isLeft  := GetKeyState("Left",  "P")
         isRight := GetKeyState("Right", "P")
@@ -149,6 +147,11 @@ MoveMouseFixedSpeed(step, interval)
 
         if (!isLeft && !isRight && !isUp && !isDown)
             break
+
+        elapsed := A_TickCount - startTime
+        step := (elapsed < FastAccelTime)
+            ? MoveStepFastSlow
+            : MoveStepFastFast
 
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
@@ -175,12 +178,12 @@ MoveMouseFixedSpeed(step, interval)
         y := Clamp(y, VY, MaxY)
 
         DllCall("SetCursorPos", "Int", x, "Int", y)
-        Sleep interval
+        Sleep MoveIntervalFast
     }
 }
 
 ; ==============================
-; 🧠 Win + Ctrl (미세 이동)
+; 🧠 Win + Ctrl (미세 가속 이동)
 ; ==============================
 MoveMouseFine()
 {

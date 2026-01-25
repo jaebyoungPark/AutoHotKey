@@ -1,4 +1,5 @@
 ﻿#Include ToggleSuspend.ahk
+#Include 1_ToggleSuspend.ahk
 
 #Include CloseTap.ahk
 #Include OpenBookmark.ahk
@@ -15,7 +16,8 @@
 #Include GoLeft.ahk
 #Include OpenMemory.ahk
 #Include PrintIf.ahk
-#Include LeftOrRight_VS.ahk
+;#Include LeftOrRight_VS.ahk
+#Include LeftOrRight_VS_New.ahk
 #Include LeftOrRightWithShift_VS.ahk
 #Include HomeEnd_VS.ahk
 #Include LineSelect_VS.ahk
@@ -26,11 +28,14 @@
 #Include 1_GoBack.ahk
 #Include 1_GoHomeEnd.ahk
 #Include 1_Enter.ahk
-#Include 1_MouseWheel.ahk
-#Include 1_MouseRightClick.ahk
 
-#Include 1_MoveCursor_New1.ahk
-#Include 1_MoveCursor_New2.ahk
+#Include 1_MouseRightClick.ahk
+#Include 1_BlockWindowMinimum.ahk
+#Include 1_Scroll.ahk
+#Include 1_Volume.ahk
+
+#Include 1_MoveCursor_New.ahk
+
 
 ;ctrl + 숫자
 #Include Ctrl+1.ahk
