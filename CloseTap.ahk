@@ -2,25 +2,45 @@
 
 HotkeyList := ["$XButton1"]
 
+ShowBigEnd() {
+    static endGui := 0
+
+    if endGui {
+        endGui.Destroy()
+        endGui := 0
+    }
+
+    endGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
+    endGui.BackColor := "Black"
+    endGui.SetFont("s48 Bold", "Segoe UI")
+    endGui.AddText("cRed Center w400 h120", "END")
+
+    ; 화면 중앙
+    x := (A_ScreenWidth - 400) // 2
+    y := (A_ScreenHeight - 120) // 2
+    endGui.Show("x" x " y" y " NoActivate")
+
+    ; 0.6초 후 자동 제거
+    SetTimer(() => (
+        endGui.Destroy(),
+        endGui := 0
+    ), -100)
+}
+
 $XButton1:: {
     start := A_TickCount
 
-    ; 최대 0.5초까지만 기다림
     if !KeyWait("XButton1", "T0.5") {
-        ; ⏱ 500ms 초과 → 즉시 End 표시 후 종료
-        ToolTip "End"
-        SetTimer () => ToolTip(), -600
+        ShowBigEnd()
         return
     }
 
     elapsed := A_TickCount - start
 
     if (elapsed < 250) {
-        ; 짧게 누름 → 원래 뒤로 가기
         Send "{XButton1}"
     }
     else {
-        ; 250 ~ 500ms
         if WinActive("ahk_exe GOM64.EXE") {
             Send "!{F4}"
         } else {

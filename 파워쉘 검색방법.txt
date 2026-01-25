@@ -1,1 +1,7 @@
-Get-ChildItem -Recurse -Filter *.ahk | Select-String "LWin"
+Get-ChildItem -Recurse -Filter *.ahk | Select-String "^RButton"
+
+
+
+Get-ChildItem -Recurse -Filter *.ahk |
+  Select-String '^\s*[~$^+#!<>]*RButton\s*::' |
+  Select-Object -ExpandProperty Path -Unique
