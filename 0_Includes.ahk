@@ -20,6 +20,7 @@
 #Include LeftOrRightWithShift_VS.ahk
 #Include HomeEnd_VS.ahk
 #Include LineSelect_VS.ahk
+#Include DeleteAndAdd)_VS.ahk
 
 
 ;Keyboard
