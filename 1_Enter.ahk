@@ -3,30 +3,84 @@
 enterPressTime := 0
 isHolding := false
 
-#Enter:: {   ; Win + Enter
+; -------------------------
+; 상단 Enter (Win + Enter)
+#Enter:: {
     global enterPressTime, isHolding
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
 
-#Enter Up:: {   ; Win + Enter 떼기
+#Enter Up:: {
     global enterPressTime, isHolding
-    
     holdDuration := A_TickCount - enterPressTime
-    
-    ; 0.25초(250ms) 이상 0.5초(500ms) 이하
     if (holdDuration >= 250 && holdDuration <= 1000) {
         isHolding := true
-        ; 마우스 버튼을 계속 누른 상태 유지
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
     } else {
-        ; 그 외 → 마우스 버튼 릴리즈
         Send "{LButton Up}"
         isHolding := false
     }
 }
 
+; -------------------------
+; 넘패드 Enter (Win + NumpadEnter)
+#NumpadEnter:: {
+    global enterPressTime, isHolding
+    enterPressTime := A_TickCount
+    Send "{LButton Down}"
+}
+
+#NumpadEnter Up:: {
+    global enterPressTime, isHolding
+    holdDuration := A_TickCount - enterPressTime
+    if (holdDuration >= 250 && holdDuration <= 1000) {
+        isHolding := true
+        ToolTip "눌림"
+        SetTimer () => ToolTip(), -1000
+    } else {
+        Send "{LButton Up}"
+        isHolding := false
+    }
+}
+
+; -------------------------
+; Ctrl + Enter → Ctrl + 마우스 왼클릭
+^Enter:: {
+    Send "{Ctrl Down}{LButton Down}"
+    KeyWait "Enter"
+    Send "{LButton Up}{Ctrl Up}"
+}
+
+^NumpadEnter:: {
+    Send "{Ctrl Down}{LButton Down}"
+    KeyWait "NumpadEnter"
+    Send "{LButton Up}{Ctrl Up}"
+}
+
+; -------------------------
+; Win + Page Up (기존 로직)
+#PgUp:: {
+    global enterPressTime, isHolding
+    enterPressTime := A_TickCount
+    Send "{LButton Down}"
+}
+
+#PgUp Up:: {
+    global enterPressTime, isHolding
+    holdDuration := A_TickCount - enterPressTime
+    if (holdDuration >= 250 && holdDuration <= 1000) {
+        isHolding := true
+        ToolTip "눌림"
+        SetTimer () => ToolTip(), -1000
+    } else {
+        Send "{LButton Up}"
+        isHolding := false
+    }
+}
+
+; -------------------------
 ; 마우스 왼쪽 버튼 클릭 시 홀드 해제
 ~LButton:: {
     global isHolding

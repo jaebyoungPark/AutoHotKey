@@ -17,13 +17,13 @@
 #Include GoLeft.ahk
 #Include OpenMemory.ahk
 
-#Include LeftOrRight_VS_New.ahk
-#Include LeftOrRightWithShift_VS.ahk
-;#Include HomeEnd_VS.ahk
-#Include LineSelect_VS.ahk
-#Include DeleteAndAdd)_VS.ahk
+#Include VS_LeftOrRight_New.ahk
+#Include VS_LeftOrRightWithShift.ahk
+#Include VS_HomeEnd.ahk
+#Include VS_LineSelect.ahk
+#Include VS_DeleteAndAdd).ahk
 
-#Include PressedLeftClick.ahk
+
 
 
 ;Keyboard
@@ -35,6 +35,9 @@
 #Include 1_MouseRightClick.ahk
 #Include 1_BlockWindowMinimum.ahk
 #Include 1_Scroll.ahk
+#Include 1_Scroll2.ahk
+#Include 1_SwitchTap.ahk
+
 #Include 1_Volume.ahk
 
 #Include 1_MoveCursor_New.ahk

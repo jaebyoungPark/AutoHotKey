@@ -1,22 +1,19 @@
 ﻿#Requires AutoHotkey v2.0
 
 ; ========================================
-; Ctrl + Up: 누르고 있는 동안 휠 업 반복
+; Ctrl + PgUp → 휠 업 2번
 ; ========================================
-^Up::
+^PgUp::
 {
-
-        SendInput("{WheelUp}")
-return
-    
+    SendInput("{WheelUp 2}")  ; 2번 반복
+    return
 }
 
 ; ========================================
-; Ctrl + Down: 누르고 있는 동안 휠 다운 반복
+; Ctrl + PgDn → 휠 다운 2번
 ; ========================================
-^Down::
+^PgDn::
 {
-
-        SendInput("{WheelDown}")
-return
+    SendInput("{WheelDown 2}")  ; 2번 반복
+    return
 }

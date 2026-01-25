@@ -17,7 +17,7 @@ winDownTime := 0
 
     holdTime := A_TickCount - winDownTime
 
-    if (holdTime < 500) {
+    if (holdTime < 300) {
         ; 0.5초 미만 → 기존 Win 기능 패스
         Send "{Blind}{LWin}"
     }
