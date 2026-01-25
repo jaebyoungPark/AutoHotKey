@@ -8,7 +8,7 @@ MySuspended := false
 
 
 
-HotKeyList := ["RButton", "$XButton1", "^+WheelUp","^+WheelDown","$^1", "$^2", "^3", "^4", "$^+=", "^!+p", "^!+o", "$^+a", "^+1","^+2","^+3","^+4", "!WheelUp", "!WheelDown", "XButton2", "!LButton", "!RButton", "^!WheelUp", "^!WheelDown", "$MButton", "^+F10", "^+i", "+!1", "+WheelUp", "+WheelDown", "^LButton", "^RButton", "!Left", "!Right", "!+Right", "!+Left", "+!LButton", "+!RButton", "^LButton", "^RButton", "^Left", "^Right", "^+Right", "^+Left", "#Enter", "#,", "#.", "#[", "#]", "#Left", "#Right", "#Up", "#Down", "#^Left", "#^Right", "#^Up", "#^Down",  "~LButton", "^Up", "^!Enter Up", "^Down", "~LWin", "~RWin", "~Esc", "#\"]
+HotKeyList := ["RButton", "$XButton1", "^+WheelUp","^+WheelDown","$^1", "$^2", "^3", "^4", "$^+=", "^!+p", "^!+o", "$^+a", "^+1","^+2","^+3","^+4", "!WheelUp", "!WheelDown", "XButton2", "!LButton", "!RButton", "^!WheelUp", "^!WheelDown", "$MButton", "^+F10", "+!1", "+WheelUp", "+WheelDown", "^LButton", "^RButton", "!Left", "!Right", "!+Right", "!+Left", "+!LButton", "+!RButton", "^LButton", "^RButton", "^Left", "^Right", "^+Right", "^+Left", "#Enter", "#,", "#.", "#[", "#]", "#Left", "#Right", "#Up", "#Down", "#^Left", "#^Right", "#^Up", "#^Down",  "~LButton", "^Up", "^!Enter Up", "^Down", "~LWin", "~RWin", "~Esc", "#\"]
 
 ;, "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
 
