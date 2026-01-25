@@ -16,7 +16,7 @@
 #Include GoLeft.ahk
 #Include OpenMemory.ahk
 #Include PrintIf.ahk
-;#Include LeftOrRight_VS.ahk
+
 #Include LeftOrRight_VS_New.ahk
 #Include LeftOrRightWithShift_VS.ahk
 #Include HomeEnd_VS.ahk
