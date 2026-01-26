@@ -27,14 +27,14 @@ isHolding := false
 }
 
 ; -------------------------
-; 넘패드 . (Win + NumpadDot)
-#NumpadDot:: {
+; 넘패드 Enter (Win + NumpadEnter)
+#NumpadEnter:: {
     global enterPressTime, isHolding
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
 
-#NumpadDot Up:: {
+#NumpadEnter Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
     if (holdDuration >= 250 && holdDuration <= 1000) {
@@ -57,7 +57,7 @@ isHolding := false
     Send "{LButton Up}{Ctrl Up}"
 }
 
-^NumpadDot:: {
+^NumpadEnter:: {
     Send "{Ctrl Down}{LButton Down}"
     KeyWait "NumpadEnter"
     Send "{LButton Up}{Ctrl Up}"
