@@ -27,14 +27,14 @@ isHolding := false
 }
 
 ; -------------------------
-; 넘패드 Enter (Win + NumpadEnter)
-#NumpadEnter:: {
+; 넘패드 . (Win + NumpadDot)
+#NumpadDot:: {
     global enterPressTime, isHolding
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
 
-#NumpadEnter Up:: {
+#NumpadDot Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
     if (holdDuration >= 250 && holdDuration <= 1000) {
@@ -44,7 +44,7 @@ isHolding := false
     } else {
         Send "{LButton Up}"
         isHolding := false
-        ToolTip "해제"        ; ★
+        ToolTip "해제"
         SetTimer () => ToolTip(), -800
     }
 }
@@ -57,7 +57,7 @@ isHolding := false
     Send "{LButton Up}{Ctrl Up}"
 }
 
-^NumpadEnter:: {
+^NumpadDot:: {
     Send "{Ctrl Down}{LButton Down}"
     KeyWait "NumpadEnter"
     Send "{LButton Up}{Ctrl Up}"

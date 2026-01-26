@@ -1,0 +1,7 @@
+1. SwitchCursor
+
+win + Numpad 0
+win + Pgdn
+win + '
+
+2. 
