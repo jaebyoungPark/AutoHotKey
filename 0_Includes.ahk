@@ -49,7 +49,7 @@
 #Include 1_Volume.ahk
 
 #Include 1_MoveCursor_New.ahk
-
+;#Include 1_MoveCursor_Deprecated.ahk
 
 ;ctrl + 숫자
 #Include Ctrl+1.ahk
