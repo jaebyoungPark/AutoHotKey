@@ -14,14 +14,14 @@ isHolding := false
 #Enter Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
-    if (holdDuration >= 300 && holdDuration <= 1000) {
+    if (holdDuration >= 400 && holdDuration <= 1000) {
         isHolding := true
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
     } else {
         Send "{LButton Up}"
         isHolding := false
-        ToolTip "해제"        ; ★
+        ToolTip "Left Click"
         SetTimer () => ToolTip(), -800
     }
 }
@@ -37,14 +37,37 @@ isHolding := false
 #NumpadEnter Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
-    if (holdDuration >= 250 && holdDuration <= 1000) {
+    if (holdDuration >= 400 && holdDuration <= 1000) {
         isHolding := true
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
     } else {
         Send "{LButton Up}"
         isHolding := false
-        ToolTip "해제"
+        ToolTip "Left Click"
+        SetTimer () => ToolTip(), -800
+    }
+}
+
+; -------------------------
+; Win + Numpad1 (Win + Enter와 동일)
+#Numpad1:: {
+    global enterPressTime, isHolding
+    enterPressTime := A_TickCount
+    Send "{LButton Down}"
+}
+
+#Numpad1 Up:: {
+    global enterPressTime, isHolding
+    holdDuration := A_TickCount - enterPressTime
+    if (holdDuration >= 400 && holdDuration <= 1000) {
+        isHolding := true
+        ToolTip "눌림"
+        SetTimer () => ToolTip(), -1000
+    } else {
+        Send "{LButton Up}"
+        isHolding := false
+        ToolTip "Left Click"
         SetTimer () => ToolTip(), -800
     }
 }
@@ -81,7 +104,7 @@ isHolding := false
     } else {
         Send "{LButton Up}"
         isHolding := false
-        ToolTip "해제"        ; ★
+        ToolTip "Left Click"
         SetTimer () => ToolTip(), -800
     }
 }
@@ -93,7 +116,7 @@ isHolding := false
     if (isHolding) {
         Send "{LButton Up}"
         isHolding := false
-        ToolTip "해제"        ; ★
+        ToolTip "Left Click"
         SetTimer () => ToolTip(), -800
     }
 }
@@ -104,7 +127,7 @@ isHolding := false
     if (isHolding) {
         Send "{LButton Up}"
         isHolding := false
-        ToolTip "해제"        ; ★
+        ToolTip "Left Click"
         SetTimer () => ToolTip(), -800
     }
 }

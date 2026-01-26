@@ -52,6 +52,7 @@
 #Include 1_ExitFromWin.ahk
 #Include 1_Volume.ahk
 #Include 1_MoveCursor_New.ahk
+#Include 1_HeaderAndCpp.ahk
 
 ;#Include 1_MoveCursor_Deprecated.ahk
 

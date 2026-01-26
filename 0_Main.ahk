@@ -30,9 +30,11 @@ HotKeyList := [
     "^Numpad1", "^Numpad2",
     "^!NumpadEnter", "!NumpadEnter",
     "Up", "Down", "Left", "Right",
-    "+Left", "+Right",
     "#z", "#LButton", "+!0",
-    "#NumpadEnter", "^NumpadEnter"
+    "#NumpadEnter", "^NumpadEnter",
+	"#End", "#Delete",
+	"#Numpad5", "#Numpad4", "#Numpad1",
+	"+Delete", "+End"
 ]
 
 ;, "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
