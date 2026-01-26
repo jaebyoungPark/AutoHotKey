@@ -27,7 +27,7 @@
 
 
 ;Keyboard
-#Include 1_Win.ahk
+
 
 ;#Include 1_MoveCursor.ahk
 #Include 1_GoBack.ahk
@@ -38,7 +38,8 @@
 #Include 1_BlockWindowMinimum.ahk
 #Include 1_Scroll.ahk
 #Include 1_Scroll2.ahk
-#Include 1_SwitchTap.ahk
+#Include 1_CompileAndSave.ahk
+
 
 #Include 1_Volume.ahk
 
