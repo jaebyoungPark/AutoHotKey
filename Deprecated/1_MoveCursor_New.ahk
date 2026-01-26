@@ -26,9 +26,6 @@ global FineAccelTime     := 200
 global MoveInterval      := 10
 global MoveIntervalFine  := 5
 
-; ▶ 대각선 이동 시 수직 비율 (0.0 ~ 1.0)
-global VerticalRatio := 0.7  ; 70%로 감소 (기본값 1.0 = 100%)
-
 ; ==============================
 ; 🔒 Win 키 단독 방지
 ; ==============================
@@ -65,7 +62,7 @@ global VerticalRatio := 0.7  ; 70%로 감소 (기본값 1.0 = 100%)
 MoveMouseNormal()
 {
     global MoveStepNormalSlow, MoveStepNormalFast
-    global NormalAccelTime, MoveInterval, VerticalRatio
+    global NormalAccelTime, MoveInterval
 
     startTime := A_TickCount
 
@@ -93,10 +90,6 @@ MoveMouseNormal()
             ? MoveStepNormalSlow
             : MoveStepNormalFast
 
-        ; 대각선 이동 감지
-        isDiagonal := (isLeft || isRight) && (isUp || isDown)
-        verticalStep := isDiagonal ? (step * VerticalRatio) : step
-
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
@@ -106,9 +99,9 @@ MoveMouseNormal()
         if (isRight)
             accX += step
         if (isUp)
-            accY -= verticalStep
+            accY -= step
         if (isDown)
-            accY += verticalStep
+            accY += step
 
         dx := Floor(accX)
         dy := Floor(accY)
@@ -132,7 +125,7 @@ MoveMouseNormal()
 MoveMouseFastAccel()
 {
     global MoveStepFastSlow, MoveStepFastFast
-    global FastAccelTime, MoveIntervalFast, VerticalRatio
+    global FastAccelTime, MoveIntervalFast
 
     startTime := A_TickCount
 
@@ -160,10 +153,6 @@ MoveMouseFastAccel()
             ? MoveStepFastSlow
             : MoveStepFastFast
 
-        ; 대각선 이동 감지
-        isDiagonal := (isLeft || isRight) && (isUp || isDown)
-        verticalStep := isDiagonal ? (step * VerticalRatio) : step
-
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
@@ -173,9 +162,9 @@ MoveMouseFastAccel()
         if (isRight)
             accX += step
         if (isUp)
-            accY -= verticalStep
+            accY -= step
         if (isDown)
-            accY += verticalStep
+            accY += step
 
         dx := Floor(accX)
         dy := Floor(accY)
@@ -199,7 +188,7 @@ MoveMouseFastAccel()
 MoveMouseFine()
 {
     global MoveStepFine, MoveStepUltraFine
-    global MoveIntervalFine, FineAccelTime, VerticalRatio
+    global MoveIntervalFine, FineAccelTime
 
     startTime := A_TickCount
 
@@ -227,10 +216,6 @@ MoveMouseFine()
             ? MoveStepUltraFine
             : MoveStepFine
 
-        ; 대각선 이동 감지
-        isDiagonal := (isLeft || isRight) && (isUp || isDown)
-        verticalStep := isDiagonal ? (step * VerticalRatio) : step
-
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
@@ -240,9 +225,9 @@ MoveMouseFine()
         if (isRight)
             accX += step
         if (isUp)
-            accY -= verticalStep
+            accY -= step
         if (isDown)
-            accY += verticalStep
+            accY += step
 
         dx := Floor(accX)
         dy := Floor(accY)
