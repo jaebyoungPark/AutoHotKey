@@ -39,6 +39,7 @@
 #Include 1_Scroll.ahk
 #Include 1_Scroll2.ahk
 #Include 1_CompileAndSave.ahk
+#Include 1_MouseRightPressed.ahk
 
 
 #Include 1_Volume.ahk
