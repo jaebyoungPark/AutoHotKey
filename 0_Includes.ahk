@@ -29,7 +29,7 @@
 ;Keyboard
 
 
-;#Include 1_MoveCursor.ahk
+
 #Include 1_GoBack.ahk
 #Include 1_GoHomeEnd.ahk
 #Include 1_Enter.ahk
@@ -40,6 +40,7 @@
 #Include 1_Scroll2.ahk
 #Include 1_CompileAndSave.ahk
 #Include 1_MouseRightPressed.ahk
+#Include 1_SwitchTap.ahk
 
 
 #Include 1_Volume.ahk

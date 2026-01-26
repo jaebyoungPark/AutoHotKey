@@ -14,7 +14,7 @@ isHolding := false
 #Enter Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
-    if (holdDuration >= 250 && holdDuration <= 1000) {
+    if (holdDuration >= 300 && holdDuration <= 1000) {
         isHolding := true
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
