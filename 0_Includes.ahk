@@ -27,6 +27,8 @@
 
 
 ;Keyboard
+#Include 1_Win.ahk
+
 ;#Include 1_MoveCursor.ahk
 #Include 1_GoBack.ahk
 #Include 1_GoHomeEnd.ahk
