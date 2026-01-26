@@ -21,6 +21,8 @@ isHolding := false
     } else {
         Send "{LButton Up}"
         isHolding := false
+        ToolTip "해제"        ; ★
+        SetTimer () => ToolTip(), -800
     }
 }
 
@@ -42,6 +44,8 @@ isHolding := false
     } else {
         Send "{LButton Up}"
         isHolding := false
+        ToolTip "해제"        ; ★
+        SetTimer () => ToolTip(), -800
     }
 }
 
@@ -60,7 +64,7 @@ isHolding := false
 }
 
 ; -------------------------
-; Win + Page Up (기존 로직)
+; Win + Page Up
 #PgUp:: {
     global enterPressTime, isHolding
     enterPressTime := A_TickCount
@@ -77,16 +81,20 @@ isHolding := false
     } else {
         Send "{LButton Up}"
         isHolding := false
+        ToolTip "해제"        ; ★
+        SetTimer () => ToolTip(), -800
     }
 }
 
 ; -------------------------
-; 마우스 왼쪽 버튼 클릭 시 홀드 해제
+; 실제 마우스 클릭 시 홀드 해제
 ~LButton:: {
     global isHolding
     if (isHolding) {
         Send "{LButton Up}"
         isHolding := false
+        ToolTip "해제"        ; ★
+        SetTimer () => ToolTip(), -800
     }
 }
 
@@ -96,5 +104,7 @@ isHolding := false
     if (isHolding) {
         Send "{LButton Up}"
         isHolding := false
+        ToolTip "해제"        ; ★
+        SetTimer () => ToolTip(), -800
     }
 }

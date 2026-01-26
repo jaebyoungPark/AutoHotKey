@@ -11,6 +11,8 @@
 #Include SwitchCursor.ahk
 #Include 1_SwitchCursor.ahk
 
+#Include MouseLeftPressed.ahk
+
 #Include SpeedWheel.ahk
 #Include GoRight.ahk
 #Include ToggleComments.ahk
@@ -41,7 +43,8 @@
 #Include 1_CompileAndSave.ahk
 #Include 1_MouseRightPressed.ahk
 #Include 1_SwitchTap.ahk
-
+#Include 1_SwitchCursor.ahk
+#Include 1_ExitFromWin.ahk
 
 #Include 1_Volume.ahk
 
