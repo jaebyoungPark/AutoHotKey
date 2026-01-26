@@ -11,13 +11,13 @@ global MoveStepNormalSlow := 3.0
 global MoveStepNormalFast := 7.5
 global NormalAccelTime   := 350
 
-; ▶ Win + Alt (고속 가속)
+; ▶ Win + Ctrl (고속 가속) ← 원래 Alt 기능
 global MoveStepFastSlow := 11
 global MoveStepFastFast := 25
 global FastAccelTime   := 250
 global MoveIntervalFast := 8
 
-; ▶ Win + Ctrl (미세 가속)
+; ▶ Win + Alt (미세 가속) ← 원래 Ctrl 기능
 global MoveStepFine      := 1.5
 global MoveStepUltraFine := 0.5
 global FineAccelTime     := 200
@@ -44,20 +44,20 @@ global VerticalRatio := 0.7  ; 70%로 감소 (기본값 1.0 = 100%)
 #Down::  MoveMouseNormal()
 
 ; ==============================
-; 🖱 Win + Ctrl + 방향키 (미세)
+; 🖱 Win + Ctrl + 방향키 (고속) ← 변경됨!
 ; ==============================
-#^Left::  MoveMouseFine()
-#^Right:: MoveMouseFine()
-#^Up::    MoveMouseFine()
-#^Down::  MoveMouseFine()
+#^Left::  MoveMouseFastAccel()
+#^Right:: MoveMouseFastAccel()
+#^Up::    MoveMouseFastAccel()
+#^Down::  MoveMouseFastAccel()
 
 ; ==============================
-; 🖱 Win + Alt + 방향키 (고속 가속)
+; 🖱 Win + Alt + 방향키 (미세) ← 변경됨!
 ; ==============================
-#!Left::  MoveMouseFastAccel()
-#!Right:: MoveMouseFastAccel()
-#!Up::    MoveMouseFastAccel()
-#!Down::  MoveMouseFastAccel()
+#!Left::  MoveMouseFine()
+#!Right:: MoveMouseFine()
+#!Up::    MoveMouseFine()
+#!Down::  MoveMouseFine()
 
 ; ==============================
 ; 🧠 Win 단독 (중간 가속 이동)
@@ -127,7 +127,7 @@ MoveMouseNormal()
 }
 
 ; ==============================
-; 🧠 Win + Alt (고속 가속 이동)
+; 🧠 Win + Ctrl (고속 가속 이동) ← 변경됨!
 ; ==============================
 MoveMouseFastAccel()
 {
@@ -145,7 +145,7 @@ MoveMouseFastAccel()
     accX := 0.0
     accY := 0.0
 
-    while (GetKeyState("LWin", "P") && GetKeyState("Alt", "P"))
+    while (GetKeyState("LWin", "P") && GetKeyState("Ctrl", "P"))
     {
         isLeft  := GetKeyState("Left",  "P")
         isRight := GetKeyState("Right", "P")
@@ -194,7 +194,7 @@ MoveMouseFastAccel()
 }
 
 ; ==============================
-; 🧠 Win + Ctrl (미세 가속 이동)
+; 🧠 Win + Alt (미세 가속 이동) ← 변경됨!
 ; ==============================
 MoveMouseFine()
 {
@@ -212,7 +212,7 @@ MoveMouseFine()
     accX := 0.0
     accY := 0.0
 
-    while (GetKeyState("LWin", "P") && GetKeyState("Ctrl", "P"))
+    while (GetKeyState("LWin", "P") && GetKeyState("Alt", "P"))
     {
         isLeft  := GetKeyState("Left",  "P")
         isRight := GetKeyState("Right", "P")
