@@ -9,7 +9,7 @@
 #Include ToggleSubstitute.ahk
 #Include ControlSound.ahk
 #Include SwitchCursor.ahk
-#Include SwitchCursor_Table.ahk
+#Include 1_SwitchCursor.ahk
 
 #Include SpeedWheel.ahk
 #Include GoRight.ahk
