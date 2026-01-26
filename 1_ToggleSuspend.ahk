@@ -1,10 +1,11 @@
-﻿\::
+﻿$`::
 {
     global MySuspended, HotkeyList
-    start := A_TickCount  ; 누른 시각
-    while GetKeyState("\", "P")  ; ← \ 하나만! (핫키 컨텍스트 내부)
+    start := A_TickCount
+    while GetKeyState("``", "P")
         Sleep 10
     elapsed := A_TickCount - start
+    
     if (elapsed >= 250 && elapsed <= 500)
     {
         MySuspended := !MySuspended
@@ -22,9 +23,9 @@
         ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
         SetTimer(() => ToolTip(), -800)
     }
-    else
+    else if (elapsed < 250)
     {
-        ; 짧거나 너무 길면 원래 \ 입력
-        Send "{\\}"  ; ← 중괄호 포맷 사용!
+        ; 250ms 미만일 때만 원래 ` 입력
+        Send "{``}"
     }
 }

@@ -25,22 +25,19 @@ MoveAmount := 15
 }
 
 ; =========================
-; 방향키 → 마우스 이동 (대각선 지원, 방향 반전, 3번 반복)
+; 방향키 → 마우스 이동 (RMB_Held일 때만 작동)
 ; =========================
-~Up::
-~Down::
-~Left::
-~Right::
+#HotIf RMB_Held
+Up::
+Down::
+Left::
+Right::
 {
-    global RMB_Held, MoveAmount, KeyStates
+    global MoveAmount, KeyStates
     
     ; 키 눌림 상태 저장
-    keyName := StrReplace(A_ThisHotkey, "~", "")
+    keyName := A_ThisHotkey
     KeyStates[keyName] := true
-    
-    ; RMB가 눌려있지 않으면 원래 동작만 수행
-    if !RMB_Held
-        return
     
     ; 마우스 이동 처리 (3번 반복)
     Loop 3
@@ -50,15 +47,15 @@ MoveAmount := 15
         
         ; 수평 이동 (좌우 반전)
         if KeyStates["Left"]
-            moveX := MoveAmount  ; Left → 오른쪽
+            moveX := MoveAmount
         else if KeyStates["Right"]
-            moveX := -MoveAmount  ; Right → 왼쪽
+            moveX := -MoveAmount
         
         ; 수직 이동 (상하 반전)
         if KeyStates["Up"]
-            moveY := MoveAmount  ; Up → 아래
+            moveY := MoveAmount
         else if KeyStates["Down"]
-            moveY := -MoveAmount  ; Down → 위
+            moveY := -MoveAmount
         
         ; 마우스 이동
         if moveX != 0 || moveY != 0
@@ -68,13 +65,14 @@ MoveAmount := 15
 }
 
 ; 키를 뗄 때 상태 초기화
-~Up Up::
-~Down Up::
-~Left Up::
-~Right Up::
+Up Up::
+Down Up::
+Left Up::
+Right Up::
 {
     global KeyStates
-    keyName := StrReplace(StrReplace(A_ThisHotkey, "~", ""), " Up", "")
+    keyName := StrReplace(A_ThisHotkey, " Up", "")
     KeyStates[keyName] := false
     return
 }
+#HotIf
