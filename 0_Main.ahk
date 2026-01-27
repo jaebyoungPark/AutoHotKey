@@ -24,17 +24,17 @@ HotKeyList := [
     "#\", "#0", "#NumpadEnter Up",
     "#PgDn", "#PgUp",
     "^!Up", "^!Down",
-    "PgUp", "PgDn", "^PgUp", "^PgDown",
+    "PgUp", "PgDn", "^PgDown",
     "^NumpadEnter", "^Enter",
     "$Left", "$Right",
-    "^Numpad1", "^Numpad2",
     "^!NumpadEnter", "!NumpadEnter",
     "Up", "Down", "Left", "Right",
-    "#z", "#LButton", "+!0",
+    "#LButton", "+!0",
     "#NumpadEnter", "^NumpadEnter",
-	"#End", "#Delete",
+	"#End", "#Delete", 
 	"#Numpad5", "#Numpad4", "#Numpad1",
-	"+Delete", "+End"
+	"+Delete", "+End",
+	"^+Up", "^+Down"
 ]
 
 ;, "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음

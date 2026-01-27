@@ -1,7 +1,7 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-#Numpad0::  ; Win + NumPad0
+#Numpad1::  ; Win + NumPad1
 {
     SendInput "#'"
     
@@ -10,10 +10,10 @@
     MouseGetPos &x, &y
     
     myGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-    myGui.BackColor := "Red"
+    myGui.BackColor := "Yellow"
     myGui.SetFont("s50 cBlack bold", "Arial")  ; 크기 50
     myGui.Add("Text", "BackgroundRed cBlack", "  Here  ")
     myGui.Show("x" . (x - 80) . " y" . (y - 30) . " NoActivate")
     
-    SetTimer () => myGui.Destroy(), -100
+    SetTimer () => myGui.Destroy(), -150
 }

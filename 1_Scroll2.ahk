@@ -1,37 +1,19 @@
 ﻿#Requires AutoHotkey v2.0
 
 ; ========================================
-; Ctrl + PgUp → 휠 업 2번
+; Ctrl + Shift + ↑ → 휠 업 3번
 ; ========================================
-^PgUp::
+^+Up::
 {
-    SendInput("{WheelUp 2}")  ; 2번 반복
+    SendInput("{WheelUp 3}")  ; 3번 반복
     return
 }
 
 ; ========================================
-; Ctrl + PgDn → 휠 다운 2번
+; Ctrl + Shift + ↓ → 휠 다운 3번
 ; ========================================
-^PgDn::
+^+Down::
 {
-    SendInput("{WheelDown 2}")  ; 2번 반복
-    return
-}
-
-; ========================================
-; Ctrl + Numpad1 → 휠 다운 2번
-; ========================================
-^Numpad1::
-{
-    SendInput("{WheelDown 2}")
-    return
-}
-
-; ========================================
-; Ctrl + Numpad2 → 휠 업 2번
-; ========================================
-^Numpad2::
-{
-    SendInput("{WheelUp 2}")
+    SendInput("{WheelDown 3}")  ; 3번 반복
     return
 }

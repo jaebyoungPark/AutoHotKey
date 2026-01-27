@@ -49,7 +49,6 @@
 #Include 1_MouseRightPressed.ahk
 #Include 1_SwitchTap.ahk
 #Include 1_SwitchCursor.ahk
-#Include 1_ExitFromWin.ahk
 #Include 1_Volume.ahk
 #Include 1_MoveCursor_New.ahk
 #Include 1_HeaderAndCpp.ahk

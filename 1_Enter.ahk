@@ -51,13 +51,13 @@ isHolding := false
 
 ; -------------------------
 ; Win + Numpad1 (Win + Enter와 동일)
-#Numpad1:: {
+#Numpad0:: {
     global enterPressTime, isHolding
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
 
-#Numpad1 Up:: {
+#Numpad0 Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
     if (holdDuration >= 400 && holdDuration <= 1000) {
