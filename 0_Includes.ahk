@@ -12,6 +12,8 @@
 #Include MediaSpeed.ahk
 #Include ToggleSubstitute.ahk
 #Include Volume.ahk
+
+
 #Include SwitchCursor.ahk
 #Include SpeedWheel_Hard.ahk
 #Include MouseLeftPressed.ahk
@@ -48,7 +50,8 @@
 #Include 1_MouseRightPressed.ahk
 #Include 1_SwitchTap.ahk
 #Include 1_SwitchCursor.ahk
-#Include 1_Volume.ahk
+;#Include 1_Volume.ahk
+
 #Include 1_MoveCursor_New.ahk
 #Include 1_HeaderAndCpp.ahk
 
