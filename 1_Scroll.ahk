@@ -1,22 +1,20 @@
 ﻿#Requires AutoHotkey v2.0
 
 ; ========================================
-; Ctrl + Up: 누르고 있는 동안 휠 업 반복
+; Ctrl + Shift + ↑ → 휠 업 3번
 ; ========================================
-^Up::
+^+Up::
 {
-
-        SendInput("{WheelUp}")
-return
-    
+    SendInput("{WheelUp 3}")  ; 3번 반복
+    return
 }
 
 ; ========================================
-; Ctrl + Down: 누르고 있는 동안 휠 다운 반복
+; Ctrl + Shift + ↓ → 휠 다운 3번
 ; ========================================
-^Down::
+^+Down::
 {
-
-        SendInput("{WheelDown}")
-return
+    SendInput("{WheelDown 3}")  ; 3번 반복
+    return
 }
+
