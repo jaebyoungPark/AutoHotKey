@@ -1,37 +1,100 @@
 ﻿#Requires AutoHotkey v2.0
 
+; 방향키는 안돼. 알트탭 하고 선택할때 알트탭이 풀려버림. 따라서 alt + page나 alt + numpad 로 대체해야함
+
+
 ; ========================================
-; Shift + Win + ↑ → 휠 업 3번
+; Alt + ↑ → (주석 처리됨)
 ; ========================================
-#+Up::
+; !Up::
+; {
+;     if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+;         Send("!{Up}")
+;         return
+;     }
+;     if WinActive("ahk_exe explorer.exe") {
+;         Send("!{Up}")
+;         return
+;     }
+;     SendInput("{WheelUp 2}")
+; }
+
+; ========================================
+; Alt + ↓ → (주석 처리됨)
+; ========================================
+; !Down::
+; {
+;     if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+;         Send("!{Down}")
+;         return
+;     }
+;     if WinActive("ahk_exe explorer.exe") {
+;         Send("!{Down}")
+;         return
+;     }
+;     SendInput("{WheelDown 2}")
+; }
+
+; ========================================
+; Alt + Numpad1 → 휠 다운 4번
+; ========================================
+!Numpad1::
 {
-    SendInput("{WheelUp 3}")  ; 3번 반복
-    return
+    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+        Send("!{Numpad1}")
+        return
+    }
+    if WinActive("ahk_exe explorer.exe") {
+        Send("!{Numpad1}")
+        return
+    }
+    SendInput("{WheelDown 4}")
 }
 
 ; ========================================
-; Shift + Win + ↓ → 휠 다운 3번
+; Alt + Numpad2 → 휠 업 4번
 ; ========================================
-#+Down::
+!Numpad2::
 {
-    SendInput("{WheelDown 3}")  ; 3번 반복
-    return
+    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+        Send("!{Numpad2}")
+        return
+    }
+    if WinActive("ahk_exe explorer.exe") {
+        Send("!{Numpad2}")
+        return
+    }
+    SendInput("{WheelUp 4}")
 }
 
 ; ========================================
-; Shift + Win + Numpad1 → 휠 다운 1번
+; Alt + PgDn → 휠 다운 4번
 ; ========================================
-#+Numpad1::
+!PgDn::
 {
-    SendInput("{WheelDown}")  ; 1번
-    return
+    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+        Send("!{PgDn}")
+        return
+    }
+    if WinActive("ahk_exe explorer.exe") {
+        Send("!{PgDn}")
+        return
+    }
+    SendInput("{WheelDown 4}")
 }
 
 ; ========================================
-; Shift + Win + Numpad2 → 휠 업 1번
+; Alt + PgUp → 휠 업 4번
 ; ========================================
-#+Numpad2::
+!PgUp::
 {
-    SendInput("{WheelUp}")  ; 1번
-    return
+    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+        Send("!{PgUp}")
+        return
+    }
+    if WinActive("ahk_exe explorer.exe") {
+        Send("!{PgUp}")
+        return
+    }
+    SendInput("{WheelUp 4}")
 }

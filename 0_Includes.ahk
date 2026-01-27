@@ -54,6 +54,7 @@
 
 #Include 1_MoveCursor_New.ahk
 #Include 1_HeaderAndCpp.ahk
+#Include 1_AltUpAndDown.ahk
 
 ;#Include 1_MoveCursor_Deprecated.ahk
 
