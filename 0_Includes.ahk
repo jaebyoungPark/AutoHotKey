@@ -1,9 +1,14 @@
 ﻿;======================================
-;Normal
+;Toggle
 ;======================================
 
 #Include ToggleSuspend.ahk
 #Include 1_ToggleSuspend.ahk
+
+
+;======================================
+;Normal
+;======================================
 
 #Include CloseTap.ahk
 #Include OpenBookmark.ahk
@@ -12,12 +17,10 @@
 #Include MediaSpeed.ahk
 #Include ToggleSubstitute.ahk
 #Include Volume.ahk
-
-
 #Include SwitchCursor.ahk
-#Include SpeedWheel_Hard.ahk
+#Include Scroll_Hard.ahk
+#Include Scroll.ahk
 #Include MouseLeftPressed.ahk
-#Include SpeedWheel.ahk
 #Include GoRight.ahk
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
@@ -40,6 +43,7 @@
 ;=======================================
 ;Keyboard
 ;=======================================
+
 #Include 1_GoBack.ahk
 #Include 1_GoHomeEnd.ahk
 #Include 1_Enter.ahk
@@ -50,18 +54,20 @@
 #Include 1_MouseRightPressed.ahk
 #Include 1_SwitchTap.ahk
 #Include 1_SwitchCursor.ahk
-;#Include 1_Volume.ahk
-
 #Include 1_MoveCursor_New.ahk
 #Include 1_HeaderAndCpp.ahk
 #Include 1_AltUpAndDown.ahk
 
 ;#Include 1_MoveCursor_Deprecated.ahk
+;#Include 1_Volume.ahk
+
+
 
 
 ;======================================
 ;ctrl + 숫자
 ;======================================
+
 #Include Ctrl+1.ahk
 #Include Ctrl+2.ahk
 #Include Ctrl+3.ahk
