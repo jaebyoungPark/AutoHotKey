@@ -80,8 +80,13 @@
         Send("!{PgDn}")
         return
     }
+
     SendInput("{WheelDown 4}")
+
+    ToolTip("▼ Scroll Down")
+    SetTimer(() => ToolTip(), -400) ; 0.4초 후 자동 제거
 }
+
 
 ; ========================================
 ; Alt + PgUp → 휠 업 4번
@@ -96,5 +101,9 @@
         Send("!{PgUp}")
         return
     }
+
     SendInput("{WheelUp 4}")
+
+    ToolTip("▲ Scroll Up")
+    SetTimer(() => ToolTip(), -400) ; 0.4초 후 자동 제거
 }
