@@ -1,4 +1,4 @@
-Get-ChildItem -Recurse -Filter *.ahk | Select-String "^LButton"
+Get-ChildItem -Recurse -Filter *.ahk | Select-String "esc"
 
 
 

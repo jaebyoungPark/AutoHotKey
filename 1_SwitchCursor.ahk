@@ -5,7 +5,7 @@
 {
     SendInput "#'"
     
-    Sleep 50
+    Sleep 80
     
     MouseGetPos &x, &y
     

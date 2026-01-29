@@ -19,13 +19,13 @@ SmoothWheel(dir) {
         }
         else {
             WheelDir := dir
-            WheelQueue := 5
+            WheelQueue := 4
             WheelStack := 1
         }
 
     } else {
         WheelDir := dir
-        WheelQueue := 6
+        WheelQueue := 4
         WheelStack := 1
         WheelRunning := true
         SetTimer WheelLoop, 1
