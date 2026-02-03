@@ -1,11 +1,22 @@
 ﻿#Requires AutoHotkey v2.0
 
-HotkeyList := ["^!+p", "^!+o"]
 
 ; ==============================
 ; 전역 변수
 ; ==============================
 magnifierOn1 := false
+
+; ==============================
+; Unreal Engine 활성 판별 함수
+; ==============================
+IsUnrealActive() {
+    return (
+           WinActive("ahk_exe UE4Editor.exe")
+        || WinActive("ahk_exe UnrealEditor.exe")
+        || InStr(WinGetTitle("A"), "Unreal Editor")
+        || WinActive("ahk_class UnrealWindow")
+    )
+}
 
 ; ==============================
 ; Ctrl+Alt+Shift+P
@@ -24,14 +35,15 @@ magnifierOn1 := false
         }
     }
 
-    ; YouTube
-    if InStr(WinGetTitle("A"), "YouTube") {
+    ; YouTube / Udemy
+    title := WinGetTitle("A")
+    if InStr(title, "YouTube") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+."
         return
     }
-    else if InStr(WinGetTitle("A"), "Udemy") {
+    else if InStr(title, "Udemy") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"
@@ -55,11 +67,7 @@ magnifierOn1 := false
 
     ; Unreal Engine
     CoordMode "Mouse", "Screen"
-    if (
-        WinActive("ahk_exe UE4Editor.exe")
-     || WinActive("ahk_exe UnrealEditor.exe")
-     || InStr(WinGetTitle("A"), "Unreal Editor")
-    ) {
+    if IsUnrealActive() {
         if (elapsed < 200) {
             ToolTip "Escape"
             SetTimer(() => ToolTip(), -700)
@@ -140,11 +148,7 @@ magnifierOn1 := false
     }
 
     ; Unreal Engine
-    if (
-        WinActive("ahk_exe UE4Editor.exe")
-     || WinActive("ahk_exe UnrealEditor.exe")
-     || InStr(WinGetTitle("A"), "Unreal Editor")
-    ) {
+    if IsUnrealActive() {
         if (elapsed < 250) {
             ToolTip "컴파일 후 저장"
             SetTimer(() => ToolTip(), -700)

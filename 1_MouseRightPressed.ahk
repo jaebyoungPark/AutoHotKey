@@ -80,25 +80,21 @@ Right Up::
 }
 
 ; =========================
-; ESC : 모든 키 상태 + RMB 해제
+; ESC : 모든 키 상태 + RMB 해제 (원래 ESC 동작 유지)
 ; =========================
-Esc::
+~Esc::
 {
     global RMB_Held, KeyStates
-    
+
     ; 모든 방향키 상태 해제
     KeyStates["Up"] := false
     KeyStates["Down"] := false
     KeyStates["Left"] := false
     KeyStates["Right"] := false
-    
+
     ; RMB도 해제
     RMB_Held := false
     Click("Right", "Up")
-    
-    ; ESC 원래 기능도 실행
-    Send("{Esc}")
-    return
 }
 
 #HotIf

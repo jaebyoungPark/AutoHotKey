@@ -23,11 +23,19 @@
             }
         }
         
-        ; 🔊 사운드
-        if MySuspended
-            SoundBeep(1200, 150)
-        else
-            SoundBeep(800, 150)
+; 🔊 사운드 (2음)
+if MySuspended
+{
+    ; 🔒 OFF : 음정 ↓↓
+    SoundBeep(1000, 90)
+    SoundBeep(700, 90)
+}
+else
+{
+    ; 🔓 ON : 음정 ↑↑
+    SoundBeep(700, 90)
+    SoundBeep(1000, 90)
+}
         ; 👁️ 토글 상태 문구 표시 (잠깐)
         ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
         SetTimer(() => ToolTip(), -800)

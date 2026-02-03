@@ -6,13 +6,33 @@
 ; =============================
 ShowHereGUI() {
     MouseGetPos &x, &y
-    
+
+    border := 6          ; 테두리 두께
+    boxW   := 220
+    boxH   := 80
+
+    guiW := boxW + border*2
+    guiH := boxH + border*2
+
     myGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-    myGui.BackColor := "Red"
+    myGui.BackColor := "Yellow"   ; 테두리 색
     myGui.SetFont("s50 cBlack bold", "Arial")
-    myGui.Add("Text", "BackgroundRed cBlack", "  Here  ")
-    myGui.Show("x" . (x - 80) . " y" . (y - 30) . " NoActivate")
-    
+
+    ; 내부 빨간 박스
+    myGui.Add("Text"
+        , "x" border " y" border
+        . " w" boxW " h" boxH
+        . " BackgroundRed")
+
+    ; 텍스트 (빨간 박스 위)
+    myGui.Add("Text"
+        , "x" border " y" border
+        . " w" boxW " h" boxH
+        . " Center BackgroundTrans cBlack"
+        , "Here")
+
+    myGui.Show("x" . (x - guiW/2) . " y" . (y - guiH/2) . " NoActivate")
+
     SetTimer () => myGui.Destroy(), -100
 }
 

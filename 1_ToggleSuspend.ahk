@@ -6,7 +6,7 @@
         Sleep 10
     elapsed := A_TickCount - start
     
-    if (elapsed >= 250 && elapsed <= 500)
+    if (elapsed >= 250 && elapsed <= 1000)
     {
         MySuspended := !MySuspended
         for key in HotkeyList {
@@ -16,10 +16,20 @@
                 ; 무시
             }
         }
-        if MySuspended
-            SoundBeep(1200, 150)
-        else
-            SoundBeep(800, 150)
+
+if MySuspended
+{
+    ; 🔒 OFF : 음정 ↓↓
+    SoundBeep(1000, 90)
+    SoundBeep(700, 90)
+}
+else
+{
+    ; 🔓 ON : 음정 ↑↑
+    SoundBeep(700, 90)
+    SoundBeep(1000, 90)
+}
+
         ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
         SetTimer(() => ToolTip(), -800)
     }
