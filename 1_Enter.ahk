@@ -6,7 +6,7 @@ isHolding := false
 ; -------------------------
 ; 상단 Enter (Win + Enter)
 #Enter:: {
-    global enterPressTime, isHolding
+    global enterPressTime
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
@@ -14,7 +14,7 @@ isHolding := false
 #Enter Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
-    if (holdDuration >= 400 && holdDuration <= 1000) {
+    if (holdDuration >= 300 && holdDuration <= 1000) {
         isHolding := true
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
@@ -27,9 +27,9 @@ isHolding := false
 }
 
 ; -------------------------
-; 넘패드 Enter (Win + NumpadEnter)
+; 넘패드 Enter
 #NumpadEnter:: {
-    global enterPressTime, isHolding
+    global enterPressTime
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
@@ -37,7 +37,7 @@ isHolding := false
 #NumpadEnter Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
-    if (holdDuration >= 400 && holdDuration <= 1000) {
+    if (holdDuration >= 300 && holdDuration <= 1000) {
         isHolding := true
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
@@ -50,9 +50,9 @@ isHolding := false
 }
 
 ; -------------------------
-; Win + Numpad1 (Win + Enter와 동일)
+; Win + Numpad0
 #Numpad0:: {
-    global enterPressTime, isHolding
+    global enterPressTime
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
@@ -60,7 +60,7 @@ isHolding := false
 #Numpad0 Up:: {
     global enterPressTime, isHolding
     holdDuration := A_TickCount - enterPressTime
-    if (holdDuration >= 400 && holdDuration <= 1000) {
+    if (holdDuration >= 300 && holdDuration <= 1000) {
         isHolding := true
         ToolTip "눌림"
         SetTimer () => ToolTip(), -1000
@@ -73,7 +73,7 @@ isHolding := false
 }
 
 ; -------------------------
-; Ctrl + Enter → Ctrl + 마우스 왼클릭
+; Ctrl + Enter → Ctrl + 클릭
 ^Enter:: {
     Send "{Ctrl Down}{LButton Down}"
     KeyWait "Enter"
@@ -89,7 +89,7 @@ isHolding := false
 ; -------------------------
 ; Win + Page Up
 #PgUp:: {
-    global enterPressTime, isHolding
+    global enterPressTime
     enterPressTime := A_TickCount
     Send "{LButton Down}"
 }
@@ -110,7 +110,7 @@ isHolding := false
 }
 
 ; -------------------------
-; 실제 마우스 클릭 시 홀드 해제
+; 실제 마우스 클릭 → 홀드 해제
 ~LButton:: {
     global isHolding
     if (isHolding) {
@@ -121,7 +121,8 @@ isHolding := false
     }
 }
 
-; Esc로도 홀드 해제
+; -------------------------
+; Esc → 홀드 중이면 해제 / 아니면 원래 Esc 그대로
 ~Esc:: {
     global isHolding
     if (isHolding) {
