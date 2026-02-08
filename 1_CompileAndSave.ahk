@@ -12,10 +12,10 @@
     if isUE
     {
         ToolTip("컴파일 후 저장")
-        SetTimer(() => ToolTip(), -700)  ; 0.7초 후 ToolTip 제거
+        SetTimer(() => ToolTip(), -600)  ; 0.6초 후 ToolTip 제거
 
         SendInput("{F7}")   ; Compile
-        Sleep(200)
+        Sleep(250)
         Send("^s")          ; Save
     }
     else

@@ -1,11 +1,14 @@
-1) Get-ChildItem -Recurse -File | Select-String "\^LButton" | Select-Object -ExpandProperty Path -Unique
+1) 
+Get-ChildItem -Recurse -File | Select-String "\^LButton" | Select-Object -ExpandProperty Path -Unique
 
 
-2) Get-ChildItem -Recurse -Filter *.ahk | Select-String "esc"
+2) 
+Get-ChildItem -Recurse -Filter *.ahk | Select-String "!lbutton"
 
 
 
-3) Get-ChildItem -Recurse -Filter *.ahk |
+3) 
+Get-ChildItem -Recurse -Filter *.ahk |
   Select-String '^\s*[~$^+#!<>]*RButton\s*::' |
   Select-Object -ExpandProperty Path -Unique
 

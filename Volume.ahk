@@ -28,3 +28,15 @@ ShowVolumeTip(text) {
     Send "{Volume_Down}"
     ShowVolumeTip("🔉 Volume Down")
 }
+
+; Win + Shift + - → 볼륨 다운
+#+-:: {
+    Send "{Volume_Down}"
+    ShowVolumeTip("🔉 Volume Down")
+}
+
+; Win + Shift + + → 볼륨 업
+#+=:: {
+    Send "{Volume_Up}"
+    ShowVolumeTip("🔊 Volume Up")
+}
