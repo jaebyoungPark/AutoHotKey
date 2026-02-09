@@ -48,7 +48,11 @@
         Send("!{Numpad1}")
         return
     }
-    SendInput("{WheelDown 4}")
+
+    SendInput("{WheelUp 4}")
+
+    ToolTip("▲ Scroll Up")
+    SetTimer(() => ToolTip(), -400)
 }
 
 ; ========================================
@@ -64,9 +68,12 @@
         Send("!{Numpad2}")
         return
     }
-    SendInput("{WheelUp 4}")
-}
 
+    SendInput("{WheelDown 4}")
+
+    ToolTip("▼ Scroll Down")
+    SetTimer(() => ToolTip(), -400)
+}
 ; ========================================
 ; Alt + PgDn → 휠 다운 4번
 ; ========================================
