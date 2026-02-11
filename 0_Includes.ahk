@@ -34,7 +34,7 @@
 #Include VS_LeftOrRightWithShift.ahk
 #Include VS_HomeEnd.ahk
 #Include VS_LineSelect.ahk
-#Include VS_DeleteAndAdd).ahk
+#Include VS_DeleteAndAddSameThing.ahk
 
 
 
