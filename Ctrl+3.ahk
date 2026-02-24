@@ -11,7 +11,7 @@ HotkeyList := ["^3"]
         return
 
     ; 1. print t 입력
-    SendInput("print t")
+    SendInput("print text")
     Sleep(30)
 
     ; 2. Enter

@@ -3,7 +3,7 @@ Get-ChildItem -Recurse -File | Select-String "\^LButton" | Select-Object -Expand
 
 
 2) 
-Get-ChildItem -Recurse -Filter *.ahk | Select-String "!lbutton"
+Get-ChildItem -Recurse -Filter *.ahk | Select-String "RButton"
 
 
 

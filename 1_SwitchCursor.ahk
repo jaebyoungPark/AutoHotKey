@@ -13,12 +13,15 @@
     myGui.BackColor := "Yellow"
     myGui.SetFont("s50 cBlack bold", "Arial")  ; 크기 50
     myGui.Add("Text", "BackgroundRed cBlack", "  Here  ")
-    myGui.Show("x" . (x - 80) . " y" . (y - 30) . " NoActivate")
+    myGui.Show("x" . (x - 80) . " y" . (y - 30) . " NoActivate") 
     
     SetTimer () => myGui.Destroy(), -150
 }
 
 
-#':: {
-    SendInput "#'"
-}
+;#':: {
+;    SendInput "#'"
+;}
+
+
+

@@ -35,7 +35,8 @@ HotKeyList := [
 	"#Numpad5", "#Numpad4", "#Numpad1",
 	"+Delete", "+End",
 	"!Up", "!Down", 
-	"!Numpad1", "!Numpad2", "#+-", "#+=:", "#'", "+!'", "+!;"
+	"!Numpad1", "!Numpad2", "#+-", "#+=:", "#'", "+!'", "+!;",
+	"RShift", "~F2"
 ]
 
 ;, "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음

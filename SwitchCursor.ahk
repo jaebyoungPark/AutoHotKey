@@ -39,7 +39,7 @@ ShowHereGUI() {
 ; =============================
 ; RButton 핫키
 ; =============================
-RButton:: { 
+$RButton:: { 
     start := A_TickCount 
     MouseGetPos &sx, &sy 
     isDrag := false 
@@ -58,9 +58,9 @@ RButton:: {
  
     ; 드래그 판정 시 
     if (isDrag) { 
-        Send "{RButton Down}" 
-        KeyWait "RButton" 
-        Send "{RButton Up}" 
+Click "Right Down"
+KeyWait "RButton"
+Click "Right Up"
         return 
     } 
  
