@@ -1,14 +1,18 @@
 ﻿#Requires AutoHotkey v2
 
-HotkeyList := ["$MButton"]
 
 $MButton:: {
-    start := A_TickCount  ; 버튼 누른 시각 기록
-    KeyWait("MButton")    ; 버튼 떼기까지 대기
+    start := A_TickCount
+    KeyWait("MButton")
 
-    elapsed := (A_TickCount - start)/1000  ; 누른 시간 계산 (초 단위)
+    elapsed := (A_TickCount - start)/1000
 
-    title := WinGetTitle("A")
+    ; --- 활성 창이 없을 경우 대비 ---
+    try title := WinGetTitle("A")
+    catch {
+        Click("M")   ; 창 없으면 그냥 기본 동작
+        return
+    }
 
     ; ------------------------------
     ; Udemy 환경
@@ -27,7 +31,6 @@ $MButton:: {
             Send "N"
             Sleep 50
             Send "E"
- 
             return
         }
     }

@@ -1,11 +1,50 @@
-﻿; =========================
-; F2 즉시 Win + ' 입력
-; =========================
+﻿F2::
+{
+    CoordMode "Mouse", "Screen"
 
-F2:: {
-    SendEvent "#'"
+    ; 현재 마우스 위치 얻기
+    MouseGetPos &mouseX, &mouseY
+
+    ; 현재 모니터 개수
+    monitorCount := MonitorGetCount()
+
+    currentMonitor := 0
+
+    ; 현재 마우스가 있는 모니터 찾기
+    Loop monitorCount
+    {
+        MonitorGet A_Index, &left, &top, &right, &bottom
+
+        if (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom)
+        {
+            currentMonitor := A_Index
+            break
+        }
+    }
+
+    if (currentMonitor = 0)
+        return
+
+    ; 다음 모니터 번호 계산 (듀얼 기준이면 1↔2)
+    nextMonitor := currentMonitor = 1 ? 2 : 1
+
+    ; 다음 모니터 정보 가져오기
+    MonitorGet nextMonitor, &nLeft, &nTop, &nRight, &nBottom
+
+    ; 현재 모니터 정보 다시 가져오기
+    MonitorGet currentMonitor, &cLeft, &cTop, &cRight, &cBottom
+
+    ; 현재 모니터 내 상대 비율 계산
+    relX := (mouseX - cLeft) / (cRight - cLeft)
+    relY := (mouseY - cTop) / (cBottom - cTop)
+
+    ; 다음 모니터의 같은 비율 위치 계산
+    newX := nLeft + relX * (nRight - nLeft)
+    newY := nTop + relY * (nBottom - nTop)
+
+    ; 마우스 이동
+    MouseMove newX, newY, 0
 }
-
 
 ; =========================
 ; F3 더블클릭 전용
