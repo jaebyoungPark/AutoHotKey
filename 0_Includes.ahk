@@ -31,7 +31,7 @@
 ;======================================
 ;Visual Studio
 ;======================================
-#Include VS_LeftOrRight_New.ahk
+#Include VS_LeftOrRight.ahk
 #Include VS_LeftOrRightWithShift.ahk
 #Include VS_HomeEnd.ahk
 #Include VS_LineSelect.ahk
