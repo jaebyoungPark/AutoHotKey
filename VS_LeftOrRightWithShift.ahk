@@ -10,6 +10,12 @@ ShowMoveTip(msg) {
 ; ==============================
 +!LButton::
 {
+    ; Unreal / VS 환경 체크 (현재 비활성화)
+    ; if !WinActive("ahk_exe devenv.exe") {
+    ;     Send "+!{LButton}"
+    ;     return
+    ; }
+
     start := A_TickCount
     KeyWait "LButton"
     elapsed := (A_TickCount - start) / 1000.0
@@ -33,6 +39,12 @@ ShowMoveTip(msg) {
 ; ==============================
 +!RButton::
 {
+    ; Unreal / VS 환경 체크 (현재 비활성화)
+    ; if !WinActive("ahk_exe devenv.exe") {
+    ;     Send "+!{RButton}"
+    ;     return
+    ; }
+
     start := A_TickCount
     KeyWait "RButton"
     elapsed := (A_TickCount - start) / 1000.0
@@ -56,6 +68,12 @@ ShowMoveTip(msg) {
 ; ==============================
 !+Left::
 {
+    ; Unreal / VS 환경 체크 (현재 비활성화)
+    ; if !WinActive("ahk_exe devenv.exe") {
+    ;     Send "!+{Left}"
+    ;     return
+    ; }
+
     start := A_TickCount
     KeyWait "Left"
     elapsed := (A_TickCount - start) / 1000.0
@@ -83,6 +101,12 @@ ShowMoveTip(msg) {
 ; ==============================
 !+Right::
 {
+    ; Unreal / VS 환경 체크 (현재 비활성화)
+    ; if !WinActive("ahk_exe devenv.exe") {
+    ;     Send "!+{Right}"
+    ;     return
+    ; }
+
     start := A_TickCount
     KeyWait "Right"
     elapsed := (A_TickCount - start) / 1000.0
