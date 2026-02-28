@@ -1,4 +1,4 @@
-﻿F2::
+﻿*F10::
 {
     CoordMode "Mouse", "Screen"
 
