@@ -49,38 +49,77 @@ ShowHereGUI() {
 ; =============================
 ; RButton 핫키
 ; =============================
-$RButton:: { 
-    start := A_TickCount 
-    MouseGetPos &sx, &sy 
-    isDrag := false 
- 
-    while GetKeyState("RButton", "P") { 
-        Sleep 10 
-        MouseGetPos &cx, &cy 
-        if (Abs(cx - sx) > 4 || Abs(cy - sy) > 4) { 
-            isDrag := true 
-            break 
-        } 
-        if ((A_TickCount - start) > 200) 
-            break 
-    } 
- 
-    if (isDrag) { 
+$RButton:: {
+    start := A_TickCount
+    MouseGetPos &sx, &sy
+    isDrag := false
+
+    ; 드래그 감지
+    while GetKeyState("RButton", "P") {
+        Sleep 10
+        MouseGetPos &cx, &cy
+        if (Abs(cx - sx) > 4 || Abs(cy - sy) > 4) {
+            isDrag := true
+            break
+        }
+        if ((A_TickCount - start) > 200)
+            break
+    }
+
+    if (isDrag) {
         Click "Right Down"
         KeyWait "RButton"
         Click "Right Up"
-        return 
-    } 
- 
-    KeyWait "RButton" 
-    elapsed := (A_TickCount - start) / 1000.0 
- 
-    if (elapsed < 0.20) { 
-        Send "{RButton}" 
-    } 
-    else if (elapsed < 0.55) { 
-        MoveMonitorWithGUI2()
-    } 
+        return
+    }
+
+    KeyWait "RButton"
+    elapsed := (A_TickCount - start) / 1000.0
+
+    if (elapsed < 0.20) {
+        Send "{RButton}"
+    }
+    else if (elapsed < 0.55) {
+        ; ======== 여기서 모니터 이동 실행 ========
+        global monitor1X, monitor1Y, monitor2X, monitor2Y
+
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+
+        currentMonitor := 0
+        Loop MonitorGetCount() {
+            MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+            if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
+                currentMonitor := A_Index
+                break
+            }
+        }
+        if currentMonitor = 0
+            return
+
+        ; 다음 모니터 결정
+        if currentMonitor = 1 {
+            monitor1X := mouseX
+            monitor1Y := mouseY
+            nextMonitor := 2
+        } else {
+            monitor2X := mouseX
+            monitor2Y := mouseY
+            nextMonitor := 1
+        }
+
+        MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
+
+        ; 마우스 이동
+        if nextMonitor = 2 {
+            MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
+        } else if nextMonitor = 1 {
+            if monitor1X != 0 && monitor1Y != 0
+                MouseMove(monitor1X, monitor1Y, 0)
+            else
+                MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
+        }
+    }
 }
 
 ; =============================
