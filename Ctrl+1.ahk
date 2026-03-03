@@ -1,11 +1,24 @@
 ﻿#Requires AutoHotkey v2
-HotkeyList := ["$^1"]
+
 $^1::
 {
-    ; Visual Studio 에서만 동작
-    if !WinActive("ahk_exe devenv.exe")
-        return
-    
+; Visual Studio에서만 동작
+if !WinActive("ahk_exe devenv.exe")
+return
+
+StartTime := A_TickCount
+KeyWait "1"
+Elapsed := (A_TickCount - StartTime) / 1000.0
+
+if (Elapsed < 0.3)
+{
+    SendText 'UE_LOG(LogTemp, Warning, TEXT("Begin"));'
+    Send "{Left 38}"
+}
+else if (Elapsed >= 0.3 && Elapsed < 1)
+{
     SendText 'UE_LOG(LogTemp, Warning, TEXT(" : %s"), *.ToString());'
-    Send "{Left 23}"  ; 커서를 : 앞으로 이동
+    Send "{Left 23}"
+}
+
 }
