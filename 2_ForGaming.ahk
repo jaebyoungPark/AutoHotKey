@@ -1,51 +1,65 @@
-﻿*F10::
-{
-    CoordMode "Mouse", "Screen"
+﻿global monitor1X := 0
+global monitor1Y := 0
+global monitor2X := 0
+global monitor2Y := 0
 
-    ; 현재 마우스 위치 얻기
-    MouseGetPos &mouseX, &mouseY
+F2:: {
+    global monitor1X, monitor1Y, monitor2X, monitor2Y
 
-    ; 현재 모니터 개수
-    monitorCount := MonitorGetCount()
+    CoordMode("Mouse", "Screen")
+    MouseGetPos(&mouseX, &mouseY)
 
     currentMonitor := 0
 
-    ; 현재 마우스가 있는 모니터 찾기
-    Loop monitorCount
-    {
-        MonitorGet A_Index, &left, &top, &right, &bottom
-
-        if (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom)
-        {
+    Loop MonitorGetCount() {
+        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+        if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
             currentMonitor := A_Index
             break
         }
     }
 
-    if (currentMonitor = 0)
+    if currentMonitor = 0
         return
 
-    ; 다음 모니터 번호 계산 (듀얼 기준이면 1↔2)
-    nextMonitor := currentMonitor = 1 ? 2 : 1
+    ; 현재 위치 절대 좌표 그대로 저장
+    if currentMonitor = 1 {
+        monitor1X := mouseX
+        monitor1Y := mouseY
+        nextMonitor := 2
+    } else {
+        monitor2X := mouseX
+        monitor2Y := mouseY
+        nextMonitor := 1
+    }
 
-    ; 다음 모니터 정보 가져오기
-    MonitorGet nextMonitor, &nLeft, &nTop, &nRight, &nBottom
+    MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
 
-    ; 현재 모니터 정보 다시 가져오기
-    MonitorGet currentMonitor, &cLeft, &cTop, &cRight, &cBottom
-
-    ; 현재 모니터 내 상대 비율 계산
-    relX := (mouseX - cLeft) / (cRight - cLeft)
-    relY := (mouseY - cTop) / (cBottom - cTop)
-
-    ; 다음 모니터의 같은 비율 위치 계산
-    newX := nLeft + relX * (nRight - nLeft)
-    newY := nTop + relY * (nBottom - nTop)
-
-    ; 마우스 이동
-    MouseMove newX, newY, 0
+    ; 다음 모니터 저장 위치로 이동, 없으면 중앙으로
+    if nextMonitor = 1 && monitor1X != 0 {
+        MouseMove(monitor1X, monitor1Y, 0)
+    } else if nextMonitor = 2 && monitor2X != 0 {
+        MouseMove(monitor2X, monitor2Y, 0)
+    } else {
+        ; 처음 이동시 중앙으로
+        centerX := nLeft + (nRight - nLeft) / 2
+        centerY := nTop + (nBottom - nTop) / 2
+        MouseMove(centerX, centerY, 0)
+    }
 }
 
+
+F4:: {
+    CoordMode("Mouse", "Screen")
+    MouseGetPos(&mouseX, &mouseY)
+    
+    Loop MonitorGetCount() {
+        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+        MsgBox("모니터 " A_Index ": Left=" mLeft " Top=" mTop " Right=" mRight " Bottom=" mBottom)
+    }
+    
+    MsgBox("현재 커서: X=" mouseX " Y=" mouseY)
+}
 ; =========================
 ; F3 더블클릭 전용
 ; =========================
