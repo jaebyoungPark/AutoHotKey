@@ -4,13 +4,12 @@ global monitor2X := 0
 global monitor2Y := 0
 
 F2:: {
-    global monitor1X, monitor1Y, monitor2X, monitor2Y
+       global monitor1X, monitor1Y, monitor2X, monitor2Y  ; <- 전역 변수 선언
 
     CoordMode("Mouse", "Screen")
-    MouseGetPos(&mouseX, &mouseY)
+    MouseGetPos &mouseX, &mouseY
 
     currentMonitor := 0
-
     Loop MonitorGetCount() {
         MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
         if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
@@ -18,11 +17,10 @@ F2:: {
             break
         }
     }
-
     if currentMonitor = 0
         return
 
-    ; 현재 위치 절대 좌표 그대로 저장
+    ; 다음 모니터 결정
     if currentMonitor = 1 {
         monitor1X := mouseX
         monitor1Y := mouseY
@@ -35,16 +33,14 @@ F2:: {
 
     MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
 
-    ; 다음 모니터 저장 위치로 이동, 없으면 중앙으로
-    if nextMonitor = 1 && monitor1X != 0 {
-        MouseMove(monitor1X, monitor1Y, 0)
-    } else if nextMonitor = 2 && monitor2X != 0 {
-        MouseMove(monitor2X, monitor2Y, 0)
-    } else {
-        ; 처음 이동시 중앙으로
-        centerX := nLeft + (nRight - nLeft) / 2
-        centerY := nTop + (nBottom - nTop) / 2
-        MouseMove(centerX, centerY, 0)
+    ; 마우스 이동
+    if nextMonitor = 2 {
+        MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
+    } else if nextMonitor = 1 {
+        if monitor1X != 0 && monitor1Y != 0
+            MouseMove(monitor1X, monitor1Y, 0)
+        else
+            MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
     }
 }
 

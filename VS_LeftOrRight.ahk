@@ -21,9 +21,9 @@
         Send "{Left 5}"
     }
     else if (elapsed > 0.3 && elapsed <= 3) {
-        ToolTip "Left 10칸 이동"
+        ToolTip "Left 15칸 이동"
         SetTimer () => ToolTip(), -800
-        Send "{Left 10}"
+        Send "{Left 15}"
     }
 }
 
@@ -50,8 +50,8 @@
         Send "{Right 5}"
     }
     else if (elapsed > 0.3 && elapsed <= 3) {
-        ToolTip "Right 10칸 이동"
+        ToolTip "Right 15칸 이동"
         SetTimer () => ToolTip(), -800
-        Send "{Right 10}"
+        Send "{Right 15}"
     }
 }
