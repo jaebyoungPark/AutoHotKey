@@ -22,7 +22,7 @@ ShowMoveTip(msg) {
         ShowMoveTip("← 5칸 이동")
         Send "+{Left 5}"
     }
-    else if (elapsed <= 0.55) {
+    else if (elapsed <= 0.5) {
         ShowMoveTip("← 10칸 이동")
         Send "+{Left 10}"
     }
@@ -49,7 +49,7 @@ ShowMoveTip(msg) {
         ShowMoveTip("→ 5칸 이동")
         Send "+{Right 5}"
     }
-    else if (elapsed <= 0.55) {
+    else if (elapsed <= 0.5) {
         ShowMoveTip("→ 10칸 이동")
         Send "+{Right 10}"
     }
@@ -77,7 +77,7 @@ ShowMoveTip(msg) {
         Loop 5
             Send "!+{Left}"
     }
-    else if (elapsed <= 0.55) {
+    else if (elapsed <= 0.5) {
         ShowMoveTip("단어 ← 10칸")
         Loop 10
             Send "!+{Left}"
@@ -107,7 +107,7 @@ ShowMoveTip(msg) {
         Loop 5
             Send "!+{Right}"
     }
-    else if (elapsed <= 0.55) {
+    else if (elapsed <= 0.5) {
         ShowMoveTip("단어 → 10칸")
         Loop 10
             Send "!+{Right}"
