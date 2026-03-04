@@ -20,10 +20,16 @@
         SetTimer () => ToolTip(), -800
         Send "{Left 5}"
     }
-    else if (elapsed > 0.3 && elapsed <= 3) {
+    else if (elapsed > 0.3 && elapsed <= 0.6) {
         ToolTip "Left 12칸 이동"
         SetTimer () => ToolTip(), -800
         Send "{Left 12}"
+    }
+    else if (elapsed > 0.6 && elapsed <= 3) { ; 0.6~3초 구간
+        ToolTip "Left 30칸 이동"
+        SetTimer () => ToolTip(), -800
+        Send "{Left 30}"
+        return
     }
 }
 
@@ -49,9 +55,15 @@
         SetTimer () => ToolTip(), -800
         Send "{Right 5}"
     }
-    else if (elapsed > 0.3 && elapsed <= 3) {
+    else if (elapsed > 0.3 && elapsed <= 0.6) {
         ToolTip "Right 12칸 이동"
         SetTimer () => ToolTip(), -800
         Send "{Right 12}"
+    }
+    else if (elapsed > 0.6 && elapsed <= 3) { ; 0.6~3초 구간
+        ToolTip "Right 30칸 이동"
+        SetTimer () => ToolTip(), -800
+        Send "{Right 30}"
+        return
     }
 }
