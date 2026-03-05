@@ -12,8 +12,8 @@ $^1::
 
     if (Elapsed < 0.3)
     {
-        SendText 'AB_LOG(LogTemp, Warning, TEXT("Begin"));'
-        Send "{Left 38}"
+        SendText 'AB_LOG(LogTemp, Warning, TEXT(""));'
+        Send "{Left 33}"
     }
     else if (Elapsed >= 0.3 && Elapsed < 0.55)
     {
