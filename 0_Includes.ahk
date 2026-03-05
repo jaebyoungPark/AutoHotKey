@@ -81,6 +81,7 @@
 #Include Ctrl+3.ahk
 #Include Ctrl+4.ahk
 #Include Ctrl+C.ahk
+#Include Ctrl+T.ahk
 
 ;+! + 숫자
 #Include cout.ahk
