@@ -9,34 +9,35 @@ MySuspended := false
 
 
 HotKeyList := [
-    "RButton", "$XButton1", "^+WheelUp","^+WheelDown","$^1", "$^2",
-    "^3", "^4", "$^+=", "^!+p", "^!+o", "$^+a", "^+1","^+2","^+3","^+4",
-    "!WheelUp", "!WheelDown", "XButton2", "!LButton", "!RButton",
-    "^!WheelUp", "^!WheelDown", "$MButton", "^+F10", "+!1",
-    "+WheelUp", "+WheelDown",
-    "!Left", "!Right", "!+Right", "!+Left",
-    "+!LButton", "+!RButton", "^LButton",
-    "^Left", "^Right", "^+Right", "^+Left",
-    "#,", "#.", "#[", "#]", "#Left", "#Right", "#Up", "#Down",
-    "#^Left", "#^Right", "#^Up", "#^Down",
-    "~LButton", "^!Enter Up",
-    "~LWin", "~RWin", "Esc",
-    "#\", "#0", "#NumpadEnter Up",
-    "#PgDn", "#PgUp",
-    "^!Up", "^!Down",
-    "PgUp", "PgDn", "^PgDown",
-    "^NumpadEnter", "^Enter",
-    "$Left", "$Right",
-    "^!NumpadEnter", "!NumpadEnter",
-    "Up", "Down", "Left", "Right",
-    "#LButton", "+!0",
-    "#NumpadEnter", "^NumpadEnter",
-	"#End", "#Delete", 
-	"#Numpad5", "#Numpad4", "#Numpad1",
-	"+Delete", "+End",
-	"!Up", "!Down", 
-	"!Numpad1", "!Numpad2", "#+-", "#+=:", "#'", "+!'", "+!;",
-	"RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o"
-]
+    ; 마우스 버튼
+    "RButton", "XButton1", "XButton2", "MButton", 
+    "LButton", "RButton", "+!LButton", "+!RButton", "^LButton", "~LButton",
 
+    ; 휠
+    "^+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", 
+    "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
+
+    ; 키보드 숫자 / 심볼
+    "$^1", "$^2", "^3", "^4", "^+1", "^+2", "^+3", "^+4",
+    "$^+=", "^!+p", "^!+o", "$^+a",
+    "#+-", "#+=:", "#'", "+!'", "+!;",
+
+    ; 방향키
+    "Left", "Right", "Up", "Down", 
+    "!Left", "!Right", "!+Right", "!+Left", 
+    "^Left", "^Right", "^+Right", "^+Left", 
+    "#Left", "#Right", "#Up", "#Down", 
+    "#^Left", "#^Right", "#^Up", "#^Down",
+
+    ; Page / Numpad
+    "PgUp", "PgDn", "^PgDown", 
+    "#NumpadEnter", "^NumpadEnter", "^!NumpadEnter", "!NumpadEnter",
+    "#Numpad5", "#Numpad4", "#Numpad1",
+
+    ; 기타 키
+    "#,", "#.", "#[", "#]", "#End", "#Delete", "+Delete", "+End",
+    "!Up", "!Down", "!Numpad1", "!Numpad2",
+    "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
+    "#1"
+]
 ;, "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음

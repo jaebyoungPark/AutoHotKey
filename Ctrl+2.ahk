@@ -23,8 +23,8 @@ $^2::
     if (elapsed < 0.2)
     {
         ShowCtrl2Tip("⌨ *.ToString() 입력")
-        SendText "*.ToString(), "
-        Send "{Left 13}"
+        SendText ", *.ToString()" 
+        Send "{Left 11}"
         return
     }
 
@@ -32,8 +32,8 @@ $^2::
     if (elapsed <= 0.55)
     {
         ShowCtrl2Tip("⌨ [] : %s 입력")
-        SendText "[] : %s, "
-        Send "{Left 8}"
+        SendText ", [] : %s" 
+        Send "{Left 6}"
         return
     }
 }
