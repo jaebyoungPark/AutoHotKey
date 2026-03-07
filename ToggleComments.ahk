@@ -1,9 +1,5 @@
 ﻿#Requires AutoHotkey v2.0
 
-HotkeyList := ["^!WheelUp", "^!WheelDown"]
-
-#Requires AutoHotkey v2.0
-
 ; ----------------------------------
 ; 전역 상태 (주석 토글용)
 ; ----------------------------------
@@ -30,19 +26,19 @@ global toggleState := true
 }
 
 ; ----------------------------------
-; 주석 토글 함수
+; 주석 토글 함수 (Ctrl + /)
 ; ----------------------------------
 ToggleComment() {
     ShowTip("주석 Toggle")
-    SendInput("^k^c")  ; VS 단축키: 주석
+    SendInput "^/"  ; VS 단축키: Ctrl + /
 }
 
 ; ----------------------------------
-; 주석 해제 함수
+; 주석 해제 함수 (Ctrl + /)
 ; ----------------------------------
 Uncomment() {
     ShowTip("주석 해제")
-    SendInput("^k^u")  ; VS 단축키: 주석 해제
+    SendInput "^/"  ; VS 단축키: Ctrl + / (토글이기 때문에 같은 키 사용)
 }
 
 ; ----------------------------------
