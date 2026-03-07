@@ -10,27 +10,43 @@
     KeyWait "Left"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.20) {
+    if (elapsed <= 0.15) {
         ToolTip "Alt+Left (기본 동작)"
         SetTimer () => ToolTip(), -800
         Send "!{Left}"
-    }
-    else if (elapsed > 0.20 && elapsed <= 0.3) {
-        ToolTip "Left 5칸 이동"
-        SetTimer () => ToolTip(), -800
-        Send "{Left 5}"
-    }
-    else if (elapsed > 0.3 && elapsed <= 0.5) {
-        ToolTip "Left 12칸 이동"
-        SetTimer () => ToolTip(), -800
-        Send "{Left 12}"
-    }
-    else if (elapsed > 0.5 && elapsed <= 3) { ; 0.5~3초 구간
-        ToolTip "Left 30칸 이동"
-        SetTimer () => ToolTip(), -800
-        Send "{Left 30}"
         return
     }
+
+    minSteps := 3
+    maxSteps := 35
+    maxElapsed := 1.0
+
+    if (elapsed > maxElapsed)
+        elapsed := maxElapsed
+
+    steps := minSteps
+
+    ; 0.15 ~ 0.3 구간 (0.04 단위)
+    if (elapsed <= 0.3) {
+        increments := Floor((elapsed - 0.15) / 0.04)
+        steps := minSteps + increments
+    }
+    else {
+        ; 0.15~0.3 구간에서 얻는 증가량
+        firstPart := Floor((0.3 - 0.15) / 0.04)
+
+        ; 0.3 이후 (0.035 단위)
+        increments := Floor((elapsed - 0.3) / 0.035)
+
+        steps := minSteps + firstPart + increments
+    }
+
+    if (steps > maxSteps)
+        steps := maxSteps
+
+    ToolTip "Left " steps "칸 이동"
+    SetTimer () => ToolTip(), -800
+    Send "{" "Left " steps "}"
 }
 
 ; --- Alt + Right Arrow ---
@@ -45,25 +61,36 @@
     KeyWait "Right"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.20) {
+    if (elapsed <= 0.15) {
         ToolTip "Alt+Right (기본 동작)"
         SetTimer () => ToolTip(), -800
         Send "!{Right}"
-    }
-    else if (elapsed > 0.20 && elapsed <= 0.3) {
-        ToolTip "Right 5칸 이동"
-        SetTimer () => ToolTip(), -800
-        Send "{Right 5}"
-    }
-    else if (elapsed > 0.3 && elapsed <= 0.5) {
-        ToolTip "Right 12칸 이동"
-        SetTimer () => ToolTip(), -800
-        Send "{Right 12}"
-    }
-    else if (elapsed > 0.5 && elapsed <= 3) { ; 0.5~3초 구간
-        ToolTip "Right 30칸 이동"
-        SetTimer () => ToolTip(), -800
-        Send "{Right 30}"
         return
     }
+
+    minSteps := 3
+    maxSteps := 35
+    maxElapsed := 1.0
+
+    if (elapsed > maxElapsed)
+        elapsed := maxElapsed
+
+    steps := minSteps
+
+    if (elapsed <= 0.3) {
+        increments := Floor((elapsed - 0.15) / 0.04)
+        steps := minSteps + increments
+    }
+    else {
+        firstPart := Floor((0.3 - 0.15) / 0.04)
+        increments := Floor((elapsed - 0.3) / 0.035)
+        steps := minSteps + firstPart + increments
+    }
+
+    if (steps > maxSteps)
+        steps := maxSteps
+
+    ToolTip "Right " steps "칸 이동"
+    SetTimer () => ToolTip(), -800
+    Send "{" "Right " steps "}"
 }

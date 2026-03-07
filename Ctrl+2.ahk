@@ -1,18 +1,39 @@
 ﻿#Requires AutoHotkey v2
 
-
+ShowCtrl2Tip(msg)
+{
+    ToolTip msg
+    SetTimer () => ToolTip(), -700
+}
 
 $^2::
 {
-    if WinActive("ahk_exe devenv.exe")  ; Visual Studio만 대상
+    ; Visual Studio 아닐 때 → 기본 Ctrl+2
+    if !WinActive("ahk_exe devenv.exe")
     {
-        ; if () 블록 입력
-        SendText "if ()`n{`n}`n"
-        
-        ; 커서 위로 3번
-        Send "{Up 3}"
-        
-        ; 커서 오른쪽으로 4번
-        Send "{Right 4}"
+        Send "^2"
+        return
+    }
+
+    start := A_TickCount
+    KeyWait "2"
+    elapsed := (A_TickCount - start) / 1000.0
+
+    ; 0.2초 미만 → *.ToString()
+    if (elapsed < 0.2)
+    {
+        ShowCtrl2Tip("⌨ *.ToString() 입력")
+        SendText "*.ToString(), "
+        Send "{Left 13}"
+        return
+    }
+
+    ; 0.2 ~ 0.55초 → [] : %s
+    if (elapsed <= 0.55)
+    {
+        ShowCtrl2Tip("⌨ [] : %s 입력")
+        SendText "[] : %s, "
+        Send "{Left 8}"
+        return
     }
 }

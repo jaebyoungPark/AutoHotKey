@@ -33,7 +33,7 @@
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
 #Include OpenMemory.ahk
-#Include RShift.ahk
+#Include RShiftToCaps.ahk
 
 
 ;======================================
@@ -82,6 +82,13 @@
 #Include Ctrl+4.ahk
 #Include Ctrl+C.ahk
 #Include Ctrl+T.ahk
+#Include Ctrl+M.ahk
+#Include Ctrl+F.ahk
+#Include Ctrl+I.ahk
+#Include Ctrl+U.ahk
+#Include Ctrl+P.ahk
+#Include Ctrl+O.ahk
+
 
 ;+! + 숫자
 #Include cout.ahk

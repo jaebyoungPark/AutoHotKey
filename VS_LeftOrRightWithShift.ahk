@@ -5,6 +5,27 @@ ShowMoveTip(msg) {
     SetTimer () => ToolTip(), -500
 }
 
+GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
+{
+    if (elapsed > maxElapsed)
+        elapsed := maxElapsed
+
+    if (elapsed <= 0.3) {
+        increments := Floor((elapsed - minElapsed) / 0.04)
+        steps := minSteps + increments
+    }
+    else {
+        firstPart := Floor((0.3 - minElapsed) / 0.04)
+        increments := Floor((elapsed - 0.3) / 0.035)
+        steps := minSteps + firstPart + increments
+    }
+
+    if (steps > maxSteps)
+        steps := maxSteps
+
+    return steps
+}
+
 ; ==============================
 ; Shift + Alt + Mouse Left
 ; ==============================
@@ -14,22 +35,22 @@ ShowMoveTip(msg) {
     KeyWait "LButton"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.20) {
+    minElapsed := 0.2
+    maxElapsed := 2.0
+    minSteps := 3
+    maxSteps := 35
+
+    if (elapsed <= minElapsed) {
         ShowMoveTip("← 1칸 이동")
         Send "+{Left}"
+        return
     }
-    else if (elapsed <= 0.3) {
-        ShowMoveTip("← 5칸 이동")
-        Send "+{Left 5}"
-    }
-    else if (elapsed <= 0.5) {
-        ShowMoveTip("← 10칸 이동")
-        Send "+{Left 10}"
-    }
-    else if (elapsed <= 2.0) {
-        ShowMoveTip("← 20칸 이동")
-        Send "+{Left 20}"
-    }
+
+    steps := GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
+
+    ShowMoveTip("← " steps "칸 이동")
+    Loop steps
+        Send "+{Left}"
 }
 
 ; ==============================
@@ -41,22 +62,22 @@ ShowMoveTip(msg) {
     KeyWait "RButton"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.20) {
+    minElapsed := 0.2
+    maxElapsed := 2.0
+    minSteps := 3
+    maxSteps := 35
+
+    if (elapsed <= minElapsed) {
         ShowMoveTip("→ 1칸 이동")
         Send "+{Right}"
+        return
     }
-    else if (elapsed <= 0.3) {
-        ShowMoveTip("→ 5칸 이동")
-        Send "+{Right 5}"
-    }
-    else if (elapsed <= 0.5) {
-        ShowMoveTip("→ 10칸 이동")
-        Send "+{Right 10}"
-    }
-    else if (elapsed <= 2.0) {
-        ShowMoveTip("→ 20칸 이동")
-        Send "+{Right 20}"
-    }
+
+    steps := GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
+
+    ShowMoveTip("→ " steps "칸 이동")
+    Loop steps
+        Send "+{Right}"
 }
 
 ; ==============================
@@ -68,25 +89,22 @@ ShowMoveTip(msg) {
     KeyWait "Left"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.20) {
+    minElapsed := 0.2
+    maxElapsed := 2.0
+    minSteps := 3
+    maxSteps := 35
+
+    if (elapsed <= minElapsed) {
         ShowMoveTip("단어 ← 1칸")
         Send "!+{Left}"
+        return
     }
-    else if (elapsed <= 0.3) {
-        ShowMoveTip("단어 ← 5칸")
-        Loop 5
-            Send "!+{Left}"
-    }
-    else if (elapsed <= 0.5) {
-        ShowMoveTip("단어 ← 10칸")
-        Loop 10
-            Send "!+{Left}"
-    }
-    else if (elapsed <= 2.0) {
-        ShowMoveTip("단어 ← 20칸")
-        Loop 20
-            Send "!+{Left}"
-    }
+
+    steps := GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
+
+    ShowMoveTip("단어 ← " steps "칸")
+    Loop steps
+        Send "!+{Left}"
 }
 
 ; ==============================
@@ -98,23 +116,20 @@ ShowMoveTip(msg) {
     KeyWait "Right"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.20) {
+    minElapsed := 0.2
+    maxElapsed := 2.0
+    minSteps := 3
+    maxSteps := 35
+
+    if (elapsed <= minElapsed) {
         ShowMoveTip("단어 → 1칸")
         Send "!+{Right}"
+        return
     }
-    else if (elapsed <= 0.3) {
-        ShowMoveTip("단어 → 5칸")
-        Loop 5
-            Send "!+{Right}"
-    }
-    else if (elapsed <= 0.5) {
-        ShowMoveTip("단어 → 10칸")
-        Loop 10
-            Send "!+{Right}"
-    }
-    else if (elapsed <= 2.0) {
-        ShowMoveTip("단어 → 20칸")
-        Loop 20
-            Send "!+{Right}"
-    }
+
+    steps := GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
+
+    ShowMoveTip("단어 → " steps "칸")
+    Loop steps
+        Send "!+{Right}"
 }

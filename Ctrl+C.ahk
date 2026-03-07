@@ -23,10 +23,15 @@ $^c::
         ShowTip2("📋 복사 실행 (" Round(elapsed,2) "s)")
         Send "^c"
     }
-    else if (elapsed <= 0.55)
+    else if (elapsed <= 0.35)
     {
         ShowTip2("⌨ Character 입력 (" Round(elapsed,2) "s)")
         SendText "Character"
+    }
+    else if (elapsed <= 0.55)
+    {
+        ShowTip2("🏷 Category 입력 (" Round(elapsed,2) "s)")
+        SendText "Category = "
     }
     else
     {
