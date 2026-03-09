@@ -12,8 +12,8 @@ global MoveStepNormalFast := 7.5
 global NormalAccelTime   := 350
 
 ; ▶ Win + Ctrl (고속 가속) ← 원래 Alt 기능
-global MoveStepFastSlow := 11
-global MoveStepFastFast := 25
+global MoveStepFastSlow := 9
+global MoveStepFastFast := 20
 global FastAccelTime   := 250
 global MoveIntervalFast := 8
 

@@ -33,7 +33,8 @@
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
 #Include OpenMemory.ahk
-#Include RShift.ahk
+#Include RShift+Dir.ahk
+
 
 
 ;======================================
