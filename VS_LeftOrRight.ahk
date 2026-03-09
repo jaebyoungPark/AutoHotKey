@@ -2,7 +2,7 @@
 !Left::
 {
     if !WinActive("ahk_exe devenv.exe") {
-        Send "{Blind}!{Left}"
+        Send "{Blind}!{Left}"  ; VS 외에서는 기존 동작
         return
     }
 
@@ -10,50 +10,27 @@
     KeyWait "Left"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.15) {
-        ToolTip "Alt+Left (기본 동작)"
-        SetTimer () => ToolTip(), -800
-        Send "!{Left}"
-        return
-    }
-
-    minSteps := 3
-    maxSteps := 35
-    maxElapsed := 1.0
-
-    if (elapsed > maxElapsed)
-        elapsed := maxElapsed
-
-    steps := minSteps
-
-    ; 0.15 ~ 0.3 구간 (0.04 단위)
-    if (elapsed <= 0.3) {
-        increments := Floor((elapsed - 0.15) / 0.04)
-        steps := minSteps + increments
+    if (elapsed <= 0.2) {
+        ; 0.2초 이하 → 5칸 왼쪽 이동
+        Send "{Left 5}"
+        ToolTip "Left 5칸 이동"
     }
     else {
-        ; 0.15~0.3 구간에서 얻는 증가량
-        firstPart := Floor((0.3 - 0.15) / 0.04)
-
-        ; 0.3 이후 (0.035 단위)
-        increments := Floor((elapsed - 0.3) / 0.035)
-
-        steps := minSteps + firstPart + increments
+        ; 0.2초 초과 → 기존 Alt+Left
+        Send "!{Left}"
+        ToolTip "Alt+Left (기본 동작)"
     }
 
-    if (steps > maxSteps)
-        steps := maxSteps
-
-    ToolTip "Left " steps "칸 이동"
+    ; 0.8초 후에 툴팁 제거
     SetTimer () => ToolTip(), -800
-    Send "{" "Left " steps "}"
+    return
 }
 
 ; --- Alt + Right Arrow ---
 !Right::
 {
     if !WinActive("ahk_exe devenv.exe") {
-        Send "{Blind}!{Right}"
+        Send "{Blind}!{Right}"  ; VS 외에서는 기존 동작
         return
     }
 
@@ -61,36 +38,18 @@
     KeyWait "Right"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed <= 0.15) {
-        ToolTip "Alt+Right (기본 동작)"
-        SetTimer () => ToolTip(), -800
-        Send "!{Right}"
-        return
-    }
-
-    minSteps := 3
-    maxSteps := 35
-    maxElapsed := 1.0
-
-    if (elapsed > maxElapsed)
-        elapsed := maxElapsed
-
-    steps := minSteps
-
-    if (elapsed <= 0.3) {
-        increments := Floor((elapsed - 0.15) / 0.04)
-        steps := minSteps + increments
+    if (elapsed <= 0.2) {
+        ; 0.2초 이하 → 5칸 오른쪽 이동
+        Send "{Right 5}"
+        ToolTip "Right 5칸 이동"
     }
     else {
-        firstPart := Floor((0.3 - 0.15) / 0.04)
-        increments := Floor((elapsed - 0.3) / 0.035)
-        steps := minSteps + firstPart + increments
+        ; 0.2초 초과 → 기존 Alt+Right
+        Send "!{Right}"
+        ToolTip "Alt+Right (기본 동작)"
     }
 
-    if (steps > maxSteps)
-        steps := maxSteps
-
-    ToolTip "Right " steps "칸 이동"
+    ; 0.8초 후에 툴팁 제거
     SetTimer () => ToolTip(), -800
-    Send "{" "Right " steps "}"
+    return
 }
