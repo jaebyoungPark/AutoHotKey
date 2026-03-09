@@ -9,7 +9,7 @@ MySuspended := false
 
 
 HotKeyList := [
-    ; 마우스 버튼
+    ; 기존 마우스 버튼
     "RButton", "XButton1", "XButton2", "MButton", 
     "LButton", "RButton", "+!LButton", "+!RButton", "^LButton", "~LButton",
 
@@ -20,7 +20,7 @@ HotKeyList := [
     ; 키보드 숫자 / 심볼
     "$^1", "$^2", "^3", "^4", "^+1", "^+2", "^+3", "^+4",
     "$^+=", "^!+p", "^!+o", "$^+a",
-    "#+-", "#+=:", "#'", "+!'", "+!;",
+    "#+-", "#+=:", "#'", "+!'", "+!;", 
 
     ; 방향키
     "Left", "Right", "Up", "Down", 
@@ -38,6 +38,9 @@ HotKeyList := [
     "#,", "#.", "#[", "#]", "#End", "#Delete", "+Delete", "+End",
     "!Up", "!Down", "!Numpad1", "!Numpad2",
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
-    "#1"
+    "#1",
+
+    ; 🔹 RShift + Z/X/C/V (마우스 이동 핫키)
+    "RShift & z", "RShift & x", "RShift & c", "RShift & v"
 ]
 ;, "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
