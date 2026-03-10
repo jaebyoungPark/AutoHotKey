@@ -37,6 +37,7 @@
 
 #Include RShift_MoveCursor.ahk
 #Include RShift_MoveMouseCursor.ahk
+#Include RShift_Delete.ahk
 
 
 ;======================================
