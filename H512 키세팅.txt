@@ -1,0 +1,12 @@
+1. 왼쪽 버튼
+2. 오른쪽 버튼
+3. 미들 버튼
+4. 앞으로
+5. 뒤로
+6. Ctrl + Shift + F10
+7. Ctrl + Shift + F9
+8. Ctrl + Shift + A
+9. Ctrl + Shift + =
+10. Ctrl + Shift + F11
+11. Ctrl + Alt + Shift + P
+12. Ctrl + Alt + Shift + O
