@@ -63,11 +63,19 @@ MoveMouseRShift()
 
         elapsed := A_TickCount - startTime
 
-        ; --- 기본 속도 결정 ---
-        baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow : MoveStepNormalFast
+        ; --- 기본 속도 결정 (Shift + Win 조합 초기 속도 빠르게) ---
+        if (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
+        {
+            ; Win 누르면 초기 속도도 빠르게 시작
+            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalFast : MoveStepNormalFast * 2
+        }
+        else
+        {
+            ; 일반 RShift 이동
+            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow : MoveStepNormalFast
+        }
 
-        ; Win 누르면 속도 2배
-        step := GetKeyState("LWin", "P") || GetKeyState("RWin", "P") ? baseStep * 2 : baseStep
+        step := baseStep
 
         ; 대각선 이동 감지
         isDiagonal := (isLeft || isRight) && (isUp || isDown)
@@ -103,17 +111,6 @@ MoveMouseRShift()
         ; 커서 이동
         DllCall("SetCursorPos", "Int", x, "Int", y)
 
-        ; -------------------------
-        ; 🔹 툴팁으로 디버깅 문구 표시
-        direction := (isLeft ? "Left " : "") 
-        direction .= (isRight ? "Right " : "")
-        direction .= (isUp ? "Up " : "")
-        direction .= (isDown ? "Down " : "")
-        speed := (step = baseStep) ? "Normal" : "Fast"
-        ToolTip "Direction: " direction "`nSpeed: " speed
-        ; -------------------------
-
         Sleep MoveInterval
     }
-    ToolTip  ; 종료 시 툴팁 제거
 }

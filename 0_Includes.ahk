@@ -92,8 +92,6 @@
 #Include Ctrl+P.ahk
 
 
-;+! + 숫자
-#Include cout.ahk
 
 
 ;======================================
