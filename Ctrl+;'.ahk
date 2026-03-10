@@ -4,11 +4,11 @@
 ; ==============================
 ; 툴팁 표시 함수
 ; ==============================
-ShowTooltip(msg) {
+ShowMyTooltip(msg) {
     ToolTip msg
-    SetTimer RemoveTooltip, -800
+    SetTimer RemoveMyTooltip, -800
 }
-RemoveTooltip() {
+RemoveMyTooltip() {
     ToolTip
 }
 
@@ -18,12 +18,12 @@ RemoveTooltip() {
 ; ==============================
 ^`;:: {
     Send("{Ctrl Down}{Left}{Ctrl Up}")
-    ShowTooltip("Ctrl + Left")
+    ShowMyTooltip("⬅ 단어 이동 (Ctrl + Left)")
 }
 
 ^+`;:: {
     Send("{Ctrl Down}{Shift Down}{Left}{Shift Up}{Ctrl Up}")
-    ShowTooltip("Ctrl + Shift + Left (블록 선택)")
+    ShowMyTooltip("⬅ 단어 블록 선택 (Ctrl + Shift + Left)")
 }
 
 ; ==============================
@@ -32,10 +32,10 @@ RemoveTooltip() {
 ; ==============================
 ^SC028:: {
     Send("{Ctrl Down}{Right}{Ctrl Up}")
-    ShowTooltip("Ctrl + Right")
+    ShowMyTooltip("➡ 단어 이동 (Ctrl + Right)")
 }
 
 ^+SC028:: {
     Send("{Ctrl Down}{Shift Down}{Right}{Shift Up}{Ctrl Up}")
-    ShowTooltip("Ctrl + Shift + Right (블록 선택)")
+    ShowMyTooltip("➡ 단어 블록 선택 (Ctrl + Shift + Right)")
 }
