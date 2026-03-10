@@ -1,14 +1,12 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-global RShift_MoveCursor := false
-
 ; ==============================
-; 🔧 툴팁 관련 함수
+; 🔹 툴팁 함수
 ; ==============================
 ShowTooltip(msg) {
     ToolTip msg
-    SetTimer RemoveTooltip, -800  ; 0.8초 후 툴팁 제거
+    SetTimer RemoveTooltip, -800
 }
 
 RemoveTooltip() {
@@ -16,7 +14,7 @@ RemoveTooltip() {
 }
 
 ; ==============================
-; 🔧 방향키 이동 함수
+; 🔹 방향키 이동 함수
 ; ==============================
 SendArrow(key, amount) {
     Send "{" key " " amount "}"
@@ -24,16 +22,62 @@ SendArrow(key, amount) {
 }
 
 ; ==============================
-; ▶ RShift + 방향키 단축키
+; 🔹 시간 기반 처리 함수
 ; ==============================
-; --- 1칸 이동 ---
-RShift & a:: SendArrow("Left", 1)
-RShift & s:: SendArrow("Right", 1)
-RShift & d:: SendArrow("Up", 1)
-RShift & f:: SendArrow("Down", 1)
+HandleShiftKey(key, shortAction, longAction) {
+    start := A_TickCount
+    while GetKeyState("RShift", "P") && GetKeyState(key, "P")
+        Sleep 10
 
-; --- 3칸 이동 ---
-RShift & q:: SendArrow("Left", 3)
-RShift & w:: SendArrow("Right", 3)
-RShift & e:: SendArrow("Up", 3)
-RShift & r:: SendArrow("Down", 3)
+    elapsed := (A_TickCount - start) / 1000
+    if (elapsed < 0.2)
+        shortAction()
+    else
+        longAction()
+}
+
+; ==============================
+; ▶ RShift + 1칸 이동 (a/s/d/f)
+; ==============================
+RShift & a:: HandleShiftKey("a"
+    , () => SendArrow("Left", 1)
+    , () => Send("{Home}")        ; 0.2초 이상: Home
+)
+
+RShift & s:: HandleShiftKey("s"
+    , () => SendArrow("Right", 1)
+    , () => Send("{End}")         ; 0.2초 이상: End
+)
+
+RShift & d:: HandleShiftKey("d"
+    , () => SendArrow("Up", 1)
+    , () => Send("{PgUp}")        ; 0.2초 이상: PgUp
+)
+
+RShift & f:: HandleShiftKey("f"
+    , () => SendArrow("Down", 1)
+    , () => Send("{PgDn}")        ; 0.2초 이상: PgDn
+)
+
+; ==============================
+; ▶ RShift + 3칸 이동 (q/w/e/r)
+; ==============================
+RShift & q:: HandleShiftKey("q"
+    , () => SendArrow("Left", 3)
+    , () => Send("{Home}")
+)
+
+RShift & w:: HandleShiftKey("w"
+    , () => SendArrow("Right", 3)
+    , () => Send("{End}")
+)
+
+RShift & e:: HandleShiftKey("e"
+    , () => SendArrow("Up", 3)
+    , () => Send("{PgUp}")
+)
+
+RShift & r:: HandleShiftKey("r"
+    , () => SendArrow("Down", 3)
+    , () => Send("{PgDn}")
+)

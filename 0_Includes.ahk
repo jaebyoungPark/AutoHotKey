@@ -90,7 +90,7 @@
 #Include Ctrl+I.ahk
 #Include Ctrl+U.ahk
 #Include Ctrl+P.ahk
-
+#Include Ctrl+;'.ahk
 
 
 

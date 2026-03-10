@@ -38,7 +38,7 @@ HotKeyList := [
     "#,", "#.", "#[", "#]", "#End", "#Delete", "+Delete", "+End",
     "!Up", "!Down", "!Numpad1", "!Numpad2",
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
-    "#1",
+    "#1", "!j", "!k","^`", "^+`", "^SC028", "^+SC028"
 
     ; 🔹 RShift + Z/X/C/V (마우스 이동 핫키)
     "RShift & z", "RShift & x", "RShift & c", "RShift & v"

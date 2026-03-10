@@ -114,3 +114,43 @@
     ToolTip("▲ Scroll Up")
     SetTimer(() => ToolTip(), -400) ; 0.4초 후 자동 제거
 }
+
+; ========================================
+; Alt + J → 휠 업 4번
+; ========================================
+!j::
+{
+    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+        Send("!j")
+        return
+    }
+    if WinActive("ahk_exe explorer.exe") {
+        Send("!j")
+        return
+    }
+
+    SendInput("{WheelUp 4}")
+
+    ToolTip("▲ Scroll Up")
+    SetTimer(() => ToolTip(), -400)
+}
+
+; ========================================
+; Alt + K → 휠 다운 4번
+; ========================================
+!k::
+{
+    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
+        Send("!k")
+        return
+    }
+    if WinActive("ahk_exe explorer.exe") {
+        Send("!k")
+        return
+    }
+
+    SendInput("{WheelDown 4}")
+
+    ToolTip("▼ Scroll Down")
+    SetTimer(() => ToolTip(), -400)
+}
