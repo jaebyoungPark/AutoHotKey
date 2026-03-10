@@ -55,7 +55,7 @@ MoveMouseRShift()
         if (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
         {
             ; Win 누르면 느리게 (정밀 이동)
-            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow : MoveStepNormalSlow * 2
+            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow * 0.5 : MoveStepNormalSlow
         }
         else
         {

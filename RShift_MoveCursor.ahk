@@ -67,7 +67,7 @@ RShift & a:: HandleShiftKey("a"
     , "⏮ 줄 처음까지 선택"
 )
 RShift & s:: HandleShiftKey("s"
-    , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("➡ 단어 앞으로"))
+    , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("📋 멤버 목록 열기"))
                       : SendArrow("Right", 1, s)
     , () => Send("{End}")
     , () => Send("+{End}")
@@ -106,7 +106,7 @@ RShift & q:: HandleShiftKey("q"
     , "⏮ 줄 처음까지 선택"
 )
 RShift & w:: HandleShiftKey("w"
-    , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("➡ 단어 앞으로"))
+    , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("📋 멤버 목록 열기"))
                       : SendArrow("Right", 3, s)
     , () => Send("{End}")
     , () => Send("+{End}")
