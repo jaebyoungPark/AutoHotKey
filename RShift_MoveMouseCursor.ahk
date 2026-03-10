@@ -12,6 +12,14 @@ global MoveInterval      := 10
 global VerticalRatio     := 0.7  ; 대각선 이동 시 수직 비율
 
 ; ==============================
+; 📐 좌표 제한 (RShift 전용)
+; ==============================
+ClampRShift(val, min, max)
+{
+    return val < min ? min : (val > max ? max : val)
+}
+
+; ==============================
 ; 🔒 RShift 단독 방지
 ; ==============================
 ~RShift::Return
@@ -19,10 +27,10 @@ global VerticalRatio     := 0.7  ; 대각선 이동 시 수직 비율
 ; ==============================
 ; 🖱 RShift + Z/X/C/V (중간 가속)
 ; ==============================
-RShift & z::  MoveMouseRShift()
-RShift & x::  MoveMouseRShift()
-RShift & c::  MoveMouseRShift()
-RShift & v::  MoveMouseRShift()
+RShift & z::MoveMouseRShift()
+RShift & x::MoveMouseRShift()
+RShift & c::MoveMouseRShift()
+RShift & v::MoveMouseRShift()
 
 ; ==============================
 ; 🧠 RShift 단독 (중간 가속 이동)
@@ -54,18 +62,23 @@ MoveMouseRShift()
             break
 
         elapsed := A_TickCount - startTime
-        step := (elapsed < NormalAccelTime)
-            ? MoveStepNormalSlow
-            : MoveStepNormalFast
+
+        ; --- 기본 속도 결정 ---
+        baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow : MoveStepNormalFast
+
+        ; Win 누르면 속도 2배
+        step := GetKeyState("LWin", "P") || GetKeyState("RWin", "P") ? baseStep * 2 : baseStep
 
         ; 대각선 이동 감지
         isDiagonal := (isLeft || isRight) && (isUp || isDown)
         verticalStep := isDiagonal ? (step * VerticalRatio) : step
 
+        ; 현재 커서 위치 가져오기
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
 
+        ; 이동값 누적
         if (isLeft)
             accX -= step
         if (isRight)
@@ -83,18 +96,24 @@ MoveMouseRShift()
         x += dx
         y += dy
 
+        ; 화면 좌표 제한
         x := ClampRShift(x, VX, MaxX)
         y := ClampRShift(y, VY, MaxY)
 
+        ; 커서 이동
         DllCall("SetCursorPos", "Int", x, "Int", y)
+
+        ; -------------------------
+        ; 🔹 툴팁으로 디버깅 문구 표시
+        direction := (isLeft ? "Left " : "") 
+        direction .= (isRight ? "Right " : "")
+        direction .= (isUp ? "Up " : "")
+        direction .= (isDown ? "Down " : "")
+        speed := (step = baseStep) ? "Normal" : "Fast"
+        ToolTip "Direction: " direction "`nSpeed: " speed
+        ; -------------------------
+
         Sleep MoveInterval
     }
-}
-
-; ==============================
-; 📐 좌표 제한 (RShift 전용)
-; ==============================
-ClampRShift(val, min, max)
-{
-    return val < min ? min : (val > max ? max : val)
+    ToolTip  ; 종료 시 툴팁 제거
 }
