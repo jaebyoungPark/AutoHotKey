@@ -3,117 +3,98 @@
 CoordMode "Mouse", "Screen"
 
 ; ==============================
-; 🔧 전역 설정값
+; 🔧 전역 설정값 (RShift 단독)
 ; ==============================
-global MoveAmount := 8      ; 한 Tick당 이동량 (픽셀)
-global MoveInterval := 8   ; 이동 반복 간격 (ms)
-
-; 방향 플래그
-global MoveLeft := false
-global MoveRight := false
-global MoveUp := false
-global MoveDown := false
+global MoveStepNormalSlow := 3.0
+global MoveStepNormalFast := 7.5
+global NormalAccelTime   := 350
+global MoveInterval      := 10
+global VerticalRatio     := 0.7  ; 대각선 이동 시 수직 비율
 
 ; ==============================
-; ▶ 타이머 함수
+; 🔒 RShift 단독 방지
 ; ==============================
-MoveMouse()
+~RShift::Return
+
+; ==============================
+; 🖱 RShift + Z/X/C/V (중간 가속)
+; ==============================
+RShift & z::  MoveMouseRShift()
+RShift & x::  MoveMouseRShift()
+RShift & c::  MoveMouseRShift()
+RShift & v::  MoveMouseRShift()
+
+; ==============================
+; 🧠 RShift 단독 (중간 가속 이동)
+; ==============================
+MoveMouseRShift()
 {
-    global MoveLeft, MoveRight, MoveUp, MoveDown, MoveAmount
-    MouseGetPos &x, &y
+    global MoveStepNormalSlow, MoveStepNormalFast
+    global NormalAccelTime, MoveInterval, VerticalRatio
 
-    if MoveLeft
-        x -= MoveAmount
-    if MoveRight
-        x += MoveAmount
-    if MoveUp
-        y -= MoveAmount
-    if MoveDown
-        y += MoveAmount
+    startTime := A_TickCount
 
-    ; 아무 방향도 없으면 종료
-    if !(MoveLeft || MoveRight || MoveUp || MoveDown)
-        return
+    VX := SysGet(76), VY := SysGet(77)
+    VW := SysGet(78), VH := SysGet(79)
+    MaxX := VX + VW - 1
+    MaxY := VY + VH - 1
 
-    MouseMove x, y, 0  ; 마지막 0 → 1~10으로 바꾸면 더 부드럽게
+    pt := Buffer(8)
+    accX := 0.0
+    accY := 0.0
+
+    while (GetKeyState("RShift", "P"))
+    {
+        isLeft  := GetKeyState("z", "P")
+        isRight := GetKeyState("x", "P")
+        isUp    := GetKeyState("c", "P")
+        isDown  := GetKeyState("v", "P")
+
+        if (!isLeft && !isRight && !isUp && !isDown)
+            break
+
+        elapsed := A_TickCount - startTime
+        step := (elapsed < NormalAccelTime)
+            ? MoveStepNormalSlow
+            : MoveStepNormalFast
+
+        ; 대각선 이동 감지
+        isDiagonal := (isLeft || isRight) && (isUp || isDown)
+        verticalStep := isDiagonal ? (step * VerticalRatio) : step
+
+        DllCall("GetCursorPos", "Ptr", pt)
+        x := NumGet(pt, 0, "Int")
+        y := NumGet(pt, 4, "Int")
+
+        if (isLeft)
+            accX -= step
+        if (isRight)
+            accX += step
+        if (isUp)
+            accY -= verticalStep
+        if (isDown)
+            accY += verticalStep
+
+        dx := Floor(accX)
+        dy := Floor(accY)
+        accX -= dx
+        accY -= dy
+
+        x += dx
+        y += dy
+
+        x := ClampRShift(x, VX, MaxX)
+        y := ClampRShift(y, VY, MaxY)
+
+        DllCall("SetCursorPos", "Int", x, "Int", y)
+        Sleep MoveInterval
+    }
 }
 
 ; ==============================
-; ▶ RShift + Z/X/C/V 단축키 (눌렀을 때)
+; 📐 좌표 제한 (RShift 전용)
 ; ==============================
-RShift & z::
+ClampRShift(val, min, max)
 {
-    global MoveLeft
-    MoveLeft := true
-    SetTimer MoveMouse, MoveInterval
-    return
-}
-
-RShift & x::
-{
-    global MoveRight
-    MoveRight := true
-    SetTimer MoveMouse, MoveInterval
-    return
-}
-
-RShift & c::
-{
-    global MoveUp
-    MoveUp := true
-    SetTimer MoveMouse, MoveInterval
-    return
-}
-
-RShift & v::
-{
-    global MoveDown
-    MoveDown := true
-    SetTimer MoveMouse, MoveInterval
-    return
-}
-
-; ==============================
-; ▶ RShift + Z/X/C/V 단축키 (뗐을 때)
-; ==============================
-RShift & z up::
-{
-    global MoveLeft
-    MoveLeft := false
-    CheckStop()
-    return
-}
-
-RShift & x up::
-{
-    global MoveRight
-    MoveRight := false
-    CheckStop()
-    return
-}
-
-RShift & c up::
-{
-    global MoveUp
-    MoveUp := false
-    CheckStop()
-    return
-}
-
-RShift & v up::
-{
-    global MoveDown
-    MoveDown := false
-    CheckStop()
-    return
-}
-
-; ==============================
-; ▶ 이동 멈춤 체크
-; ==============================
-CheckStop()
-{
-    global MoveLeft, MoveRight, MoveUp, MoveDown
-    if !(MoveLeft || MoveRight || MoveUp || MoveDown)
-        SetTimer MoveMouse, 0  ; 모든 방향이 false면 타이머 중지
+    return val < min ? min : (val > max ? max : val)
 }
