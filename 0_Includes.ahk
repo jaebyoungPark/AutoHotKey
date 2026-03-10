@@ -35,8 +35,11 @@
 #Include OpenMemory.ahk
 
 
+
+;======================================
+;RShift
+;======================================
 #Include RShift_MoveCursor.ahk
-#Include RShift_MoveMouseCursor.ahk
 #Include RShift_Delete.ahk
 
 
@@ -101,3 +104,4 @@
 
 
 #Include Win+1.ahk
+
