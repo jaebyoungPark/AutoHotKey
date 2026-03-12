@@ -155,3 +155,12 @@ Esc::
         Send "{Esc}"  ; ← 이 부분이 핵심!
     }
 }
+
+; -------------------------
+; Shift + Enter → 왼쪽 클릭
++Enter::
+{
+    Send "{LButton}"
+    ToolTip "Shift+Enter → Left Click"
+    SetTimer () => ToolTip(), -800
+}
