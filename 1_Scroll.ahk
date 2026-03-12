@@ -116,19 +116,10 @@
 }
 
 ; ========================================
-; Alt + N → 휠 업 4번 (원래 J)
+; Alt + N → 휠 업 4번
 ; ========================================
 !n::
 {
-    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
-        Send("!n")
-        return
-    }
-    if WinActive("ahk_exe explorer.exe") {
-        Send("!n")
-        return
-    }
-
     SendInput("{WheelUp 4}")
 
     ToolTip("▲ Scroll Up")
@@ -136,19 +127,10 @@
 }
 
 ; ========================================
-; Alt + M → 휠 다운 4번 (원래 K)
+; Alt + M → 휠 다운 4번
 ; ========================================
 !m::
 {
-    if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
-        Send("!m")
-        return
-    }
-    if WinActive("ahk_exe explorer.exe") {
-        Send("!m")
-        return
-    }
-
     SendInput("{WheelDown 4}")
 
     ToolTip("▼ Scroll Down")

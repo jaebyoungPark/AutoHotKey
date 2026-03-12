@@ -49,7 +49,7 @@ HandleShiftKey(key, shortAction, longAction, longActionWithShift := "", shortMsg
     while GetKeyState("RShift", "P") && GetKeyState(key, "P")
         Sleep 10
     elapsed := (A_TickCount - start) / 1000
-    if (elapsed < 0.2) {
+    if (elapsed < 0.25) {
         if (isAlt) {
             shortAction(false, true)
         } else if (isLShift) {
