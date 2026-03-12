@@ -4,7 +4,7 @@
 ;Test
 ;======================================
 
-;#Include Test.ahk
+;#Include 1_Test.ahk
 
 ;======================================
 ;Toggle
@@ -32,7 +32,9 @@
 #Include GoRight.ahk
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
-#Include OpenMemory.ahk
+#Include AltTapMove.ahk
+
+;#Include OpenMemory.ahk
 
 
 
@@ -74,7 +76,6 @@
 #Include 1_HeaderAndCpp.ahk
 
 ;#Include 1_MoveCursor_Deprecated.ahk
-;#Include 1_Volume.ahk
 
 
 

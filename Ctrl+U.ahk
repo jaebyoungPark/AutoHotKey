@@ -19,7 +19,7 @@
         if WinActive("ahk_exe devenv.exe")
         {
             SendText "UPROPERTY(EditAnywhereCategory=)"
-            Loop 10
+            Loop 1
                 Send "{Left}"
         }
         else

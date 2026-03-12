@@ -1,11 +1,16 @@
 ﻿#Requires AutoHotkey v2.0
 
+; ==============================
+; ToolTip 표시 함수
+; ==============================
 ShowVolumeTip(text) {
     ToolTip text
     SetTimer(() => ToolTip(), -500)  ; 0.5초 후 사라짐
 }
 
+; ==============================
 ; Ctrl + Shift + 휠 업 → 볼륨 업
+; ==============================
 ^+WheelUp:: {
     Send "{Volume_Up}"
     ShowVolumeTip("🔊 Volume Up")
@@ -25,6 +30,18 @@ ShowVolumeTip(text) {
 
 ; Ctrl + Shift + Ins → 볼륨 다운
 ^+Ins:: {
+    Send "{Volume_Down}"
+    ShowVolumeTip("🔉 Volume Down")
+}
+
+; Ctrl + Shift + ↑ → 볼륨 업 (새로 추가)
+^+Up:: {
+    Send "{Volume_Up}"
+    ShowVolumeTip("🔊 Volume Up")
+}
+
+; Ctrl + Shift + ↓ → 볼륨 다운 (새로 추가)
+^+Down:: {
     Send "{Volume_Down}"
     ShowVolumeTip("🔉 Volume Down")
 }

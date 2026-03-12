@@ -116,16 +116,16 @@
 }
 
 ; ========================================
-; Alt + J → 휠 업 4번
+; Alt + N → 휠 업 4번 (원래 J)
 ; ========================================
-!j::
+!n::
 {
     if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
-        Send("!j")
+        Send("!n")
         return
     }
     if WinActive("ahk_exe explorer.exe") {
-        Send("!j")
+        Send("!n")
         return
     }
 
@@ -136,16 +136,16 @@
 }
 
 ; ========================================
-; Alt + K → 휠 다운 4번
+; Alt + M → 휠 다운 4번 (원래 K)
 ; ========================================
-!k::
+!m::
 {
     if WinActive("ahk_class MultitaskingViewFrame") or WinActive("ahk_class TaskSwitcherWnd") {
-        Send("!k")
+        Send("!m")
         return
     }
     if WinActive("ahk_exe explorer.exe") {
-        Send("!k")
+        Send("!m")
         return
     }
 

@@ -173,3 +173,28 @@ IsUnrealActive() {
         }
     }
 }
+
+
+; ==============================
+; Shift + , / .  (Udemy 전용)
+; ==============================
+
+~+,::
+{
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
+    {
+        ToolTip "◀ Speed Down"
+        SetTimer(() => ToolTip(), -700)
+        SendInput "+{Left}"
+    }
+}
+
+~+.:: 
+{
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
+    {
+        ToolTip "▶ Speed Up"
+        SetTimer(() => ToolTip(), -700)
+        SendInput "+{Right}"
+    }
+}
