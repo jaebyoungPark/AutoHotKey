@@ -122,7 +122,7 @@
 {
     SendInput("{WheelUp 4}")
 
-    ToolTip("▲ Scroll Up")
+    ToolTip("▲ Wheel Up")
     SetTimer(() => ToolTip(), -400)
 }
 
@@ -133,6 +133,28 @@
 {
     SendInput("{WheelDown 4}")
 
+    ToolTip("▼ Wheel Down")
+    SetTimer(() => ToolTip(), -400)
+}
+
+; ========================================
+; Alt + , → Ctrl+Up 5번
+; ========================================
+!,::
+{
+    Loop 5
+        SendInput("^{Up}")
+    ToolTip("▲ Scroll Up")
+    SetTimer(() => ToolTip(), -400)
+}
+; ========================================
+; Alt + . → Ctrl+Down 5번
+; ========================================
+!.::
+{
+    Loop 5
+        SendInput("^{Down}")
     ToolTip("▼ Scroll Down")
     SetTimer(() => ToolTip(), -400)
 }
+

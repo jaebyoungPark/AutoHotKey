@@ -137,19 +137,20 @@ RShift & w:: HandleShiftKey("w"
 )
 RShift & e:: HandleShiftKey("e"
     , (s, alt) => SendArrow("Up", 3, s)
-    , () => Send("{PgUp}")
+    , () => Send("^{Home}")
     , ""
     , "▲▲ 3칸"
     , "▲▲ 3칸 선택"
-    , "⏫ 페이지 위로"
+    , "⏮ 문서 처음"
 )
+
 RShift & r:: HandleShiftKey("r"
     , (s, alt) => SendArrow("Down", 3, s)
-    , () => Send("{PgDn}")
+    , () => Send("^{End}")
     , ""
     , "▼▼ 3칸"
     , "▼▼ 3칸 선택"
-    , "⏬ 페이지 아래로"
+    , "⏭ 문서 끝"
 )
 ; ==============================
 ; 🖱 RShift + Z/X/C/V (마우스 이동)
