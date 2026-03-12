@@ -6,11 +6,15 @@
 
 #[::
 {
+    ToolTip "Win + [ 눌림"
+    SetTimer () => ToolTip(), -500
     HandleBracket("Up")
 }
 
 #]::
 {
+    ToolTip "Win + ] 눌림"
+    SetTimer () => ToolTip(), -500
     HandleBracket("Down")
 }
 
@@ -25,7 +29,10 @@ HandleBracket(dir)
     startTime := A_TickCount
     isLongPress := false
     
-    ; ✅ 키가 눌려있는 동안 시간 체크
+    ToolTip "HandleBracket 시작 (" dir ")"
+    SetTimer () => ToolTip(), -500
+    
+    ; 키가 눌려있는 동안 시간 체크
     while (GetKeyState(checkKey, "P"))
     {
         elapsed := A_TickCount - startTime
@@ -34,23 +41,46 @@ HandleBracket(dir)
         if (elapsed >= 300 && !isLongPress)
         {
             isLongPress := true
-            ; 즉시 실행
+            
+            ToolTip "길게 누름 감지 (" dir ")"
+            SetTimer () => ToolTip(), -700
+            
             if (dir = "Up")
+            {
+                ToolTip "Ctrl+Home 실행"
+                SetTimer () => ToolTip(), -700
                 Send "^{Home}"   ; 최상단
+            }
             else
+            {
+                ToolTip "Ctrl+End 실행"
+                SetTimer () => ToolTip(), -700
                 Send "^{End}"    ; 최하단
-            return  ; ✅ 바로 종료
+            }
+            
+            return
         }
         
         Sleep 10
     }
     
-    ; ✅ 짧게 누른 경우만 여기 도달
+    ; 짧게 누른 경우
     if (!isLongPress)
     {
+        ToolTip "짧게 누름 (" dir ")"
+        SetTimer () => ToolTip(), -700
+        
         if (dir = "Up")
+        {
+            ToolTip "PgUp 실행"
+            SetTimer () => ToolTip(), -700
             Send "{PgUp}"
+        }
         else
+        {
+            ToolTip "PgDn 실행"
+            SetTimer () => ToolTip(), -700
             Send "{PgDn}"
+        }
     }
 }

@@ -63,7 +63,7 @@
 ;=======================================
 
 #Include 1_GoBack.ahk
-#Include 1_GoHomeEnd.ahk
+#Include 1_PgUp&Down.ahk
 #Include 1_Enter.ahk
 #Include 1_MouseRightClick.ahk
 #Include 1_BlockWindowMinimum.ahk
