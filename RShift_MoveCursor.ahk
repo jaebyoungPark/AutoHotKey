@@ -192,7 +192,7 @@ MoveMouseRShift()
         else
         {
             ; RShift 단독: 빠르게
-            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalFast : MoveStepNormalFast * 2
+            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalFast : MoveStepNormalFast * 8
         }
         step := baseStep
         ; 대각선 이동 감지

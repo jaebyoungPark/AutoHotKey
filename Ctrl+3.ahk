@@ -7,7 +7,7 @@
 ; =========================================
 ^3::
 {
-if !WinActive("ahk_exe UnrealEditor.exe")
+if !(WinActive("ahk_exe UnrealEditor.exe") || WinActive("ahk_class UnrealWindow"))
 return
 
 StartTime := A_TickCount
