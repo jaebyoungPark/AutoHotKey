@@ -1,4 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
+;=================================
+; 마우스용은 MediaSpeed 의 ^!+o 를 검색. 
+;=================================
+
 
 ^!NumpadEnter::  ; Ctrl + Alt + 넘패드 Enter
 {
@@ -14,9 +18,13 @@
         ToolTip("컴파일 후 저장")
         SetTimer(() => ToolTip(), -600)  ; 0.6초 후 ToolTip 제거
 
-        SendInput("{F7}")   ; Compile
-        Sleep(250)
-        Send("^s")          ; Save
+        Send("{Enter}") 
+        Sleep(100)
+
+        SendInput("{F7}")    ; Compile
+        Sleep(300)
+
+        Send("^+s")           ; Save
     }
     else
     {

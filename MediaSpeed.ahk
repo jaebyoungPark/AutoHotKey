@@ -152,9 +152,11 @@ IsUnrealActive() {
         if (elapsed < 250) {
             ToolTip "컴파일 후 저장"
             SetTimer(() => ToolTip(), -700)
+	    Send "{Enter}"     ; 먼저 Enter
+            Sleep 100
             SendInput "{F7}"
             Sleep 300
-            Send "^s"
+            Send "^+s"
         }
         return
     }
