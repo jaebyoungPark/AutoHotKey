@@ -26,8 +26,8 @@
 #Include ToggleSubstitute.ahk
 #Include Volume.ahk
 #Include SwitchCursor.ahk
-#Include Scroll_Hard.ahk
-#Include Scroll.ahk
+#Include Scroll_Hard_WithMouse.ahk
+#Include Scroll_WithMouse.ahk
 #Include MouseLeftPressed.ahk
 #Include GoRight.ahk
 #Include ToggleComments.ahk
@@ -43,7 +43,7 @@
 ;======================================
 #Include RShift_MoveCursor.ahk
 #Include RShift_Delete.ahk
-
+#Include RShift_NumPad.ahk
 
 ;======================================
 ;Visual Studio
@@ -96,7 +96,7 @@
 #Include Ctrl+U.ahk
 #Include Ctrl+P.ahk
 #Include Ctrl+;'.ahk
-
+#Include Ctrl+`.ahk
 
 
 ;======================================

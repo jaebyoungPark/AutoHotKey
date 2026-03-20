@@ -179,9 +179,30 @@ IsUnrealActive() {
 
 ; ==============================
 ; Shift + , / .  (Udemy 전용)
+; 이거 동작 이상해서 보류하고 그 아래에 있는걸로 사용함
 ; ==============================
+; ~+,::
+; {
+;     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
+;     {
+;         ToolTip "◀ Speed Down"
+;         SetTimer(() => ToolTip(), -700)
+;         SendInput "+{Left}"
+;     }
+; }
 
-~+,::
+; ~+.:: 
+; {
+;     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
+;     {
+;         ToolTip "▶ Speed Up"
+;         SetTimer(() => ToolTip(), -700)
+;         SendInput "+{Right}"
+;     }
+; }
+
+
+$+,::
 {
     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
     {
@@ -189,14 +210,22 @@ IsUnrealActive() {
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Left}"
     }
+    else
+    {
+        SendInput "+,"   ; 🔥 원래 동작 직접 실행
+    }
 }
 
-~+.:: 
+$+.::
 {
     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
     {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"
+    }
+    else
+    {
+        SendInput "+."   ; 🔥 원래 동작 직접 실행
     }
 }

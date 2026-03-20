@@ -28,7 +28,11 @@ HotKeyList := [
     "!Up", "!Down", "!Numpad1", "!Numpad2",
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
     "#1", "!n", "!m", "^``", "^+``", "^SC028", "^+SC028",
-    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter"
+    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter",
+    
+    ; 여기에 RShift + 숫자 → Numpad 매핑 추가
+    "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", 
+    "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0"
 ]
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
 
