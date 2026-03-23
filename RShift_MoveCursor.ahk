@@ -118,7 +118,7 @@ RShift & f:: HandleShiftKey("f"
 RShift & q:: HandleShiftKey("q"
     , (s, alt) => alt ? (Send("!{Left}"),  ShowTooltip("⬅ 단어 뒤로"))
                       : SendArrow("Left", 3, s)
-    , () => Send("{Home}")
+    , () => SendArrow("Left", 9)
     , () => Send("+{Home}")
     , "◀◀ 3칸"
     , "◀◀ 3칸 선택"
@@ -128,7 +128,7 @@ RShift & q:: HandleShiftKey("q"
 RShift & w:: HandleShiftKey("w"
     , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("📋 멤버 목록 열기"))
                       : SendArrow("Right", 3, s)
-    , () => Send("{End}")
+    , () => SendArrow("Right", 9)
     , () => Send("+{End}")
     , "▶▶ 3칸"
     , "▶▶ 3칸 선택"
