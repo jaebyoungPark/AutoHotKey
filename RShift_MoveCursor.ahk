@@ -119,21 +119,21 @@ RShift & q:: HandleShiftKey("q"
     , (s, alt) => alt ? (Send("!{Left}"),  ShowTooltip("⬅ 단어 뒤로"))
                       : SendArrow("Left", 3, s)
     , () => SendArrow("Left", 9)
-    , () => Send("+{Home}")
+    , () => Send("+{Left 9}")
     , "◀◀ 3칸"
     , "◀◀ 3칸 선택"
-    , "⏮ 줄 처음"
-    , "⏮ 줄 처음까지 선택"
+    , "⏮ 9칸"
+    , "⏮ 9칸 선택"
 )
 RShift & w:: HandleShiftKey("w"
     , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("📋 멤버 목록 열기"))
                       : SendArrow("Right", 3, s)
     , () => SendArrow("Right", 9)
-    , () => Send("+{End}")
+    , () => Send("+{Right 9}")
     , "▶▶ 3칸"
     , "▶▶ 3칸 선택"
-    , "⏭ 줄 끝"
-    , "⏭ 줄 끝까지 선택"
+    , "⏭ 9칸"
+    , "⏭ 9칸 선택"
 )
 RShift & e:: HandleShiftKey("e"
     , (s, alt) => SendArrow("Up", 3, s)
