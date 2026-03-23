@@ -118,22 +118,22 @@ RShift & f:: HandleShiftKey("f"
 RShift & q:: HandleShiftKey("q"
     , (s, alt) => alt ? (Send("!{Left}"),  ShowTooltip("⬅ 단어 뒤로"))
                       : SendArrow("Left", 3, s)
-    , () => SendArrow("Left", 9)
-    , () => Send("+{Left 9}")
+    , () => SendArrow("Left", 12)
+    , () => Send("+{Left 12}")
     , "◀◀ 3칸"
     , "◀◀ 3칸 선택"
-    , "⏮ 9칸"
-    , "⏮ 9칸 선택"
+    , "⏮ 12칸"
+    , "⏮ 12칸 선택"
 )
 RShift & w:: HandleShiftKey("w"
     , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("📋 멤버 목록 열기"))
                       : SendArrow("Right", 3, s)
-    , () => SendArrow("Right", 9)
-    , () => Send("+{Right 9}")
+    , () => SendArrow("Right", 12)
+    , () => Send("+{Right 12}")
     , "▶▶ 3칸"
     , "▶▶ 3칸 선택"
-    , "⏭ 9칸"
-    , "⏭ 9칸 선택"
+    , "⏭ 12칸"
+    , "⏭ 12칸 선택"
 )
 RShift & e:: HandleShiftKey("e"
     , (s, alt) => SendArrow("Up", 3, s)
