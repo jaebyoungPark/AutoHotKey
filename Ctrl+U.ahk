@@ -1,6 +1,6 @@
 ﻿#Requires AutoHotkey v2.0
 
-^u::
+$^u::
 {
     start := A_TickCount
     KeyWait "u"
