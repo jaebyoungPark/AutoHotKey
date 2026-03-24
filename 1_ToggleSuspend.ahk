@@ -1,6 +1,7 @@
 ﻿$`::
 {
     global MySuspended, HotkeyList
+    
     start := A_TickCount
     while GetKeyState("``", "P")
         Sleep 10
@@ -9,6 +10,7 @@
     if (elapsed >= 250 && elapsed <= 1000)
     {
         MySuspended := !MySuspended
+
         for key in HotkeyList {
             try {
                 Hotkey(key, "", MySuspended ? "Off" : "On")
@@ -17,25 +19,22 @@
             }
         }
 
-if MySuspended
-{
-    ; 🔒 OFF : 음정 ↓↓
-    SoundBeep(1000, 90)
-    SoundBeep(700, 90)
-}
-else
-{
-    ; 🔓 ON : 음정 ↑↑
-    SoundBeep(700, 90)
-    SoundBeep(1000, 90)
-}
-
+        ; ✅ 1. 먼저 문구 출력
         ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
         SetTimer(() => ToolTip(), -800)
+
+        ; ✅ 2. 그 다음 사운드
+        if MySuspended
+        {
+            SoundPlay "C:\Windows\Media\Windows Critical Stop.wav", 1
+        }
+        else
+        {
+            SoundPlay "C:\Windows\Media\Windows Notify.wav", 1
+        }
     }
     else if (elapsed < 250)
     {
-        ; 250ms 미만일 때만 원래 ` 입력
         Send "{``}"
     }
 }
