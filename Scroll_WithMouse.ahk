@@ -14,18 +14,18 @@ SmoothWheel(dir) {
     if (WheelRunning) {
 
         if (dir = WheelDir && (now - LastInputTime) <= 300) {
-            WheelQueue += 4
+            WheelQueue += 3
             WheelStack++
         }
         else {
             WheelDir := dir
-            WheelQueue := 4
+            WheelQueue := 3
             WheelStack := 1
         }
 
     } else {
         WheelDir := dir
-        WheelQueue := 4
+        WheelQueue := 3
         WheelStack := 1
         WheelRunning := true
         SetTimer WheelLoop, 1

@@ -5,13 +5,14 @@
 ;======================================
 
 #Include 0_Test.ahk
+#Include 0_ToggleSuspend.ahk
 
 ;======================================
 ;Toggle
 ;======================================
 
 #Include ToggleSuspend.ahk
-#Include 1_ToggleSuspend.ahk
+
 
 
 ;======================================

@@ -28,7 +28,7 @@ HotKeyList := [
     "!Up", "!Down", "!Numpad1", "!Numpad2",
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
     "#1", "!n", "!m", "^``", "^+``", "^SC028", "^+SC028",
-    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", 
+    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", , "Esc",
     
     ; 여기에 RShift + 숫자 → Numpad 매핑 추가
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", 
@@ -37,3 +37,23 @@ HotKeyList := [
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
 
 
+~+Esc::
+{
+    start := A_TickCount
+    
+    while GetKeyState("Esc", "P")
+    {
+        Sleep 10
+        
+        if (A_TickCount - start >= 500)
+        {
+            ; 🔊 종료 사운드
+            SoundPlay "C:\Windows\Media\Windows Critical Stop.wav", 1
+            
+            ToolTip "🛑 Script Terminated"
+            Sleep 500  ; 소리 들릴 시간
+            
+            ExitApp
+        }
+    }
+}
