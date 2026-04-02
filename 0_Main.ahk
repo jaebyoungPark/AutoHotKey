@@ -10,7 +10,7 @@ MySuspended := false
 
 HotKeyList := [
     "RButton", "XButton1", "XButton2", "MButton", 
-    "LButton", "RButton", "+!LButton", "+!RButton", "^LButton", "~LButton",
+    "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton",
     "^+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", 
     "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
     "$^1", "$^2", "^3", "^4", "^+1", "^+2", "^+3", "^+4", "^8",
@@ -28,7 +28,7 @@ HotKeyList := [
     "!Up", "!Down", "!Numpad1", "!Numpad2",
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
     "#1", "!n", "!m", "^``", "^+``", "^SC028", "^+SC028",
-    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", , "Esc",
+    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", "Esc",
     "#LButton",
     
     ; 여기에 RShift + 숫자 → Numpad 매핑 추가
