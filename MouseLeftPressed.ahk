@@ -33,8 +33,16 @@ ShowCursorText(text, duration := 600)
     ; 0.3초 미만 → 일반 클릭
     if (holdTime < 300)
     {
-        Send "{LButton Up}"
-        return
+    Send "{LButton Up}"
+
+    Sleep 10
+
+    Send "{Home}"
+    Send "+{End}"
+
+    ShowCursorText("라인 선택")
+
+    return  ; ⭐ 이거 필수
     }
 
     ; 0.3 ~ 0.8초 → 홀드 유지

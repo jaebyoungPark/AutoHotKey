@@ -35,6 +35,7 @@
 #Include GoLeft.ahk
 #Include AltTapMove.ahk
 
+
 ;#Include OpenMemory.ahk
 
 
@@ -54,6 +55,7 @@
 #Include VS_HomeEnd.ahk
 #Include VS_LineSelect.ahk
 #Include VS_DeleteAndAddSameThing.ahk
+
 
 
 
@@ -90,7 +92,9 @@
 #Include Ctrl+3.ahk
 #Include Ctrl+4.ahk
 #Include Ctrl+8.ahk
-#Include Ctrl+C.ahk
+
+;#Include Ctrl+C.ahk
+
 #Include Ctrl+T.ahk
 #Include Ctrl+M.ahk
 #Include Ctrl+F.ahk
