@@ -34,7 +34,7 @@
 #Include ToggleComments.ahk
 #Include GoLeft.ahk
 #Include AltTapMove.ahk
-
+#Include SelectLine.ahk
 
 ;#Include OpenMemory.ahk
 

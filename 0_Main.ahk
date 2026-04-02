@@ -29,7 +29,7 @@ HotKeyList := [
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
     "#1", "!n", "!m", "^``", "^+``", "^SC028", "^+SC028",
     "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", "Esc",
-    "#LButton",
+    "!LButton",
     
     ; 여기에 RShift + 숫자 → Numpad 매핑 추가
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", 
