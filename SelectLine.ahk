@@ -19,14 +19,12 @@ global LStartTime := 0
     MouseGetPos &x, &y
 
     ; 0.2초 미만 → 줄 선택
-    if (holdTime < 200)
+    if (holdTime < 250)
     {
-        Sleep 10
-        Send "{Home}"
-        Send "+{End}"
+ 	Click
+	Sleep 10
+	Send "{Home}+{End}"
 
-        ToolTip "라인 선택", x + 12, y + 12
-        SetTimer () => ToolTip(), -600
     }
     else
     {
