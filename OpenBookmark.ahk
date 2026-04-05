@@ -1,23 +1,31 @@
-﻿;----------------------------
-; AHK v2: Ctrl+Shift+A 길게 누름 → Ctrl+B
-;----------------------------
+﻿#Requires AutoHotkey v2.0
+#SingleInstance Force
 
-HotkeyList := ["$^+a"]
+$^+a::
+{
+if WinActive("ahk_exe devenv.exe")
+{
+    SendEvent "{Ctrl down}k{Ctrl up}"
+    Sleep 10
+    SendEvent "{Ctrl down}i{Ctrl up}"
+    return
+}
 
-$^+a:: {
-    if WinActive("ahk_exe chrome.exe"){
-        start := A_TickCount        ; 누른 순간 시간 기록
-        KeyWait("a")                ; A 키만 떼어질 때까지 대기
+    ; Chrome
+    if WinActive("ahk_exe chrome.exe")
+    {
+        start := A_TickCount
+        KeyWait "a"
         elapsed := A_TickCount - start
-        
-        if (elapsed < 250) {
-            ; 짧게 누름 → 원래 Ctrl+Shift+A
-            Send("^+a")
-        }
-        else if (elapsed >= 250 && elapsed < 550) {
-            ; 0.25~0.55초 → Ctrl+B
-            Send("^b")
-        }
-        ; 0.55초 이상 → 아무 것도 안 함
+
+        if (elapsed < 250)
+            SendInput "{Blind}^+a"
+        else if (elapsed < 550)
+            SendInput "^b"
+
+        return
     }
+
+    ; 기타
+    SendInput "{Blind}^+a"
 }
