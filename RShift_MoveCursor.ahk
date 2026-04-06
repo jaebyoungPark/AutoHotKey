@@ -115,43 +115,149 @@ RShift & f:: HandleShiftKey("f"
 ; ==============================
 ; ▶ RShift + 3칸 이동 (q/w/e/r)
 ; ==============================
-RShift & q:: HandleShiftKey("q"
-    , (s, alt) => alt ? (Send("!{Left}"),  ShowTooltip("⬅ 단어 뒤로"))
-                      : SendArrow("Left", 3, s)
-    , () => SendArrow("Left", 12)
-    , () => Send("+{Left 12}")
-    , "◀◀ 3칸"
-    , "◀◀ 3칸 선택"
-    , "⏮ 12칸"
-    , "⏮ 12칸 선택"
-)
-RShift & w:: HandleShiftKey("w"
-    , (s, alt) => alt ? (Send("!{Right}"), ShowTooltip("📋 멤버 목록 열기"))
-                      : SendArrow("Right", 3, s)
-    , () => SendArrow("Right", 12)
-    , () => Send("+{Right 12}")
-    , "▶▶ 3칸"
-    , "▶▶ 3칸 선택"
-    , "⏭ 12칸"
-    , "⏭ 12칸 선택"
-)
-RShift & e:: HandleShiftKey("e"
-    , (s, alt) => SendArrow("Up", 3, s)
-    , () => SendArrow("Up", 9) 
-    , ""
-    , "▲▲ 3칸"
-    , "▲▲ 3칸 선택"
-    , "⏮ 9칸"
-)
+; ==============================
+; ▶ RShift + q (왼쪽 이동) - 3단계
+; ==============================
+RShift & q::
+{
+    start := A_TickCount
+    isLShift := GetKeyState("LShift", "P")
+    isAlt := GetKeyState("Alt", "P")
+    while GetKeyState("RShift", "P") && GetKeyState("q", "P")
+        Sleep 10
+    elapsed := (A_TickCount - start) / 1000
 
-RShift & r:: HandleShiftKey("r"
-    , (s, alt) => SendArrow("Down", 3, s)
-    , () => SendArrow("Down", 9) 
-    , ""
-    , "▼▼ 3칸"
-    , "▼▼ 3칸 선택"
-    , "⏭ 9칸"
-)
+    if (elapsed < 0.25) {
+        if (isAlt) {
+            Send("!{Left}")
+            ShowTooltip("⬅ 단어 뒤로")
+        } else {
+            SendArrow("Left", 3, isLShift)
+            ShowTooltip(isLShift ? "◀◀ 3칸 선택" : "◀◀ 3칸")
+        }
+    } else if (elapsed < 0.5) {
+        if (isLShift) {
+            Send("+{Left 12}")
+            ShowTooltip("⏮ 12칸 선택")
+        } else {
+            SendArrow("Left", 12)
+            ShowTooltip("⏮ 12칸")
+        }
+    } else {
+        if (isLShift) {
+            Send("+{Left 30}")
+            ShowTooltip("⏮⏮ 30칸 선택")
+        } else {
+            SendArrow("Left", 30)
+            ShowTooltip("⏮⏮ 30칸")
+        }
+    }
+}
+
+; ==============================
+; ▶ RShift + w (오른쪽 이동) - 3단계
+; ==============================
+RShift & w::
+{
+    start := A_TickCount
+    isLShift := GetKeyState("LShift", "P")
+    isAlt := GetKeyState("Alt", "P")
+    while GetKeyState("RShift", "P") && GetKeyState("w", "P")
+        Sleep 10
+    elapsed := (A_TickCount - start) / 1000
+
+    if (elapsed < 0.25) {
+        if (isAlt) {
+            Send("!{Right}")
+            ShowTooltip("➡ 멤버 목록 열기")
+        } else {
+            SendArrow("Right", 3, isLShift)
+            ShowTooltip(isLShift ? "▶▶ 3칸 선택" : "▶▶ 3칸")
+        }
+    } else if (elapsed < 0.5) {
+        if (isLShift) {
+            Send("+{Right 12}")
+            ShowTooltip("⏭ 12칸 선택")
+        } else {
+            SendArrow("Right", 12)
+            ShowTooltip("⏭ 12칸")
+        }
+    } else {
+        if (isLShift) {
+            Send("+{Right 30}")
+            ShowTooltip("⏭⏭ 30칸 선택")
+        } else {
+            SendArrow("Right", 30)
+            ShowTooltip("⏭⏭ 30칸")
+        }
+    }
+}
+
+; ==============================
+; ▶ RShift + e (위 이동) - 3단계
+; ==============================
+RShift & e::
+{
+    start := A_TickCount
+    isLShift := GetKeyState("LShift", "P")
+    while GetKeyState("RShift", "P") && GetKeyState("e", "P")
+        Sleep 10
+    elapsed := (A_TickCount - start) / 1000
+
+    if (elapsed < 0.25) {
+        SendArrow("Up", 3, isLShift)
+        ShowTooltip(isLShift ? "▲▲ 3칸 선택" : "▲▲ 3칸")
+    } else if (elapsed < 0.5) {
+        if (isLShift) {
+            Send("+{Up 12}")
+            ShowTooltip("⏫ 12칸 선택")
+        } else {
+            SendArrow("Up", 12)
+            ShowTooltip("⏫ 12칸")
+        }
+    } else {
+        if (isLShift) {
+            Send("+{Up 30}")
+            ShowTooltip("⏫⏫ 30칸 선택")
+        } else {
+            SendArrow("Up", 30)
+            ShowTooltip("⏫⏫ 30칸")
+        }
+    }
+}
+
+; ==============================
+; ▶ RShift + r (아래 이동) - 3단계
+; ==============================
+RShift & r::
+{
+    start := A_TickCount
+    isLShift := GetKeyState("LShift", "P")
+    while GetKeyState("RShift", "P") && GetKeyState("r", "P")
+        Sleep 10
+    elapsed := (A_TickCount - start) / 1000
+
+    if (elapsed < 0.25) {
+        SendArrow("Down", 3, isLShift)
+        ShowTooltip(isLShift ? "▼▼ 3칸 선택" : "▼▼ 3칸")
+    } else if (elapsed < 0.5) {
+        if (isLShift) {
+            Send("+{Down 12}")
+            ShowTooltip("⏬ 12칸 선택")
+        } else {
+            SendArrow("Down", 12)
+            ShowTooltip("⏬ 12칸")
+        }
+    } else {
+        if (isLShift) {
+            Send("+{Down 30}")
+            ShowTooltip("⏬⏬ 30칸 선택")
+        } else {
+            SendArrow("Down", 30)
+            ShowTooltip("⏬⏬ 30칸")
+        }
+    }
+}
 ; ==============================
 ; 🖱 RShift + Z/X/C/V (마우스 이동)
 ; ==============================
