@@ -11,8 +11,5 @@ LWin & f::
         Send "{F11 up}"
         ToolTip ""
     }
-    else
-    {
-        Send "#f"  ; Win+F 기본 동작 (파일 탐색기 검색)
-    }
+
 } 
