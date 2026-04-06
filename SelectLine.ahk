@@ -6,7 +6,11 @@ global LStartTime := 0
 ~!LButton::
 {
     global LStartTime
-    LStartTime := A_TickCount
+
+    if WinActive("ahk_exe devenv.exe")
+    {
+        LStartTime := A_TickCount
+    }
 }
 
 ; Alt + LButton Up
@@ -14,21 +18,23 @@ global LStartTime := 0
 {
     global LStartTime
 
+    ; Visual Studio 아닐 경우 → 아무것도 안 하고 기본 동작만 수행
+    if !WinActive("ahk_exe devenv.exe")
+        return
+
     holdTime := A_TickCount - LStartTime
 
     MouseGetPos &x, &y
 
-    ; 0.2초 미만 → 줄 선택
+    ; 0.25초 미만 → 줄 선택
     if (holdTime < 250)
     {
- 	Click
-	Sleep 10
-	Send "{Home}+{End}"
-
+        Click
+        Sleep 10
+        Send "{Home}+{End}"
     }
     else
     {
-        ; 0.2초 이상 → 홀드
         ToolTip "드래그/홀드", x + 12, y + 12
         SetTimer () => ToolTip(), -600
     }

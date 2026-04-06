@@ -35,6 +35,7 @@
 #Include GoLeft.ahk
 #Include AltTapMove.ahk
 #Include SelectLine.ahk
+#Include Win+F.ahk
 
 
 ;#Include OpenMemory.ahk
