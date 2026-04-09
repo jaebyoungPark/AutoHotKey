@@ -101,6 +101,20 @@ IsUnrealActive() {
             return
         }
     }
+	 ; Notepad (메모장)
+    if WinActive("ahk_exe notepad.exe") {
+        if (elapsed < 250) {
+            Send "^s"
+            ToolTip "💾 저장 완료"
+            SetTimer(() => ToolTip(), -800)
+        }
+        else if (elapsed < 550) {
+            Send "^!s"
+            ToolTip "📁 전체 저장"
+            SetTimer(() => ToolTip(), -800)
+        }
+        return
+    }
 
     ; Chrome
     if WinActive("ahk_exe chrome.exe") {
