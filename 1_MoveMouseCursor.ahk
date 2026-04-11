@@ -7,19 +7,19 @@ CoordMode "Mouse", "Screen"
 ; ==============================
 
 ; ▶ Win 단독 (중간 가속)
-global MoveStepNormalSlow := 3.0
-global MoveStepNormalFast := 7.5
+global MoveStepNormalSlow := 4
+global MoveStepNormalFast := 4
 global NormalAccelTime   := 350
 
 ; ▶ Win + Ctrl (고속 가속) ← 원래 Alt 기능
-global MoveStepFastSlow := 9
-global MoveStepFastFast := 20
+global MoveStepFastSlow := 15
+global MoveStepFastFast := 15
 global FastAccelTime   := 250
 global MoveIntervalFast := 8
 
 ; ▶ Win + Alt (미세 가속) ← 원래 Ctrl 기능
 global MoveStepFine      := 1.5
-global MoveStepUltraFine := 0.5
+global MoveStepUltraFine := 1.5
 global FineAccelTime     := 200
 
 ; ▶ 공통
