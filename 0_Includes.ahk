@@ -5,9 +5,10 @@
 ;======================================
 
 ;#Include 0_Test.ahk
+;#Include 0_KeyHistory.ahk
 
 #Include 0_ToggleSuspend.ahk
-#Include 0_KeyHistory.ahk
+
 
 ;======================================
 ;Toggle
@@ -38,6 +39,7 @@
 #Include AltTapMove.ahk
 #Include SelectLine.ahk
 #Include Win+F.ahk
+#Include TeleportMouseCursor.ahk
 
 
 ;#Include OpenMemory.ahk
@@ -47,7 +49,7 @@
 ;======================================
 ;RShift, RAlt
 ;======================================
-#Include RShift_RAlt_MoveCursor.ahk
+#Include RShift&RAlt_MoveCursor.ahk
 
 
 #Include RShift_Delete.ahk
