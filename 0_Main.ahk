@@ -28,8 +28,8 @@ HotKeyList := [
     "!Up", "!Down", "!Numpad1", "!Numpad2",
     "RShift", "~F2", "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
     "#1", "!n", "!m", "^``", "^+``", "^SC028", "^+SC028",
-    "RShift & z", "RShift & x", "RShift & c", "RShift & v", "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", "Esc",
-    "!LButton", "^+a","#f", "F12",
+    "RShift & Tab", "!j", "!i", "!k", "!l", "^+Up", "^+Down", "+,", "+.", "!,", "!.", "+Enter", "Esc",
+    "!LButton", "^+a","#f", "F12", "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d",
     
     ; 여기에 RShift + 숫자 → Numpad 매핑 추가
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", 

@@ -259,34 +259,50 @@ RShift & r::
     }
 }
 
+; VK15 = 오른쪽 Alt (Right Alt, AltGr 키)
 ~VK15::Return
 
+; VK15(오른쪽 Alt) + WASD → 마우스 이동
 VK15 & w::MoveMouseVK15()
 VK15 & a::MoveMouseVK15()
 VK15 & s::MoveMouseVK15()
 VK15 & d::MoveMouseVK15()
+
 MoveMouseVK15()
 {
     global MoveStepNormalSlow, MoveStepNormalFast
     global NormalAccelTime, MoveInterval, VerticalRatio
+
     startTime := A_TickCount
+
     VX := SysGet(76), VY := SysGet(77)
     VW := SysGet(78), VH := SysGet(79)
     MaxX := VX + VW - 1
     MaxY := VY + VH - 1
+
     pt := Buffer(8)
     accX := 0.0
     accY := 0.0
-    while (GetKeyState("VK15", "P"))
+
+    while (GetKeyState("VK15", "P")) ; VK15 = 오른쪽 Alt 눌린 동안 반복
     {
         isLeft  := GetKeyState("a", "P")
         isRight := GetKeyState("d", "P")
         isUp    := GetKeyState("w", "P")
         isDown  := GetKeyState("s", "P")
+
         if (!isLeft && !isRight && !isUp && !isDown)
             break
+
         elapsed := A_TickCount - startTime
-        if (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
+
+        isLAlt := GetKeyState("LAlt", "P") ; 왼쪽 Alt → 초정밀 모드
+
+        if (isLAlt)
+        {
+            baseStep := 0.5  ; 🔥 초정밀 속도
+        }
+        else if (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
         {
             baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow * 0.5 : MoveStepNormalSlow
         }
@@ -294,12 +310,16 @@ MoveMouseVK15()
         {
             baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalFast : MoveStepNormalFast * 8
         }
+
         step := baseStep
+
         isDiagonal := (isLeft || isRight) && (isUp || isDown)
         verticalStep := isDiagonal ? (step * VerticalRatio) : step
+
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
+
         if (isLeft)
             accX -= step
         if (isRight)
@@ -308,16 +328,21 @@ MoveMouseVK15()
             accY -= verticalStep
         if (isDown)
             accY += verticalStep
+
         dx := Floor(accX)
         dy := Floor(accY)
+
         accX -= dx
         accY -= dy
+
         x += dx
         y += dy
+
         x := ClampRShift(x, VX, MaxX)
         y := ClampRShift(y, VY, MaxY)
+
         DllCall("SetCursorPos", "Int", x, "Int", y)
+
         Sleep MoveInterval
     }
 }
-

@@ -45,9 +45,11 @@
 
 
 ;======================================
-;RShift
+;RShift, RAlt
 ;======================================
-#Include RShift_MoveCursor.ahk
+#Include RShift_RAlt_MoveCursor.ahk
+
+
 #Include RShift_Delete.ahk
 #Include RShift_NumPad.ahk
 
