@@ -258,17 +258,14 @@ RShift & r::
         }
     }
 }
-; ==============================
-; 🖱 RShift + Z/X/C/V (마우스 이동)
-; ==============================
-RShift & z::MoveMouseRShift()
-RShift & x::MoveMouseRShift()
-RShift & c::MoveMouseRShift()
-RShift & v::MoveMouseRShift()
-; ==============================
-; 🧠 마우스 이동 함수 (중간 가속)
-; ==============================
-MoveMouseRShift()
+
+~VK15::Return
+
+VK15 & w::MoveMouseVK15()
+VK15 & a::MoveMouseVK15()
+VK15 & s::MoveMouseVK15()
+VK15 & d::MoveMouseVK15()
+MoveMouseVK15()
 {
     global MoveStepNormalSlow, MoveStepNormalFast
     global NormalAccelTime, MoveInterval, VerticalRatio
@@ -280,35 +277,29 @@ MoveMouseRShift()
     pt := Buffer(8)
     accX := 0.0
     accY := 0.0
-    while (GetKeyState("RShift", "P"))
+    while (GetKeyState("VK15", "P"))
     {
-        isLeft  := GetKeyState("z", "P")
-        isRight := GetKeyState("x", "P")
-        isUp    := GetKeyState("c", "P")
-        isDown  := GetKeyState("v", "P")
+        isLeft  := GetKeyState("a", "P")
+        isRight := GetKeyState("d", "P")
+        isUp    := GetKeyState("w", "P")
+        isDown  := GetKeyState("s", "P")
         if (!isLeft && !isRight && !isUp && !isDown)
             break
         elapsed := A_TickCount - startTime
-        ; --- 기본 속도 결정 ---
         if (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
         {
-            ; Win 누르면 느리게 (정밀 이동)
             baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow * 0.5 : MoveStepNormalSlow
         }
         else
         {
-            ; RShift 단독: 빠르게
             baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalFast : MoveStepNormalFast * 8
         }
         step := baseStep
-        ; 대각선 이동 감지
         isDiagonal := (isLeft || isRight) && (isUp || isDown)
         verticalStep := isDiagonal ? (step * VerticalRatio) : step
-        ; 현재 커서 위치 가져오기
         DllCall("GetCursorPos", "Ptr", pt)
         x := NumGet(pt, 0, "Int")
         y := NumGet(pt, 4, "Int")
-        ; 이동값 누적
         if (isLeft)
             accX -= step
         if (isRight)
@@ -323,11 +314,10 @@ MoveMouseRShift()
         accY -= dy
         x += dx
         y += dy
-        ; 화면 좌표 제한
         x := ClampRShift(x, VX, MaxX)
         y := ClampRShift(y, VY, MaxY)
-        ; 커서 이동
         DllCall("SetCursorPos", "Int", x, "Int", y)
         Sleep MoveInterval
     }
 }
+

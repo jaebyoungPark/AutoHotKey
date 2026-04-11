@@ -5,7 +5,7 @@ RShift & Tab::
 {
     Send "{Delete}"
 
-    ToolTip "🗑 Delete 실행"
+    ToolTip "🗑 Delete 실행 →"
     SetTimer(() => ToolTip(), -500)
 }
 
@@ -13,6 +13,6 @@ RShift & CapsLock::
 {
     Send "{Backspace}"
 
-    ToolTip "⌫ Backspace 실행"
+    ToolTip "⌫ Backspace 실행 ←"
     SetTimer(() => ToolTip(), -500)
 }

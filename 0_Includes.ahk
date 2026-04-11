@@ -4,8 +4,10 @@
 ;Test
 ;======================================
 
-#Include 0_Test.ahk
+;#Include 0_Test.ahk
+
 #Include 0_ToggleSuspend.ahk
+#Include 0_KeyHistory.ahk
 
 ;======================================
 ;Toggle
