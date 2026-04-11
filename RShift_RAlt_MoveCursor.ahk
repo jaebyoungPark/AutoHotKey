@@ -271,9 +271,7 @@ VK15 & d::MoveMouseVK15()
 MoveMouseVK15()
 {
     global MoveStepNormalSlow, MoveStepNormalFast
-    global NormalAccelTime, MoveInterval, VerticalRatio
-
-    startTime := A_TickCount
+    global MoveInterval, VerticalRatio
 
     VX := SysGet(76), VY := SysGet(77)
     VW := SysGet(78), VH := SysGet(79)
@@ -281,10 +279,11 @@ MoveMouseVK15()
     MaxY := VY + VH - 1
 
     pt := Buffer(8)
+
     accX := 0.0
     accY := 0.0
 
-    while (GetKeyState("VK15", "P")) ; VK15 = 오른쪽 Alt 눌린 동안 반복
+    while (GetKeyState("VK15", "P"))
     {
         isLeft  := GetKeyState("a", "P")
         isRight := GetKeyState("d", "P")
@@ -294,21 +293,21 @@ MoveMouseVK15()
         if (!isLeft && !isRight && !isUp && !isDown)
             break
 
-        elapsed := A_TickCount - startTime
-
-        isLAlt := GetKeyState("LAlt", "P") ; 왼쪽 Alt → 초정밀 모드
+        ; 🔥 속도 모드 분기
+        isLAlt   := GetKeyState("LAlt", "P")    ; 초정밀
+        isLShift := GetKeyState("LShift", "P")  ; 빠른 이동
 
         if (isLAlt)
         {
-            baseStep := 0.5  ; 🔥 초정밀 속도
+            baseStep := 0.5   ; 초정밀
         }
-        else if (GetKeyState("LWin", "P") || GetKeyState("RWin", "P"))
+        else if (isLShift)
         {
-            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalSlow * 0.5 : MoveStepNormalSlow
+            baseStep := MoveStepNormalFast * 4  ; 빠른 속도 (원하면 값 조절)
         }
         else
         {
-            baseStep := (elapsed < NormalAccelTime) ? MoveStepNormalFast : MoveStepNormalFast * 8
+            baseStep := MoveStepNormalFast      ; 기본 속도 (항상 일정)
         }
 
         step := baseStep
