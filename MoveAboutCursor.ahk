@@ -345,3 +345,125 @@ MoveMouseVK15()
         Sleep MoveInterval
     }
 }
+
+
+#Requires AutoHotkey v2.0
+#SingleInstance Force
+CoordMode "Mouse", "Screen"
+
+; ==============================
+; 🔧 전역 설정값
+; ==============================
+global MoveStepNormalSlow := 2.2
+global MoveStepNormalFast := 5.5
+global MoveInterval       := 10
+global VerticalRatio      := 0.7
+
+; ==============================
+; Win 키 단독 입력 방지
+; ==============================
+~LWin::Return
+
+; ==============================
+; Win + 방향키 → 마우스 이동
+; ==============================
+LWin & Up::MoveMouseWin()
+LWin & Left::MoveMouseWin()
+LWin & Down::MoveMouseWin()
+LWin & Right::MoveMouseWin()
+
+MoveMouseWin()
+{
+    global MoveStepNormalSlow, MoveStepNormalFast
+    global MoveInterval, VerticalRatio
+
+    VX := SysGet(76), VY := SysGet(77)
+    VW := SysGet(78), VH := SysGet(79)
+    MaxX := VX + VW - 1
+    MaxY := VY + VH - 1
+
+    pt := Buffer(8)
+
+    accX := 0.0
+    accY := 0.0
+
+    while (GetKeyState("LWin", "P"))
+    {
+        isLeft  := GetKeyState("Left", "P")
+        isRight := GetKeyState("Right", "P")
+        isUp    := GetKeyState("Up", "P")
+        isDown  := GetKeyState("Down", "P")
+
+        if (!isLeft && !isRight && !isUp && !isDown)
+            break
+
+        ; ==============================
+        ; 🔥 속도 모드 (Alt / Shift / Ctrl)
+        ; ==============================
+        isLAlt   := GetKeyState("LAlt", "P")
+        isLShift := GetKeyState("LShift", "P")
+        isLCtrl  := GetKeyState("LCtrl", "P")
+
+        if (isLAlt)
+        {
+            baseStep := 0.5                          ; 🎯 초정밀
+        }
+        else if (isLCtrl)
+        {
+            baseStep := MoveStepNormalFast * 4       ; 🚀 터보
+        }
+        else if (isLShift)
+        {
+            baseStep := MoveStepNormalFast * 2       ; ⚡ 중속
+        }
+        else
+        {
+            baseStep := MoveStepNormalFast           ; 기본
+        }
+
+        step := baseStep
+
+        ; ==============================
+        ; 대각선 보정
+        ; ==============================
+        isDiagonal := (isLeft || isRight) && (isUp || isDown)
+        verticalStep := isDiagonal ? (step * VerticalRatio) : step
+
+        DllCall("GetCursorPos", "Ptr", pt)
+        x := NumGet(pt, 0, "Int")
+        y := NumGet(pt, 4, "Int")
+
+        if (isLeft)
+            accX -= step
+        if (isRight)
+            accX += step
+        if (isUp)
+            accY -= verticalStep
+        if (isDown)
+            accY += verticalStep
+
+        dx := Floor(accX)
+        dy := Floor(accY)
+
+        accX -= dx
+        accY -= dy
+
+        x += dx
+        y += dy
+
+        x := Clamp(x, VX, MaxX)
+        y := Clamp(y, VY, MaxY)
+
+        DllCall("SetCursorPos", "Int", x, "Int", y)
+
+        Sleep MoveInterval
+    }
+}
+
+; ==============================
+; 좌표 제한
+; ==============================
+Clamp(val, min, max)
+{
+    return val < min ? min : (val > max ? max : val)
+}

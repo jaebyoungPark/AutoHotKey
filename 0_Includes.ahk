@@ -40,6 +40,7 @@
 #Include SelectLine.ahk
 #Include Win+F.ahk
 #Include TeleportMouseCursor.ahk
+#Include MoveAboutCursor.ahk
 
 
 ;#Include OpenMemory.ahk
@@ -49,7 +50,6 @@
 ;======================================
 ;RShift, RAlt
 ;======================================
-#Include RShift&RAlt_MoveCursor.ahk
 
 
 #Include RShift_Delete.ahk
@@ -83,7 +83,7 @@
 #Include 1_MouseRightPressed.ahk
 #Include 1_SwitchTap.ahk
 #Include 1_SwitchCursor.ahk
-#Include 1_MoveMouseCursor.ahk
+
 #Include 1_HeaderAndCpp.ahk
 
 ;#Include 1_MoveCursor_Deprecated.ahk
