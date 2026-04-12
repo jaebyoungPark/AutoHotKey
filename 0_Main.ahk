@@ -32,7 +32,8 @@ HotKeyList := [
     "!LButton", "^+a","#f", "F12", "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d",
     "vk19 + Q", "vk19 + W", "vk19 + E",
     "vk19 + A", "vk19 + S", "vk19 + D",
-    "vk19 + Z", "vk19 + X", "vk19 + C"
+    "vk19 + Z", "vk19 + X", "vk19 + C",
+    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right",
     
     ; 여기에 RShift + 숫자 → Numpad 매핑 추가
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", 

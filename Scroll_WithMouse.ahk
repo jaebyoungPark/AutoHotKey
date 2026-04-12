@@ -1,32 +1,24 @@
 ﻿#Requires AutoHotkey v2.0
-
 global WheelQueue := 0
 global WheelDir := ""
 global LastInputTime := 0
 global WheelRunning := false
-global WheelStack := 0   ; 누적 단계 (6회 단위)
+global WheelStack := 0
 
 SmoothWheel(dir) {
     global WheelQueue, WheelDir, LastInputTime, WheelRunning, WheelStack
-
     now := A_TickCount
 
-    if (WheelRunning) {
-
-        if (dir = WheelDir && (now - LastInputTime) <= 300) {
-            WheelQueue += 4
-            WheelStack++
-        }
-        else {
-            WheelDir := dir
-            WheelQueue := 2
-            WheelStack := 1
-        }
-
+    if ((now - LastInputTime) <= 300 && dir = WheelDir) {
+        WheelQueue += 4
+        WheelStack++
     } else {
         WheelDir := dir
         WheelQueue := 2
         WheelStack := 1
+    }
+
+    if (!WheelRunning) {
         WheelRunning := true
         SetTimer WheelLoop, 1
     }
@@ -37,33 +29,21 @@ SmoothWheel(dir) {
 
 WheelLoop() {
     global WheelQueue, WheelDir, LastInputTime, WheelRunning, WheelStack
-
     if (WheelQueue > 0) {
         Click WheelDir
         WheelQueue--
-
-        ; ==========================
-        ; 💥 초가속 터보 계산식
-        ; ==========================
-        if (WheelStack <= 2) {
+        if (WheelStack <= 2)
             speed := 8
-        }
-        else if (WheelStack <= 4) {
+        else if (WheelStack <= 4)
             speed := 4
-        }
-        else if (WheelStack <= 6) {
+        else if (WheelStack <= 6)
             speed := 1
-        }
-        else {
-            speed := 0   ; 🔥 터보
-        }
-
+        else
+            speed := 0
         if (speed > 0)
             Sleep speed
-
         return
     }
-
     if ((A_TickCount - LastInputTime) > 300) {
         WheelRunning := false
         WheelStack := 0

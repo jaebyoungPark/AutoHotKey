@@ -354,7 +354,7 @@ CoordMode "Mouse", "Screen"
 ; ==============================
 ; 🔧 전역 설정값
 ; ==============================
-global MoveStepNormalSlow := 2.2
+global MoveStepNormalSlow := 2
 global MoveStepNormalFast := 5.5
 global MoveInterval       := 10
 global VerticalRatio      := 0.7
@@ -406,7 +406,7 @@ MoveMouseWin()
 
         if (isLAlt)
         {
-            baseStep := 0.5                          ; 🎯 초정밀
+            baseStep := 0.7                          ; 🎯 초정밀
         }
         else if (isLCtrl)
         {
