@@ -1,4 +1,8 @@
-﻿
+﻿;======================================
+;Utility
+;======================================
+
+#Include PowerSavingMode.ahk
 
 ;======================================
 ;Test
@@ -40,7 +44,8 @@
 #Include SelectLine.ahk
 #Include Win+F.ahk
 #Include TeleportMouseCursor.ahk
-#Include MoveAboutCursor.ahk
+#Include MoveCursor.ahk
+
 
 
 ;#Include OpenMemory.ahk

@@ -80,14 +80,23 @@ $RButton:: {
         Send "{RButton}"
     }
     else if (elapsed < 0.55) {
-        ; ======== 여기서 모니터 이동 실행 ========
+
+        ; 🔥 모니터 개수 체크
+        monitorCount := MonitorGetCount()
+
+        ; 👉 싱글 모니터면 기존 동작 유지
+        if (monitorCount < 2) {
+            Send "{RButton}"
+            return
+        }
+
         global monitor1X, monitor1Y, monitor2X, monitor2Y
 
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY
 
         currentMonitor := 0
-        Loop MonitorGetCount() {
+        Loop monitorCount {
             MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
             if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
                 currentMonitor := A_Index
@@ -126,49 +135,15 @@ $RButton:: {
 ; Win + Page Down
 ; =============================
 #PgDn:: { 
+    monitorCount := MonitorGetCount()
+
+    ; 🔥 싱글 모니터면 이동 없이 GUI만 표시
+    if (monitorCount < 2) {
+        ShowHereGUI()
+        return
+    }
+
     SendInput "#'" 
     Sleep 100
     ShowHereGUI()
 }
-
-
-/* 주석처리
-; =============================
-; RButton (기존 방식 복구)
-; =============================
-$RButton:: { 
-    start := A_TickCount 
-    MouseGetPos &sx, &sy 
-    isDrag := false 
- 
-    while GetKeyState("RButton", "P") { 
-        Sleep 10 
-        MouseGetPos &cx, &cy 
-        if (Abs(cx - sx) > 4 || Abs(cy - sy) > 4) { 
-            isDrag := true 
-            break 
-        } 
-        if ((A_TickCount - start) > 200) 
-            break 
-    } 
- 
-    if (isDrag) { 
-        Click "Right Down"
-        KeyWait "RButton"
-        Click "Right Up"
-        return 
-    } 
- 
-    KeyWait "RButton" 
-    elapsed := (A_TickCount - start) / 1000.0 
- 
-    if (elapsed < 0.20) { 
-        Send "{RButton}" 
-    } 
-    else if (elapsed < 0.55) { 
-        SendInput "#'"
-        Sleep 50
-        ShowHereGUI()
-    } 
-}
-*/

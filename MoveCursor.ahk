@@ -259,92 +259,6 @@ RShift & r::
     }
 }
 
-; VK15 = 오른쪽 Alt (Right Alt, AltGr 키)
-~VK15::Return
-
-; VK15(오른쪽 Alt) + WASD → 마우스 이동
-VK15 & w::MoveMouseVK15()
-VK15 & a::MoveMouseVK15()
-VK15 & s::MoveMouseVK15()
-VK15 & d::MoveMouseVK15()
-
-MoveMouseVK15()
-{
-    global MoveStepNormalSlow, MoveStepNormalFast
-    global MoveInterval, VerticalRatio
-
-    VX := SysGet(76), VY := SysGet(77)
-    VW := SysGet(78), VH := SysGet(79)
-    MaxX := VX + VW - 1
-    MaxY := VY + VH - 1
-
-    pt := Buffer(8)
-
-    accX := 0.0
-    accY := 0.0
-
-    while (GetKeyState("VK15", "P"))
-    {
-        isLeft  := GetKeyState("a", "P")
-        isRight := GetKeyState("d", "P")
-        isUp    := GetKeyState("w", "P")
-        isDown  := GetKeyState("s", "P")
-
-        if (!isLeft && !isRight && !isUp && !isDown)
-            break
-
-        ; 🔥 속도 모드 분기
-        isLAlt   := GetKeyState("LAlt", "P")    ; 초정밀
-        isLShift := GetKeyState("LShift", "P")  ; 빠른 이동
-
-        if (isLAlt)
-        {
-            baseStep := 0.5   ; 초정밀
-        }
-        else if (isLShift)
-        {
-            baseStep := MoveStepNormalFast * 4  ; 빠른 속도 (원하면 값 조절)
-        }
-        else
-        {
-            baseStep := MoveStepNormalFast      ; 기본 속도 (항상 일정)
-        }
-
-        step := baseStep
-
-        isDiagonal := (isLeft || isRight) && (isUp || isDown)
-        verticalStep := isDiagonal ? (step * VerticalRatio) : step
-
-        DllCall("GetCursorPos", "Ptr", pt)
-        x := NumGet(pt, 0, "Int")
-        y := NumGet(pt, 4, "Int")
-
-        if (isLeft)
-            accX -= step
-        if (isRight)
-            accX += step
-        if (isUp)
-            accY -= verticalStep
-        if (isDown)
-            accY += verticalStep
-
-        dx := Floor(accX)
-        dy := Floor(accY)
-
-        accX -= dx
-        accY -= dy
-
-        x += dx
-        y += dy
-
-        x := ClampRShift(x, VX, MaxX)
-        y := ClampRShift(y, VY, MaxY)
-
-        DllCall("SetCursorPos", "Int", x, "Int", y)
-
-        Sleep MoveInterval
-    }
-}
 
 
 #Requires AutoHotkey v2.0
@@ -355,7 +269,7 @@ CoordMode "Mouse", "Screen"
 ; 🔧 전역 설정값
 ; ==============================
 global MoveStepNormalSlow := 2
-global MoveStepNormalFast := 5.5
+global MoveStepNormalFast := 5
 global MoveInterval       := 10
 global VerticalRatio      := 0.7
 

@@ -8,8 +8,7 @@ global WheelStack := 0
 SmoothWheel(dir) {
     global WheelQueue, WheelDir, LastInputTime, WheelRunning, WheelStack
     now := A_TickCount
-
-    if ((now - LastInputTime) <= 300 && dir = WheelDir) {
+    if ((now - LastInputTime) <= 500 && dir = WheelDir) {
         WheelQueue += 4
         WheelStack++
     } else {
@@ -17,12 +16,10 @@ SmoothWheel(dir) {
         WheelQueue := 2
         WheelStack := 1
     }
-
     if (!WheelRunning) {
         WheelRunning := true
         SetTimer WheelLoop, 1
     }
-
     LastInputTime := now
     ToolTip "휠 누적: " WheelStack "단"
 }
@@ -44,7 +41,7 @@ WheelLoop() {
             Sleep speed
         return
     }
-    if ((A_TickCount - LastInputTime) > 300) {
+    if ((A_TickCount - LastInputTime) > 500) {
         WheelRunning := false
         WheelStack := 0
         ToolTip

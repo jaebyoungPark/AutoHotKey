@@ -11,13 +11,18 @@ global monitor2X := 0, monitor2Y := 0
 ; Win + '  → 모니터 이동 (중앙/복원)
 ; =============================
 #':: {
-    global monitor1X, monitor1Y, monitor2X, monitor2Y  ; <- 전역 변수 선언
+    global monitor1X, monitor1Y, monitor2X, monitor2Y
+
+    monitorCount := MonitorGetCount()
+    if (monitorCount < 2) {
+        return  ; 🔥 모니터 1개면 아무 동작 안 함 (에러 방지)
+    }
 
     CoordMode("Mouse", "Screen")
     MouseGetPos &mouseX, &mouseY
 
     currentMonitor := 0
-    Loop MonitorGetCount() {
+    Loop monitorCount {
         MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
         if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
             currentMonitor := A_Index
@@ -50,13 +55,14 @@ global monitor2X := 0, monitor2Y := 0
             MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
     }
 }
+
 ; =============================
-; Numpad1 → GUI 표시 + 모니터 이동
+; Win + Numpad1 → GUI 표시 + 모니터 이동
 ; =============================
 #Numpad1:: {
     SendInput "#'"  ; 모니터 이동
 
-    Sleep 50  ; 마우스 이동 안정화
+    Sleep 50
 
     MouseGetPos &x, &y
     myGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
