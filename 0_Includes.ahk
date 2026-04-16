@@ -34,8 +34,8 @@
 #Include ToggleSubstitute.ahk
 #Include Volume.ahk
 #Include SwitchCursor.ahk
-#Include Scroll_Hard_WithMouse.ahk
-#Include Scroll_WithMouse.ahk
+#Include ScrollWithMouse.ahk
+
 #Include MouseLeftPressed.ahk
 #Include GoRight.ahk
 #Include ToggleComments.ahk
