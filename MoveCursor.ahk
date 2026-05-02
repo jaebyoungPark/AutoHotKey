@@ -137,11 +137,11 @@ RShift & q::
         }
     } else if (elapsed < 0.5) {
         if (isLShift) {
-            Send("+{Left 12}")
-            ShowTooltip("⏮ 12칸 선택")
+            Send("+{Left 9}")
+            ShowTooltip("⏮ 9칸 선택")
         } else {
-            SendArrow("Left", 12)
-            ShowTooltip("⏮ 12칸")
+            SendArrow("Left", 9)
+            ShowTooltip("⏮ 9칸")
         }
     } else {
         if (isLShift) {
@@ -176,11 +176,11 @@ RShift & w::
         }
     } else if (elapsed < 0.5) {
         if (isLShift) {
-            Send("+{Right 12}")
-            ShowTooltip("⏭ 12칸 선택")
+            Send("+{Right 9}")
+            ShowTooltip("⏭ 9칸 선택")
         } else {
-            SendArrow("Right", 12)
-            ShowTooltip("⏭ 12칸")
+            SendArrow("Right", 9)
+            ShowTooltip("⏭ 9칸")
         }
     } else {
         if (isLShift) {
