@@ -37,7 +37,9 @@ HotKeyList := [
     
     ; 여기에 RShift + 숫자 → Numpad 매핑 추가
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", 
-    "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0"
+    "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0",
+
+"!a", "!d", "!w", "!s"
 ]
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
 

@@ -24,3 +24,28 @@
 {
     Send("{Alt Down}{Down}")  ; Alt는 유지
 }
+
+
+#HotIf WinActive("ahk_class XamlExplorerHostIslandWindow")
+
+!a::  ; Alt + A → Left
+{
+    Send "{Alt Down}{Left}"
+}
+
+!d::  ; Alt + D → Right
+{
+    Send "{Alt Down}{Right}"
+}
+
+!w::  ; Alt + W → Up
+{
+    Send "{Alt Down}{Up}"
+}
+
+!s::  ; Alt + S → Down
+{
+    Send "{Alt Down}{Down}"
+}
+
+#HotIf
