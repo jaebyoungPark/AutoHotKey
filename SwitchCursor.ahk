@@ -147,3 +147,54 @@ $RButton:: {
     Sleep 100
     ShowHereGUI()
 }
+
+; =============================
+; Win + Q
+; 다른 모니터 중앙으로 이동 후 클릭
+; =============================
+#q:: {
+    monitorCount := MonitorGetCount()
+
+    ; 듀얼 모니터 아니면 종료
+    if (monitorCount < 2)
+        return
+
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+
+    currentMonitor := 0
+
+    ; 현재 마우스가 있는 모니터 찾기
+    Loop monitorCount {
+        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+
+        if (mouseX >= mLeft && mouseX < mRight
+         && mouseY >= mTop  && mouseY < mBottom) {
+
+            currentMonitor := A_Index
+            break
+        }
+    }
+
+    if (currentMonitor = 0)
+        return
+
+    ; 다음 모니터 결정
+    if (currentMonitor = 1)
+        nextMonitor := 2
+    else
+        nextMonitor := 1
+
+    ; 다음 모니터 영역 가져오기
+    MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
+
+    ; 중앙 좌표 계산
+    targetX := nLeft + (nRight - nLeft) / 2
+    targetY := nTop + (nBottom - nTop) / 2
+
+    ; 이동
+    MouseMove(targetX, targetY, 0)
+
+    ; 클릭
+    Click
+}
