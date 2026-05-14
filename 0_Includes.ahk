@@ -13,12 +13,15 @@
 
 #Include 0_ToggleSuspend.ahk
 
+#Include 0_NumPadLauncher.ahk
+
 
 ;======================================
 ;Toggle
 ;======================================
 
 #Include ToggleSuspend.ahk
+
 
 
 

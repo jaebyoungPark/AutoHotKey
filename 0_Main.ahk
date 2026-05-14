@@ -8,6 +8,7 @@ MySuspended := false
 
 
 
+
 HotKeyList := [
     "RButton", "XButton1", "XButton2", "MButton", 
     "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton",
@@ -41,6 +42,20 @@ HotKeyList := [
 
 "!a", "!d", "!w", "!s"
 ]
+
+NumPadSuspended := false
+NumPadKeyList := [
+    "Numpad1", "Numpad2", "Numpad3",
+    "Numpad4", "Numpad5", "Numpad6",
+    "Numpad9"
+]
+
+;======================================
+; Toggle NumPad
+;======================================
+#Include 0_ToggleNumPad.ahk
+
+
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
 
 
