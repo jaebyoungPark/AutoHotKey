@@ -55,7 +55,7 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
 ; [함수 2] 사이트 전용 (짧게: 전환 / 0.4초: 새 탭 추가)
 ; ==================================================
 OpenSite(keyName, searchTitle, url) {
-    if KeyWait(keyName, "T0.4") {
+    if KeyWait(keyName, "T0.35") {
         ; 짧게 누름: 기존의 강력한 검색 로직 호출
         ; 브라우저 제목 매칭을 위해 타이틀 뒤에 ahk_exe chrome.exe를 붙여줌
         ActivateOrCycleEx(searchTitle . " ahk_exe chrome.exe", 'chrome.exe --new-window "' . url . '"', true)
