@@ -2,50 +2,62 @@
 #SingleInstance Force
 
 ; ==============================
-; Alt + IJKL → Alt 유지 + 방향키 (문구 제거)
+; Alt + IJKL → Alt 유지 + 방향키
 ; ==============================
 
-!j::  ; Alt + J → Left
-{
-    Send("{Alt Down}{Left}")  ; Alt는 유지
-}
-
-!l::  ; Alt + L → Right
-{
-    Send("{Alt Down}{Right}") ; Alt는 유지
-}
-
-!i::  ; Alt + I → Up
-{
-    Send("{Alt Down}{Up}")    ; Alt는 유지
-}
-
-!k::  ; Alt + K → Down
-{
-    Send("{Alt Down}{Down}")  ; Alt는 유지
-}
-
-
-#HotIf WinActive("ahk_class XamlExplorerHostIslandWindow")
-
-!a::  ; Alt + A → Left
+!j::
 {
     Send "{Alt Down}{Left}"
 }
 
-!d::  ; Alt + D → Right
+!l::
 {
     Send "{Alt Down}{Right}"
 }
 
-!w::  ; Alt + W → Up
+!i::
 {
     Send "{Alt Down}{Up}"
 }
 
-!s::  ; Alt + S → Down
+!k::
 {
     Send "{Alt Down}{Down}"
 }
 
-#HotIf
+
+; ==============================
+; 파일 탐색기일 때만 WASD 사용
+; ==============================
+
+!a::
+{
+    if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    {
+        Send "{Alt Down}{Left}"
+    }
+}
+
+!d::
+{
+    if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    {
+        Send "{Alt Down}{Right}"
+    }
+}
+
+!w::
+{
+    if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    {
+        Send "{Alt Down}{Up}"
+    }
+}
+
+!s::
+{
+    if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    {
+        Send "{Alt Down}{Down}"
+    }
+}

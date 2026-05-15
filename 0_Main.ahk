@@ -6,8 +6,8 @@ NumPadSuspended := true
 
 NumPadKeyList := [
     "Numpad1", "Numpad2", "Numpad3",
-    "Numpad4", "Numpad5", "Numpad6",
-    "Numpad9", "Numpad7"
+    "Numpad4", "Numpad5", "Numpad6", "Numpad7", "Numpad8",
+    "Numpad9", "NumpadSub", "NumpadAdd", "NumpadDiv", "NumpadMult" 
 ]
 ; ← 여기에 추가
 for key in NumPadKeyList {
