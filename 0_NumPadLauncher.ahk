@@ -3,35 +3,39 @@
 ActivateOrCycle(searchTitle, exePath := "", runCommand := "") {
     static WinIndexes := Map()
     
-    ; 인덱스 초기화
     if !WinIndexes.Has(searchTitle)
         WinIndexes[searchTitle] := 1
 
-    ; 대상 창 목록 가져오기
     windows := WinGetList(searchTitle)
     count := windows.Length
 
-    ; 1. 창이 하나도 없으면 실행 후 종료
+    ; 1. 창이 없으면 실행
     if (count = 0) {
         if (runCommand != "")
             Run(runCommand)
         return
     }
 
-    ; 2. 저장된 인덱스가 현재 창 개수를 초과하면 1로 리셋 (Error: Invalid index 방지)
-    if (WinIndexes[searchTitle] > count) {
+    ; 2. 인덱스 안전 점검
+    if (WinIndexes[searchTitle] > count)
         WinIndexes[searchTitle] := 1
-    }
 
     currentIndex := WinIndexes[searchTitle]
     activeHwnd := WinActive("A")
 
-    ; 3. 현재 활성 창이 리스트의 해당 인덱스 창과 같다면 '다음' 창으로 인덱스 이동
+    ; 3. 핵심 로직: 창이 하나뿐이거나, 현재 창이 이미 활성화된 상태라면?
     if (activeHwnd = windows[currentIndex]) {
-        currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
+        if (count = 1) {
+            ; 창이 하나뿐일 때 버튼을 더 누르면 탭 전환 (Ctrl + Tab)
+            Send "^{Tab}"
+            return 
+        } else {
+            ; 창이 여러 개면 다음 창으로 인덱스 이동
+            currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
+        }
     }
 
-    ; 4. 최종 결정된 인덱스로 창 활성화
+    ; 4. 창 활성화
     try {
         WinActivate(windows[currentIndex])
         WinIndexes[searchTitle] := currentIndex
@@ -40,7 +44,7 @@ ActivateOrCycle(searchTitle, exePath := "", runCommand := "") {
     }
 }
 
-; --- 단축키 할당부 (동일) ---
+; --- 아래 단축키 설정은 동일하게 사용하시면 됩니다 ---
 
 Numpad1:: ActivateOrCycle("Visual Studio", , "devenv.exe")
 Numpad2:: ActivateOrCycle("Udemy ahk_exe chrome.exe", , 'chrome.exe --new-window "https://www.udemy.com/"')
