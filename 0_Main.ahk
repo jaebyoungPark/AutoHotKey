@@ -1,14 +1,15 @@
 ﻿; 메인 스크립트
 #Include 0_Includes.ahk
 
-MySuspended    := false
+MySuspended     := false
 NumPadSuspended := true
 
 NumPadKeyList := [
     "Numpad1", "Numpad2", "Numpad3",
     "Numpad4", "Numpad5", "Numpad6", "Numpad7", "Numpad8",
-    "Numpad9", "NumpadSub", "NumpadAdd", "NumpadDiv", "NumpadMult" 
+    "Numpad9", "NumpadSub", "NumpadAdd", "NumpadDiv", "NumpadMult"
 ]
+
 ; ← 여기에 추가
 for key in NumPadKeyList {
     try {
@@ -23,8 +24,8 @@ for key in NumPadKeyList {
 ; Toggle NumPad
 ;======================================
 
-
 HotKeyList := [
+
     ; 마우스
     "RButton", "XButton1", "XButton2", "MButton",
     "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton",
@@ -53,6 +54,7 @@ HotKeyList := [
     "^+Up",   "^+Down",
     "!Up",    "!Down",
     "!a",     "!d",      "!w",       "!s",
+    "!q",     "!e",
 
     ; PageUp/Down
     "PgUp", "PgDn", "^PgDown",
@@ -104,6 +106,7 @@ HotKeyList := [
 ;======================================
 ; Shift+F1 + Esc 0.5초 유지 → 종료
 ;======================================
+
 ~+F1::
 {
     start := A_TickCount

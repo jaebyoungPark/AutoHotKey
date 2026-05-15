@@ -4,9 +4,15 @@ global LStartTime := 0
 
 IsUnrealActive_SelectLine()
 {
+    hwnd := WinExist("A")
+
+    title := ""
+    if hwnd
+        title := WinGetTitle(hwnd)
+
     return WinActive("ahk_exe UE4Editor.exe")
         || WinActive("ahk_exe UnrealEditor.exe")
-        || InStr(WinGetTitle("A"), "Unreal Editor")
+        || InStr(title, "Unreal Editor")
         || WinActive("ahk_class UnrealWindow")
 }
 
@@ -15,15 +21,11 @@ IsUnrealActive_SelectLine()
 {
     global LStartTime
 
-    ; 언리얼 엔진에서는 기존 동작만 수행
+    ; 언리얼 엔진에서는 비활성
     if IsUnrealActive_SelectLine()
         return
 
-    ; Visual Studio에서만 시간 기록
-    if WinActive("ahk_exe devenv.exe")
-    {
-        LStartTime := A_TickCount
-    }
+    LStartTime := A_TickCount
 }
 
 ; Alt + LButton Up
@@ -31,12 +33,8 @@ IsUnrealActive_SelectLine()
 {
     global LStartTime
 
-    ; 언리얼 엔진에서는 기존 동작만 수행
+    ; 언리얼 엔진에서는 비활성
     if IsUnrealActive_SelectLine()
-        return
-
-    ; Visual Studio 아닐 경우 → 기존 동작만 유지
-    if !WinActive("ahk_exe devenv.exe")
         return
 
     holdTime := A_TickCount - LStartTime
@@ -50,7 +48,7 @@ IsUnrealActive_SelectLine()
         Sleep 10
         Send "{Home}+{End}"
     }
-    ; 길게 누름/드래그 → 원래 Alt 드래그 사용
+    ; 길게 누름/드래그 → 원래 Alt 드래그 유지
     else
     {
         ToolTip "드래그/홀드", x + 12, y + 12
