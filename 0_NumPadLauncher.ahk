@@ -1,87 +1,60 @@
 ﻿#Requires AutoHotkey v2.0
 
-; 각 사이트는 새 창으로 열고 해당 탭이 활성 상태여야 검색 가능
-; 다른 탭이 활성화되어 있으면 WinExist가 못 찾을 수 있음
+ActivateOrCycle(searchTitle, exePath := "", runCommand := "") {
+    static WinIndexes := Map()
+    
+    ; 인덱스 초기화
+    if !WinIndexes.Has(searchTitle)
+        WinIndexes[searchTitle] := 1
 
-; 넘패드 1 → Visual Studio
-Numpad1::
-{
-    if WinExist("Visual Studio")
-    {
-        WinActivate
-    }
-    else
-    {
-        Run "devenv.exe"
-    }
-}
+    ; 대상 창 목록 가져오기
+    windows := WinGetList(searchTitle)
+    count := windows.Length
 
-; 넘패드 2 → Udemy
-Numpad2::
-{
-    if WinExist("Udemy")
-    {
-        WinActivate
+    ; 1. 창이 하나도 없으면 실행 후 종료
+    if (count = 0) {
+        if (runCommand != "")
+            Run(runCommand)
+        return
     }
-    else
-    {
-        Run "https://www.udemy.com/"
-    }
-}
 
-; 넘패드 3 → 치지직
-Numpad3::
-{
-    if WinExist("치지직") || WinExist("CHZZK")
-    {
-        WinActivate
+    ; 2. 저장된 인덱스가 현재 창 개수를 초과하면 1로 리셋 (Error: Invalid index 방지)
+    if (WinIndexes[searchTitle] > count) {
+        WinIndexes[searchTitle] := 1
     }
-    else
-    {
-        Run "https://chzzk.naver.com/"
+
+    currentIndex := WinIndexes[searchTitle]
+    activeHwnd := WinActive("A")
+
+    ; 3. 현재 활성 창이 리스트의 해당 인덱스 창과 같다면 '다음' 창으로 인덱스 이동
+    if (activeHwnd = windows[currentIndex]) {
+        currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
+    }
+
+    ; 4. 최종 결정된 인덱스로 창 활성화
+    try {
+        WinActivate(windows[currentIndex])
+        WinIndexes[searchTitle] := currentIndex
+    } catch {
+        WinIndexes[searchTitle] := 1
     }
 }
 
-; 넘패드 4 → YouTube
-Numpad4::
-{
-    if WinExist("YouTube ahk_exe chrome.exe")
-    {
-        WinActivate
-    }
-    else
-    {
-        Run "https://www.youtube.com/"
-    }
-}
+; --- 단축키 할당부 (동일) ---
 
-; 넘패드 5 → 네이버
-Numpad5::
-{
-    if WinExist("NAVER") || WinExist("네이버")
-    {
-        WinActivate
-    }
-    else
-    {
-        Run "https://www.naver.com/"
-    }
+Numpad1:: ActivateOrCycle("Visual Studio", , "devenv.exe")
+Numpad2:: ActivateOrCycle("Udemy ahk_exe chrome.exe", , 'chrome.exe --new-window "https://www.udemy.com/"')
+Numpad3:: {
+    prevMode := SetTitleMatchMode("RegEx")
+    ActivateOrCycle("치지직|CHZZK", , 'chrome.exe --new-window "https://chzzk.naver.com/"')
+    SetTitleMatchMode(prevMode)
 }
-
-; 넘패드 6 → 메모장
-Numpad6::
-{
-    if WinExist("ahk_exe notepad.exe")
-    {
-        WinActivate
-    }
-    else
-    {
-        Run "notepad.exe"
-    }
+Numpad4:: ActivateOrCycle("YouTube ahk_exe chrome.exe", , 'chrome.exe --new-window "https://www.youtube.com/"')
+Numpad5:: {
+    prevMode := SetTitleMatchMode("RegEx")
+    ActivateOrCycle("NAVER|네이버", , 'chrome.exe --new-window "https://www.naver.com/"')
+    SetTitleMatchMode(prevMode)
 }
-; 넘패드 9 → 크롬 새 창
-Numpad9::
-{
-    Run "chrome.exe"
-}
+Numpad6:: ActivateOrCycle("ahk_exe notepad.exe", , "notepad.exe")
+Numpad7:: ActivateOrCycle("Unreal Editor")
+Numpad9:: Run "chrome.exe --new-window"

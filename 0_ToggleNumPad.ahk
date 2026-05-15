@@ -1,14 +1,19 @@
 ﻿#Requires AutoHotkey v2.0
 
-F10:: {
+$Numpad0:: {
     global NumPadSuspended, NumPadKeyList
+
     start := A_TickCount
-    while GetKeyState("F10", "P")
+
+    while GetKeyState("Numpad0", "P")
         Sleep 10
+
     elapsed := A_TickCount - start
 
     if (elapsed >= 250 && elapsed <= 1000) {
+
         NumPadSuspended := !NumPadSuspended
+
         for key in NumPadKeyList {
             try {
                 Hotkey(key, "", NumPadSuspended ? "Off" : "On")
@@ -25,7 +30,10 @@ F10:: {
         } else {
             SoundPlay "C:\Windows\Media\Windows Notify.wav", 1
         }
+
     } else if (elapsed < 250) {
-        Send "{F10}"
+
+        Send "{Numpad0}"
+
     }
 }
