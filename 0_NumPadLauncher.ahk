@@ -92,6 +92,9 @@ Numpad6:: OpenSite("Numpad6", "YouTube", "https://www.youtube.com/")
 Numpad7:: OpenSite("Numpad7", "NAVER|네이버", "https://www.naver.com/")
 NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
 NumpadSub:: OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
+NumLock:: OpenSite("NumLock", "dcinside|디시인사이드", "https://www.dcinside.com/")
+
+Numpad0:: WinMinimize("A")
 
 ; --- 탭 이동 ---
 NumpadDiv::  Send "^+{Tab}"

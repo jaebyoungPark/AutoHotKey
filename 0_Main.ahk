@@ -9,8 +9,8 @@ NumPadKeyList := [
     "Numpad4", "Numpad5", "Numpad6", "Numpad7", "Numpad8",
     "Numpad9",
     "NumpadSub", "NumpadAdd",
-    "NumpadDiv", "NumpadMult",
-    "NumpadDot"
+    "NumpadDiv", "NumpadMult", "Numpad0", "NumLock"
+    
 ]
 
 ; ← 여기에 추가
