@@ -81,7 +81,7 @@ OpenSite(keyName, searchTitle, url) {
 Numpad1:: ActivateOrCycleEx("Unreal Editor", , false)
 Numpad2:: ActivateOrCycleEx("ahk_exe devenv.exe", "devenv.exe", false)
 Numpad8:: ActivateOrCycleEx("ahk_exe notepad.exe", "notepad.exe", true)
-Numpad9:: Run "chrome.exe --new-window"
+
 
 ; --- 웹사이트 (짧게: 정규식으로 찾기 / 0.4초: 새 탭) ---
 ; searchTitle 부분에 정규표현식(|)을 그대로 쓸 수 있습니다.
@@ -93,6 +93,7 @@ Numpad7:: OpenSite("Numpad7", "NAVER|네이버", "https://www.naver.com/")
 NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
 NumpadSub:: OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
 NumLock:: OpenSite("NumLock", "dcinside|디시인사이드", "https://www.dcinside.com/")
+Numpad9:: OpenSite("Numpad9", "Daum|다음", "https://www.daum.net/")
 
 Numpad0:: WinMinimize("A")
 
