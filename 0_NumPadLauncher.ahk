@@ -52,15 +52,15 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
 }
 
 ; ==================================================
-; [함수 2] 사이트 전용 (짧게: 전환 / 0.4초: 새 탭 추가)
+; [함수 2] 사이트 전용 (짧게: 전환 / 길게: 새 탭 추가)
 ; ==================================================
 OpenSite(keyName, searchTitle, url) {
-    if KeyWait(keyName, "T0.35") {
+    if KeyWait(keyName, "T0.3") {
         ; 짧게 누름: 기존의 강력한 검색 로직 호출
         ; 브라우저 제목 매칭을 위해 타이틀 뒤에 ahk_exe chrome.exe를 붙여줌
         ActivateOrCycleEx(searchTitle . " ahk_exe chrome.exe", 'chrome.exe --new-window "' . url . '"', true)
     } else {
-        ; 0.4초 이상 누름: 현재 크롬에 새 탭 추가
+        ; 길게 누름: 현재 크롬에 새 탭 추가
         if WinActive("ahk_exe chrome.exe") {
             Send "^t"
             Sleep 150
@@ -80,10 +80,20 @@ OpenSite(keyName, searchTitle, url) {
 ; --- 프로그램 (이미 활성화시 가만히: false 옵션) ---
 Numpad1:: ActivateOrCycleEx("Unreal Editor", , false)
 Numpad2:: ActivateOrCycleEx("ahk_exe devenv.exe", "devenv.exe", false)
-Numpad8:: ActivateOrCycleEx("ahk_exe notepad.exe", "notepad.exe", true)
 
+Numpad8::
+{
+    if KeyWait("Numpad8", "T0.3") {
+        ; 짧게 누름 → Photos
+        ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true)
+    } else {
+        ; 길게 누름 → 메모장
+        ActivateOrCycleEx("ahk_exe notepad.exe", "notepad.exe", true)
+        KeyWait("Numpad8")
+    }
+}
 
-; --- 웹사이트 (짧게: 정규식으로 찾기 / 0.4초: 새 탭) ---
+; --- 웹사이트 (짧게: 정규식으로 찾기 / 길게: 새 탭) ---
 ; searchTitle 부분에 정규표현식(|)을 그대로 쓸 수 있습니다.
 Numpad3:: OpenSite("Numpad3", "Udemy", "https://www.udemy.com/")
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
@@ -92,10 +102,21 @@ Numpad6:: OpenSite("Numpad6", "YouTube", "https://www.youtube.com/")
 Numpad7:: OpenSite("Numpad7", "NAVER|네이버", "https://www.naver.com/")
 NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
 NumpadSub:: OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
-NumLock:: OpenSite("NumLock", "dcinside|디시인사이드", "https://www.dcinside.com/")
+NumLock:: OpenSite("NumLock", "dcinside|디시인사이드|노산", "https://gall.dcinside.com/mgallery/board/lists/?id=nobirth")
 Numpad9:: OpenSite("Numpad9", "Daum|다음", "https://www.daum.net/")
 
-Numpad0:: WinMinimize("A")
+; --- 최소화 / 전체화면 ---
+Numpad0::
+{
+    if KeyWait("Numpad0", "T0.3") {
+        ; 짧게 누름 → 현재 창 최소화
+        WinMinimize("A")
+    } else {
+        ; 길게 누름 → F11
+        Send "{F11}"
+        KeyWait("Numpad0")
+    }
+}
 
 ; --- 탭 이동 ---
 NumpadDiv::  Send "^+{Tab}"

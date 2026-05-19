@@ -153,6 +153,7 @@ $RButton:: {
 ; 다른 모니터 중앙으로 이동 후 클릭
 ; =============================
 #q:: {
+
     monitorCount := MonitorGetCount()
 
     ; 듀얼 모니터 아니면 종료
@@ -166,6 +167,7 @@ $RButton:: {
 
     ; 현재 마우스가 있는 모니터 찾기
     Loop monitorCount {
+
         MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
 
         if (mouseX >= mLeft && mouseX < mRight
@@ -197,4 +199,8 @@ $RButton:: {
 
     ; 클릭
     Click
+
+    ; 아주 짧게 표시
+    ToolTip "🖱️"
+    SetTimer () => ToolTip(), -120
 }

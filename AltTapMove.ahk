@@ -5,22 +5,22 @@
 ; Alt + IJKL → Alt 유지 + 방향키
 ; ==============================
 
-!j::
+$!j::
 {
     Send "{Alt Down}{Left}"
 }
 
-!l::
+$!l::
 {
     Send "{Alt Down}{Right}"
 }
 
-!i::
+$!i::
 {
     Send "{Alt Down}{Up}"
 }
 
-!k::
+$!k::
 {
     Send "{Alt Down}{Down}"
 }
@@ -30,7 +30,7 @@
 ; 파일 탐색기 / 크롬 전용 단축키
 ; ==============================
 
-!a::
+$!a::
 {
     ; 파일 탐색기
     if WinActive("ahk_class XamlExplorerHostIslandWindow")
@@ -42,17 +42,28 @@
     {
         Send "{Down 2}"
     }
+    ; 기타 프로그램
+    else
+    {
+        Send "!a"
+    }
 }
 
-!d::
+$!d::
 {
+    ; 파일 탐색기
     if WinActive("ahk_class XamlExplorerHostIslandWindow")
     {
         Send "{Alt Down}{Right}"
     }
+    ; 기타 프로그램
+    else
+    {
+        Send "!d"
+    }
 }
 
-!w::
+$!w::
 {
     ; 파일 탐색기
     if WinActive("ahk_class XamlExplorerHostIslandWindow")
@@ -64,9 +75,14 @@
     {
         Send "{Up}"
     }
+    ; 기타 프로그램
+    else
+    {
+        Send "!w"
+    }
 }
 
-!s::
+$!s::
 {
     ; 파일 탐색기
     if WinActive("ahk_class XamlExplorerHostIslandWindow")
@@ -78,22 +94,37 @@
     {
         Send "{Down}"
     }
+    ; 기타 프로그램
+    else
+    {
+        Send "!s"
+    }
 }
 
-!q::
+$!q::
 {
     ; 크롬
     if WinActive("ahk_class Chrome_WidgetWin_1")
     {
         Send "{Up 2}"
     }
+    ; 기타 프로그램
+    else
+    {
+        Send "!q"
+    }
 }
 
-!e::
+$!e::
 {
     ; 크롬
     if WinActive("ahk_class Chrome_WidgetWin_1")
     {
         Send "{Enter}"
+    }
+    ; 기타 프로그램
+    else
+    {
+        Send "!e"
     }
 }
