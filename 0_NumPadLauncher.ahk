@@ -1,12 +1,12 @@
 ﻿#Requires AutoHotkey v2.0
 
 ; ==================================================
-; [함수 1] 창 활성화 전용 (정규표현식 지원 + 순환 기능 유지)
+; [함수 1] 창 활성화 전용 (창 전환 -> 탭 순환 -> 없으면 최소화 완벽 지원)
 ; ==================================================
 ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     static WinIndexes := Map()
     
-    ; 정규표현식 모드로 설정하여 "치지직|CHZZK" 등을 완벽히 찾음
+    ; 정규표현식 모드로 설정하여 복합 조건(|) 완벽 매칭
     prevMode := SetTitleMatchMode("RegEx")
     
     if !WinIndexes.Has(searchTitle)
@@ -15,6 +15,7 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     windows := WinGetList(searchTitle)
     count := windows.Length
     
+    ; 1. 창이 아예 없는 경우: 프로그램 실행 또는 URL 오픈
     if (count = 0) {
         if (runCommand != "")
             Run(runCommand)
@@ -28,22 +29,57 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     currentIndex := WinIndexes[searchTitle]
     activeHwnd := WinActive("A")
 
-    ; 현재 창이 이미 활성화된 상태라면
+    ; 2. 현재 창이 이미 매칭되는 창인 경우 (예: 이미 유튜브 창인 경우)
     if (activeHwnd = windows[currentIndex]) {
         if (cycleTabIfSingle) {
-            if (count = 1) {
-                Send "^{Tab}" ; 창이 하나면 탭 전환
-            } else {
+            if (count > 1) {
+                ; [우선순위 1] 매칭되는 다른 '창(Window)'이 더 있다면 다음 창으로 전환
                 currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
+            } else {
+                ; [우선순위 2] 매칭되는 창이 1개뿐이라면, 크롬 내부의 다른 탭 검사
+                currentTitle := WinGetTitle("A")
+                
+                Send "^{Tab}"
+                Sleep 30 ; 💡 요청하신 0.03초(30ms) 대기: 크롬이 탭을 전환하고 타이틀을 바꿀 시간
+                
+                ; 탭 전환 후의 새로운 제목 획득
+                newTitle := WinGetTitle("A")
+                
+                ; 만약 탭을 전환했는데도 이전 제목과 100% 똑같다면 -> 탭이 하나뿐이라는 뜻
+                if (newTitle = currentTitle) {
+                    WinMinimize(windows[currentIndex]) ; [우선순위 3] 즉시 최소화
+                    SetTitleMatchMode(prevMode)
+                    return
+                }
+                
+                ; 탭이 바뀌었는데, 바뀐 새 탭이 유튜브(조건)가 아니라면? 
+                ; -> 더 이상 매칭되는 탭이 없으므로 원래 탭으로 복구 후 최소화
+                if !WinActive(searchTitle) {
+                    Send "^+{Tab}" ; 원래 유튜브 탭으로 복귀
+                    Sleep 20
+                    WinMinimize(windows[currentIndex]) ; [우선순위 3] 최소화
+                    SetTitleMatchMode(prevMode)
+                    return
+                }
+                
+                ; 탭이 바뀌었고, 그 새 탭 역시 유튜브라면? 
+                ; 정상적으로 다음 유튜브 탭으로 이동한 것이므로 아무것도 하지 않고 유지
+                SetTitleMatchMode(prevMode)
+                return
             }
         } else {
-            ; cycleTabIfSingle가 false면 이미 활성화시 아무것도 안 함
+            ; cycleTabIfSingle 옵션이 false면 즉시 최소화
+            WinMinimize(windows[currentIndex])
             SetTitleMatchMode(prevMode)
             return
         }
     }
 
+    ; 3. 활성화하려는 창이 최소화 상태라면 복구(Restore) 후 화면 전면으로 활성화
     try {
+        if (WinGetMinMax(windows[currentIndex]) = -1) {
+            WinRestore(windows[currentIndex])
+        }
         WinActivate(windows[currentIndex])
         WinIndexes[searchTitle] := currentIndex
     }
@@ -56,8 +92,7 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
 ; ==================================================
 OpenSite(keyName, searchTitle, url) {
     if KeyWait(keyName, "T0.3") {
-        ; 짧게 누름: 기존의 강력한 검색 로직 호출
-        ; 브라우저 제목 매칭을 위해 타이틀 뒤에 ahk_exe chrome.exe를 붙여줌
+        ; 짧게 누름: 브라우저 제목 매칭을 위해 타이틀 뒤에 ahk_exe chrome.exe를 붙여줌
         ActivateOrCycleEx(searchTitle . " ahk_exe chrome.exe", 'chrome.exe --new-window "' . url . '"', true)
     } else {
         ; 길게 누름: 현재 크롬에 새 탭 추가
@@ -77,24 +112,21 @@ OpenSite(keyName, searchTitle, url) {
 ; 단축키 설정
 ; ==================================================
 
-; --- 프로그램 (이미 활성화시 가만히: false 옵션) ---
+; --- 프로그램 ---
 Numpad1:: ActivateOrCycleEx("Unreal Editor", , false)
 Numpad2:: ActivateOrCycleEx("ahk_exe devenv.exe", "devenv.exe", false)
 
 Numpad8::
 {
     if KeyWait("Numpad8", "T0.3") {
-        ; 짧게 누름 → Photos
         ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true)
     } else {
-        ; 길게 누름 → 메모장
         ActivateOrCycleEx("ahk_exe notepad.exe", "notepad.exe", true)
         KeyWait("Numpad8")
     }
 }
 
-; --- 웹사이트 (짧게: 정규식으로 찾기 / 길게: 새 탭) ---
-; searchTitle 부분에 정규표현식(|)을 그대로 쓸 수 있습니다.
+; --- 웹사이트 ---
 Numpad3:: OpenSite("Numpad3", "Udemy", "https://www.udemy.com/")
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
 Numpad5:: OpenSite("Numpad5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
@@ -109,10 +141,8 @@ Numpad9:: OpenSite("Numpad9", "Daum|다음", "https://www.daum.net/")
 Numpad0::
 {
     if KeyWait("Numpad0", "T0.3") {
-        ; 짧게 누름 → 현재 창 최소화
         WinMinimize("A")
     } else {
-        ; 길게 누름 → F11
         Send "{F11}"
         KeyWait("Numpad0")
     }
