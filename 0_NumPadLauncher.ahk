@@ -15,10 +15,23 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     windows := WinGetList(searchTitle)
     count := windows.Length
     
-    ; 1. 창이 아예 없는 경우: 프로그램 실행 또는 URL 오픈
+    ; 1. 창이 아예 없는 경우: 프로그램 실행 또는 URL 오픈 (마우스 모니터 감지 + 최대화 기능 추가)
     if (count = 0) {
-        if (runCommand != "")
+        if (runCommand != "") {
             Run(runCommand)
+            
+            ; 새 창이 로딩될 때까지 최대 2초간 대기
+            if WinWait(searchTitle, , 2) {
+                ; 현재 마우스 커서가 위치한 모니터의 시작 좌표를 획득
+                coords := GetMouseMonitorCoords()
+                
+                ; 마우스가 있는 모니터 위치로 창을 먼저 이동시킨 후
+                WinMove(coords.X, coords.Y, , , searchTitle)
+                
+                ; 💡 해당 모니터에서 창을 즉시 최대화(화면 꽉 차게) 합니다.
+                WinMaximize(searchTitle)
+            }
+        }
         SetTitleMatchMode(prevMode)
         return
     }
@@ -106,6 +119,31 @@ OpenSite(keyName, searchTitle, url) {
         }
         KeyWait(keyName)
     }
+}
+
+; ==================================================
+; [추가 헬퍼 함수] 현재 마우스 위치의 모니터 좌표 구하기
+; ==================================================
+GetMouseMonitorCoords() {
+    ; 현재 마우스 X, Y 위치 획득
+    MouseGetPos(&mouseX, &mouseY)
+    
+    ; 연결된 전체 모니터 개수 파악
+    monitorCount := MonitorGetCount()
+    
+    Loop monitorCount {
+        ; 각 모니터의 경계면 좌표(Left, Top, Right, Bottom) 획득
+        MonitorGet(A_Index, &Left, &Top, &Right, &Bottom)
+        
+        ; 마우스 커서가 해당 모니터의 영역 내에 있는지 판별
+        if (mouseX >= Left && mouseX <= Right && mouseY >= Top && mouseY <= Bottom) {
+            return {X: Left, Y: Top}
+        }
+    }
+    
+    ; 예외 상황 발생 시 기본 1번 모니터 좌표 반환
+    MonitorGet(1, &Left, &Top)
+    return {X: Left, Y: Top}
 }
 
 ; ==================================================
