@@ -165,7 +165,7 @@ Numpad8::
 }
 
 ; --- 웹사이트 ---
-Numpad3:: OpenSite("Numpad3", "Udemy", "https://www.udemy.com/")
+Numpad3:: OpenSite("Numpad3", "Udemy", "https://www.udemy.com/home/my-courses/learning/")
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
 Numpad5:: OpenSite("Numpad5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
 Numpad6:: OpenSite("Numpad6", "YouTube", "https://www.youtube.com/")
@@ -187,5 +187,68 @@ Numpad0::
 }
 
 ; --- 탭 이동 ---
-NumpadDiv::  Send "^+{Tab}"
+NumpadDiv::
+{
+    ; 0.3초 이내 떼면 = 짧게 누름
+    if KeyWait("NumpadDiv", "T0.3") {
+
+        ; 이전 탭
+        Send "^+{Tab}"
+
+    } else {
+
+        monitorCount := MonitorGetCount()
+
+        ; 듀얼 모니터 아니면 종료
+        if (monitorCount < 2)
+            return
+
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+
+        currentMonitor := 0
+
+        ; 현재 마우스가 있는 모니터 찾기
+        Loop monitorCount {
+
+            MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+
+            if (mouseX >= mLeft && mouseX < mRight
+             && mouseY >= mTop  && mouseY < mBottom) {
+
+                currentMonitor := A_Index
+                break
+            }
+        }
+
+        if (currentMonitor = 0)
+            return
+
+        ; 다음 모니터 결정
+        if (currentMonitor = 1)
+            nextMonitor := 2
+        else
+            nextMonitor := 1
+
+        ; 다음 모니터 영역 가져오기
+        MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
+
+        ; 중앙 좌표 계산
+        targetX := nLeft + (nRight - nLeft) / 2
+        targetY := nTop + (nBottom - nTop) / 2
+
+        ; 이동
+        MouseMove(targetX, targetY, 0)
+
+        ; 클릭
+        Click
+
+        ; 아주 짧게 표시
+        ToolTip "🖱️"
+        SetTimer () => ToolTip(), -120
+
+        ; 키 뗄 때까지 대기
+        KeyWait("NumpadDiv")
+    }
+}
 NumpadMult:: Send "^{Tab}"
