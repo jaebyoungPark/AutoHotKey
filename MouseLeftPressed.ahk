@@ -176,30 +176,26 @@ ShowCursorText(text, duration := 600)
 ; =========================
 ^LButton::
 {
-    ; Visual Studio인 경우
     if WinActive("ahk_exe devenv.exe")
     {
-        ; Ctrl 잠시 해제
-        Send "{Ctrl Up}"
+        ; 물리 Ctrl 상태 무시
+        SendEvent "{Blind}{Ctrl Up}"
 
-        ; 일반 클릭으로 포커스 확보
-        Click
+        Sleep(10)
 
-        Sleep(30)
+        ; 클릭 직접 전송
+        SendEvent "{LButton Down}"
+        Sleep(10)
+        SendEvent "{LButton Up}"
+
+        Sleep(20)
 
         ; Ctrl + Left
-        Send "^{Left}"
-
-        ; 실제 Ctrl 누르고 있으면 복구
-        if GetKeyState("Ctrl", "P")
-        {
-            Send "{Ctrl Down}"
-        }
+        SendEvent "^{Left}"
 
         return
     }
 
-    ; 그 외 환경에서는 기본 좌클릭
     Send "{LButton}"
 }
 
@@ -212,21 +208,21 @@ ShowCursorText(text, duration := 600)
     if WinActive("ahk_exe devenv.exe")
     {
         ; Ctrl 잠시 해제
-        Send "{Ctrl Up}"
+        SendEvent "{Blind}{Ctrl Up}"
 
-        ; 일반 클릭으로 포커스 확보
-        Click
+        Sleep(10)
 
-        Sleep(30)
+        ; 먼저 마우스 왼쪽 클릭 1회
+        SendEvent "{LButton Down}"
+        Sleep(10)
+        SendEvent "{LButton Up}"
 
-        ; Ctrl + Right
-        Send "^{Right}"
+        Sleep(20)
 
-        ; 실제 Ctrl 누르고 있으면 복구
-        if GetKeyState("Ctrl", "P")
-        {
-            Send "{Ctrl Down}"
-        }
+        ; 그 다음 Ctrl + Right
+        SendEvent "{Ctrl Down}"
+        SendEvent "{Right}"
+        SendEvent "{Ctrl Up}"
 
         return
     }
