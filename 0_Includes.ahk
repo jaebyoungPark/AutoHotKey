@@ -72,6 +72,8 @@
 #Include VS_HomeEnd.ahk
 #Include VS_LineSelect.ahk
 #Include VS_DeleteAndAddSameThing.ahk
+#Include VS_WordCopyWithMouse.ahk
+
 
 
 

@@ -102,6 +102,8 @@ HotKeyList := [
 
     ; LWin 조합
     "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right",
+
+"^+RButton", "^+LButton", "#LButton"
 ]
 
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음

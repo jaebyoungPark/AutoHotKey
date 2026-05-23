@@ -20,17 +20,17 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
         if (runCommand != "") {
             Run(runCommand)
             
-            ; 새 창이 로딩될 때까지 최대 2초간 대기
-            if WinWait(searchTitle, , 2) {
+            ; 새 창이 로딩될 때까지 최대 2초간 대기하며 고유 ID(HWND)를 직접 획득
+            if (hwnd := WinWait(searchTitle, , 2)) {
 
                 ; 현재 마우스 커서가 위치한 모니터 좌표 획득
                 coords := GetMouseMonitorCoords()
 
-                ; 해당 모니터로 창 이동
-                WinMove(coords.X, coords.Y, , , searchTitle)
+                ; [수정 완벽 반영] 타이틀 문자열 대신 고유 ID(ahk_id)를 사용하여 에러 원천 차단
+                WinMove(coords.X, coords.Y, , , "ahk_id " hwnd)
 
-                ; 최대화
-                WinMaximize(searchTitle)
+                ; [수정 완벽 반영] 마찬가지로 고유 ID로 최대화 실행
+                WinMaximize("ahk_id " hwnd)
             }
         }
 
@@ -200,7 +200,7 @@ Numpad2:: ActivateOrCycleEx(
 )
 
 ; -------------------------
-; 사진 / 메모장 (수정완료)
+; 사진 / 메모장
 ; -------------------------
 Numpad8::
 {
@@ -277,11 +277,29 @@ NumLock:: OpenSite(
     "https://gall.dcinside.com/mgallery/board/lists/?id=nobirth"
 )
 
-Numpad9:: OpenSite(
-    "Numpad9",
-    "Daum|다음",
-    "https://www.daum.net/"
-)
+; -------------------------
+; 새 창
+; -------------------------
+Numpad9::
+{
+    ; 0.27초 기준
+    if KeyWait("Numpad9", "T0.27") {
+
+        ; 크롬 새 창
+        Run 'chrome.exe --new-window'
+
+    } else {
+
+        ; 길게 누르면 다음
+        OpenSite(
+            "Numpad9",
+            "Daum|다음",
+            "https://www.daum.net/"
+        )
+
+        KeyWait("Numpad9")
+    }
+}
 
 ; -------------------------
 ; 최소화 / 전체화면

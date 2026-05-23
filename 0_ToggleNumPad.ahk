@@ -24,17 +24,17 @@ $NumpadDot::
             }
         }
 
-        ToolTip(NumPadSuspended ? "🔒 NumPad OFF" : "🔓 NumPad ON")
-        SetTimer(() => ToolTip(), -800)
+        ;ToolTip(NumPadSuspended ? "🔒 NumPad OFF" : "🔓 NumPad ON")
+        ;SetTimer(() => ToolTip(), -800)
 
-        if NumPadSuspended
-        {
-            SoundPlay "C:\Windows\Media\Windows Critical Stop.wav", 1
-        }
-        else
-        {
-            SoundPlay "C:\Windows\Media\Windows Notify.wav", 1
-        }
+if NumPadSuspended
+{
+    SoundPlay "C:\Windows\Media\Windows Critical Stop.wav"
+}
+else
+{
+    SoundPlay "C:\Windows\Media\Windows Notify.wav"
+}
 
     }
     else if (elapsed < 250)
