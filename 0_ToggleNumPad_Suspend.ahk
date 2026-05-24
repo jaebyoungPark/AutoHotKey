@@ -31,9 +31,9 @@ $NumpadDot::
             }
 
             if NumPadSuspended
-                SoundPlay "C:\Windows\Media\Windows Critical Stop.wav"
+                SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav"
             else
-                SoundPlay "C:\Windows\Media\Windows Notify.wav"
+                SoundPlay "C:\Windows\Media\notify_Amplified.wav"
         }
 
         Sleep 10
@@ -75,8 +75,8 @@ $F2::
             }
 
             SoundPlay NumSuspended
-                ? "C:\Windows\Media\Windows Critical Stop.wav"
-                : "C:\Windows\Media\Windows Notify.wav"
+                ? "C:\Windows\Media\Windows Critical Stop_Amplified.wav"
+                : "C:\Windows\Media\notify_Amplified.wav"
         }
 
         Sleep 10

@@ -26,11 +26,11 @@
         ; ✅ 2. 그 다음 사운드
         if MySuspended
         {
-            SoundPlay "C:\Windows\Media\Windows Critical Stop.wav", 1
+            SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav", 1
         }
         else
         {
-            SoundPlay "C:\Windows\Media\Windows Notify.wav", 1
+            SoundPlay "C:\Windows\Media\notify_Amplified.wav", 1
         }
     }
     else if (elapsed < 250)
