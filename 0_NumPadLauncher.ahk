@@ -1,13 +1,13 @@
 ﻿#Requires AutoHotkey v2.0
 
+; 스크립트 전역에서 정규표현식(|) 매칭을 기본으로 사용하도록 설정
+SetTitleMatchMode("RegEx")
+
 ; ==================================================
 ; [함수 1] 창 활성화 전용 (창 전환 -> 탭 순환 -> 없으면 최소화 완벽 지원)
 ; ==================================================
 ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     static WinIndexes := Map()
-    
-    ; 정규표현식 모드로 설정하여 복합 조건(|) 완벽 매칭
-    prevMode := SetTitleMatchMode("RegEx")
     
     if !WinIndexes.Has(searchTitle)
         WinIndexes[searchTitle] := 1
@@ -26,15 +26,13 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
                 ; 현재 마우스 커서가 위치한 모니터 좌표 획득
                 coords := GetMouseMonitorCoords()
 
-                ; [수정 완벽 반영] 타이틀 문자열 대신 고유 ID(ahk_id)를 사용하여 에러 원천 차단
+                ; 고유 ID(ahk_id)를 사용하여 에러 원천 차단
                 WinMove(coords.X, coords.Y, , , "ahk_id " hwnd)
 
-                ; [수정 완벽 반영] 마찬가지로 고유 ID로 최대화 실행
+                ; 고유 ID로 최대화 실행
                 WinMaximize("ahk_id " hwnd)
             }
         }
-
-        SetTitleMatchMode(prevMode)
         return
     }
 
@@ -74,8 +72,6 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
                 if (newTitle = currentTitle) {
 
                     WinMinimize(windows[currentIndex])
-
-                    SetTitleMatchMode(prevMode)
                     return
                 }
 
@@ -86,13 +82,10 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
                     Sleep 20
 
                     WinMinimize(windows[currentIndex])
-
-                    SetTitleMatchMode(prevMode)
                     return
                 }
 
                 ; 정상 이동
-                SetTitleMatchMode(prevMode)
                 return
             }
 
@@ -100,8 +93,6 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
 
             ; 순환 옵션 꺼져있으면 최소화
             WinMinimize(windows[currentIndex])
-
-            SetTitleMatchMode(prevMode)
             return
         }
     }
@@ -118,14 +109,10 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
 
         WinIndexes[searchTitle] := currentIndex
     }
-
-    SetTitleMatchMode(prevMode)
 }
 
 ; ==================================================
-; [함수 2] 사이트 전용
-; 짧게: 전환
-; 길게: 새 탭 추가
+; [함수 2] 사이트 전용 (짧게: 전환 / 길게: 새 탭 추가)
 ; ==================================================
 OpenSite(keyName, searchTitle, url) {
 
@@ -159,7 +146,7 @@ OpenSite(keyName, searchTitle, url) {
 }
 
 ; ==================================================
-; 현재 마우스 위치 모니터 좌표 구하기
+; [함수 3] 현재 마우스 위치 모니터 좌표 구하기
 ; ==================================================
 GetMouseMonitorCoords() {
 
@@ -185,13 +172,63 @@ GetMouseMonitorCoords() {
 }
 
 ; ==================================================
-; 단축키
+; [함수 4] 듀얼 모니터 마우스 순간이동 및 클릭 공통 로직
+; ==================================================
+MoveMouseToOtherMonitor() {
+    monitorCount := MonitorGetCount()
+
+    ; 듀얼 모니터가 아니면 작동 안 함
+    if (monitorCount < 2)
+        return
+
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+    currentMonitor := 0
+
+    ; 현재 마우스가 위치한 모니터 탐색
+    Loop monitorCount {
+        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+        if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
+            currentMonitor := A_Index
+            break
+        }
+    }
+
+    if (currentMonitor = 0)
+        return
+
+    ; 반대편 모니터 결정 (1번이면 2번으로, 2번이면 1번으로)
+    if (currentMonitor = 1)
+        nextMonitor := 2
+    else
+        nextMonitor := 1
+
+    ; 대상 모니터 영역 정보 획득
+    MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
+
+    ; 정중앙 좌표 계산
+    targetX := nLeft + (nRight - nLeft) / 2
+    targetY := nTop + (nBottom - nTop) / 2
+
+    ; 순간이동 후 클릭하여 창 활성화
+    MouseMove(targetX, targetY, 0)
+    Click
+
+    ; 화면에 안내 피드백 출력
+    ToolTip "🖱️ Monitor Switched"
+    SetTimer () => ToolTip(), -120
+}
+
+
+; ==================================================
+; 단축키 설정 영역
 ; ==================================================
 
 ; -------------------------
 ; 프로그램
 ; -------------------------
-Numpad1:: ActivateOrCycleEx("Unreal Editor", , false)
+; 클래스 이름을 사용하여 DebugGame 등 모든 빌드 구성을 한 번에 매칭
+Numpad1:: ActivateOrCycleEx("ahk_class UnrealWindow", , false)
 
 Numpad2:: ActivateOrCycleEx(
     "ahk_exe devenv.exe",
@@ -215,7 +252,7 @@ Numpad8::
 
     } else {
 
-        ; [변경점] 이전 탭/세션 복원을 위해 윈도우 11 메모장 앱 고유의 쉘 주소로 실행합니다.
+        ; 이전 탭/세션 복원을 위해 윈도우 11 메모장 앱 고유의 쉘 주소로 실행
         ActivateOrCycleEx(
             "ahk_exe notepad.exe",
             "shell:AppsFolder\Microsoft.WindowsNotepad_8wekyb3d8bbwe!App",
@@ -319,89 +356,62 @@ Numpad0::
     }
 }
 
+
 ; ==================================================
-; 이전 탭 / 마우스 모니터 이동
+; 언리얼 / 개발 환경 판별
+; ==================================================
+IsDevEnvironment()
+{
+    ; Unreal + Visual Studio
+    return (
+           WinActive("ahk_exe UE4Editor.exe")
+        || WinActive("ahk_exe UnrealEditor.exe")
+        || InStr(WinGetTitle("A"), "Unreal Editor")
+        || WinActive("ahk_class UnrealWindow")
+
+        || WinActive("ahk_exe devenv.exe")
+    )
+}
+; ==================================================
+; 이전 탭 / 마우스 모니터 이동 (NumpadDiv: 키패드 /)
 ; ==================================================
 NumpadDiv::
 {
-    ; 0.27초 기준
+    ; 개발 환경이면 즉시 모니터 이동
+    if IsDevEnvironment() {
+
+        ToolTip "🟣 Dev Mode : Mouse Teleport (/)"
+        SetTimer () => ToolTip(), -300
+
+        MoveMouseToOtherMonitor()
+        return
+    }
+
+    ; 일반 환경
     if KeyWait("NumpadDiv", "T0.27") {
 
-        ; 이전 탭
+        ; 짧게 누름: 이전 탭
         Send "^+{Tab}"
 
     } else {
 
-        monitorCount := MonitorGetCount()
-
-        ; 듀얼 모니터 아니면 종료
-        if (monitorCount < 2)
-            return
-
-        CoordMode("Mouse", "Screen")
-
-        MouseGetPos &mouseX, &mouseY
-
-        currentMonitor := 0
-
-        ; 현재 마우스 모니터 찾기
-        Loop monitorCount {
-
-            MonitorGet(
-                A_Index,
-                &mLeft,
-                &mTop,
-                &mRight,
-                &mBottom
-            )
-
-            if (mouseX >= mLeft && mouseX < mRight
-             && mouseY >= mTop  && mouseY < mBottom) {
-
-                currentMonitor := A_Index
-                break
-            }
-        }
-
-        if (currentMonitor = 0)
-            return
-
-        ; 반대 모니터 결정
-        if (currentMonitor = 1)
-            nextMonitor := 2
-        else
-            nextMonitor := 1
-
-        ; 다음 모니터 영역
-        MonitorGet(
-            nextMonitor,
-            &nLeft,
-            &nTop,
-            &nRight,
-            &nBottom
-        )
-
-        ; 중앙 좌표
-        targetX := nLeft + (nRight - nLeft) / 2
-        targetY := nTop + (nBottom - nTop) / 2
-
-        ; 이동
-        MouseMove(targetX, targetY, 0)
-
-        ; 클릭
-        Click
-
-        ; 표시
-        ToolTip "🖱️"
-
-        SetTimer () => ToolTip(), -120
-
-        ; 키 뗄 때까지 대기
+        ; 길게 누름: 모니터 이동
+        MoveMouseToOtherMonitor()
         KeyWait("NumpadDiv")
     }
 }
 
 ; ==================================================
-; 다음 탭
+; 다음 탭 (NumpadMult: 키패드 *)
 ; ==================================================
-NumpadMult:: Send "^{Tab}"
+NumpadMult::
+{
+    ; 언리얼 환경 예외 처리
+    if WinActive("ahk_class UnrealWindow") {
+        MoveMouseToOtherMonitor()
+        return
+    }
+
+    ; 일반 환경: 다음 탭
+    Send "^{Tab}"
+}

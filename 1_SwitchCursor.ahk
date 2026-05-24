@@ -73,3 +73,39 @@ global monitor2X := 0, monitor2Y := 0
 
     SetTimer () => myGui.Destroy(), -150
 }
+
+F1::
+{
+    ; ==================================================
+    ; 개발 환경 (Unreal / Visual Studio)
+    ; ==================================================
+    if (
+           WinActive("ahk_exe UE4Editor.exe")
+        || WinActive("ahk_exe UnrealEditor.exe")
+        || InStr(WinGetTitle("A"), "Unreal Editor")
+        || WinActive("ahk_class UnrealWindow")
+        || WinActive("ahk_exe devenv.exe")
+    ) {
+
+        ToolTip "🟣 Dev Mode : Mouse Teleport (/)"
+        SetTimer () => ToolTip(), -300
+
+        MoveMouseToOtherMonitor()
+        return
+    }
+
+    ; ==================================================
+    ; 일반 환경
+    ; ==================================================
+    if KeyWait("F1", "T0.27") {
+
+        ; 짧게 누름: 이전 탭
+        Send "^+{Tab}"
+
+    } else {
+
+        ; 길게 누름: 모니터 이동
+        MoveMouseToOtherMonitor()
+        KeyWait("F1")
+    }
+}
