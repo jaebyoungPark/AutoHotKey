@@ -11,8 +11,8 @@
 ;#Include 0_Test.ahk
 ;#Include 0_KeyHistory.ahk
 
-#Include 0_ToggleSuspend.ahk
-#Include 0_ToggleNumPad.ahk
+#Include 0_Toggle_Suspend.ahk
+#Include 0_ToggleNumPad_Suspend.ahk
 
 #Include 0_NumPadLauncher.ahk
 

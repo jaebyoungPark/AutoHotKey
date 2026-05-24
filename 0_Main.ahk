@@ -2,16 +2,24 @@
 #Include 0_Includes.ahk
 
 MySuspended     := false
+
+NumSuspended := true
 NumPadSuspended := true
 
-NumPadKeyList := [
-    ; 숫자열
+
+; =========================
+; 일반 숫자 키
+; =========================
+NumKeyList := [
     "1", "2", "3",
     "4", "5", "6",
     "7", "8", "9",
-    "0",
-
-    ; 넘패드
+    "0"
+]
+; =========================
+; 넘패드 키
+; =========================
+NumPadKeyList := [
     "Numpad1", "Numpad2", "Numpad3",
     "Numpad4", "Numpad5", "Numpad6",
     "Numpad7", "Numpad8", "Numpad9",
@@ -21,12 +29,17 @@ NumPadKeyList := [
     "Numpad0", "NumLock"
 ]
 
-; ← 여기에 추가
+for key in NumKeyList {
+    try {
+        Hotkey(key, "Off")
+    } catch {
+    }
+}
+
 for key in NumPadKeyList {
     try {
         Hotkey(key, "Off")
     } catch {
-        ; 무시
     }
 }
 
@@ -113,7 +126,11 @@ HotKeyList := [
 
 "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton",
 
-"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
+"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+
+"Numpad0", "Numpad1", "Numpad2", "Numpad3",
+"Numpad4", "Numpad5", "Numpad6",
+"Numpad7", "Numpad8", "Numpad9"
 ]
 
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
