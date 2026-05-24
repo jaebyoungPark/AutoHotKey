@@ -50,6 +50,9 @@
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
 
+#Include F2.ahk
+#Include F3.ahk
+#Include F4.ahk
 
 
 ;#Include OpenMemory.ahk
