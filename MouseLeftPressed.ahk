@@ -171,66 +171,41 @@ ShowCursorText(text, duration := 600)
     Send "{RButton}"
 }
 
-; =========================
-; Ctrl + LButton
-; =========================
+#HotIf WinActive("ahk_exe devenv.exe")
+
 ^LButton::
 {
-    if WinActive("ahk_exe devenv.exe")
-    {
-        ; 물리 Ctrl 상태 무시
-        SendEvent "{Blind}{Ctrl Up}"
+    SendEvent "{Blind}{Ctrl Up}"
 
-        Sleep(10)
+    Sleep(10)
 
-        ; 클릭 직접 전송
-        SendEvent "{LButton Down}"
-        Sleep(10)
-        SendEvent "{LButton Up}"
+    SendEvent "{LButton Down}"
+    Sleep(10)
+    SendEvent "{LButton Up}"
 
-        Sleep(20)
+    Sleep(20)
 
-        ; Ctrl + Left
-        SendEvent "^{Left}"
-
-        return
-    }
-
-    Send "{LButton}"
+    SendEvent "^{Left}"
 }
 
-; =========================
-; Ctrl + RButton
-; =========================
 ^RButton::
 {
-    ; Visual Studio인 경우
-    if WinActive("ahk_exe devenv.exe")
-    {
-        ; Ctrl 잠시 해제
-        SendEvent "{Blind}{Ctrl Up}"
+    SendEvent "{Blind}{Ctrl Up}"
 
-        Sleep(10)
+    Sleep(10)
 
-        ; 먼저 마우스 왼쪽 클릭 1회
-        SendEvent "{LButton Down}"
-        Sleep(10)
-        SendEvent "{LButton Up}"
+    SendEvent "{LButton Down}"
+    Sleep(10)
+    SendEvent "{LButton Up}"
 
-        Sleep(20)
+    Sleep(20)
 
-        ; 그 다음 Ctrl + Right
-        SendEvent "{Ctrl Down}"
-        SendEvent "{Right}"
-        SendEvent "{Ctrl Up}"
-
-        return
-    }
-
-    ; 그 외 환경에서는 기본 우클릭
-    Send "{RButton}"
+    SendEvent "{Ctrl Down}"
+    SendEvent "{Right}"
+    SendEvent "{Ctrl Up}"
 }
 
+#HotIf
 ;1_Enter.ahk 에 있어서 주석처리
 ; =========================
 ; 실제 LButton 클릭 시 홀드 해제
