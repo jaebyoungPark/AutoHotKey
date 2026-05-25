@@ -156,3 +156,78 @@ HotKeyList := [
         }
     }
 }
+
+
+; ==========================================================================
+; [상태 표시 UI 레이어] 이모티콘 교체 + ON 제거 + 마우스 미세 회피
+; ==========================================================================
+
+; 1. UI 객체 생성 및 스타일 설정
+StatusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
+StatusGui.BackColor := "111111"
+StatusGui.SetFont("S10 Bold Q5", "Malgun Gothic")
+
+StatusText := StatusGui.Add("Text", "cWhite Center W220", "상태 로딩 중...")
+WinSetTransparent(135, StatusGui)
+
+; 기본 위치 정의 (Y=45)
+guiW := 220  
+defaultX := (A_ScreenWidth - guiW) // 2
+defaultY := 45
+
+; 살짝만 피할 위치 (기본 위치에서 아래로 35px 더 이동)
+dodgeX := defaultX
+dodgeY := defaultY + 35
+
+isDodged := false
+
+; 2. UI 표시 및 마우스 위치 감시 함수
+UpdateGuiPosition() {
+    global isDodged, defaultX, defaultY, dodgeX, dodgeY, guiW
+    
+    MouseGetPos(&mouseX, &mouseY)
+    
+    ; [감지 영역]
+    xMin := defaultX - 30
+    xMax := defaultX + guiW + 30
+    yMin := 0
+    yMax := defaultY + 45  
+    
+    ; 1) 마우스가 영역 안에 들어왔을 때 -> 살짝 아래로 피하기
+    if (!isDodged && (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)) {
+        isDodged := true
+        StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
+    }
+    
+    ; 2) 마우스가 영역을 완전히 벗어났을 때 -> 다시 기본 위치로 복귀
+    else if (isDodged) {
+        dxMin := dodgeX - 30
+        dxMax := dodgeX + guiW + 30
+        dyMin := 0
+        dyMax := dodgeY + 45
+        
+        if (!(mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax) && 
+            !(mouseX >= dxMin && mouseX <= dxMax && mouseY >= dyMin && mouseY <= dyMax)) {
+            isDodged := false
+            StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+        }
+    }
+}
+
+; 3. 변수 상태 실시간 업데이트 함수 (이모티콘 변경 및 ON 제거)
+UpdateStatusUI() {
+    global NumSuspended, NumPadSuspended, StatusText
+    
+    ; 서로 이모티콘을 바꾸고 ON 텍스트를 제거했습니다.
+    strNum    := NumSuspended    ? "❌" : "⌨️"
+    strPad    := NumPadSuspended ? "❌" : "🔢"
+    
+    StatusText.Text := "[숫자]: " strNum "   |   [넘패드]: " strPad
+}
+
+; 4. 최초 실행 및 타이머 등록
+StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+UpdateStatusUI()
+
+SetTimer(UpdateStatusUI, 200)   
+SetTimer(UpdateGuiPosition, 80)

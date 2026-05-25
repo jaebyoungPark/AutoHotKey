@@ -102,7 +102,12 @@ IsUnrealActive() {
         }
     }
 	 ; Notepad (메모장)
-    if WinActive("ahk_exe notepad.exe") {
+    if (
+       WinActive("ahk_exe notepad.exe")
+    || WinActive("ahk_exe Notepad.exe")
+    || WinActive("ahk_class Notepad")
+    )
+    {
         if (elapsed < 250) {
             Send "^s"
             ToolTip "💾 저장 완료"
