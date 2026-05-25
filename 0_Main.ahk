@@ -190,10 +190,10 @@ UpdateGuiPosition() {
     MouseGetPos(&mouseX, &mouseY)
     
     ; [감지 영역 설정] UI 확대에 맞게 터치 범위 자동 조절
-    xMin := defaultX - 30
-    xMax := defaultX + guiW + 30
-    yMin := 0
-    yMax := defaultY + 45  
+xMin := defaultX - 10
+xMax := defaultX + guiW + 160
+yMin := 0
+yMax := defaultY + 100
     
     inZone := (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)
     
