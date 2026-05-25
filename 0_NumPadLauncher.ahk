@@ -565,3 +565,21 @@ NumpadMult::
     "dcinside|디시인사이드|노산",
     "https://gall.dcinside.com/mgallery/board/lists/?id=nobirth"
 )
+
+; ==================================================
+; F3 → Claude
+; ==================================================
+F3:: OpenSite(
+    "F3",
+    "Claude",
+    "https://claude.ai/"
+)
+
+; ==================================================
+; F4 → Gemini
+; ==================================================
+F4:: OpenSite(
+    "F4",
+    "Gemini",
+    "https://gemini.google.com/"
+)

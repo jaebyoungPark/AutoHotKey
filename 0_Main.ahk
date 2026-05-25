@@ -1,4 +1,6 @@
-﻿; 메인 스크립트
+﻿#Requires AutoHotkey v2.0
+
+; 메인 스크립트
 #Include 0_Includes.ahk
 
 MySuspended     := false
@@ -62,7 +64,7 @@ HotKeyList := [
 
     ; 숫자
     "$^1", "$^2", "^3", "^4",
-    "^+1", "^+2", "^+3", "^+4", "^8",
+    "+1", "+2", "+3", "+4", "8",
 
     ; 기호/특수
     "$^+=", "^!+p", "^!+o", "$^+a",
@@ -73,11 +75,11 @@ HotKeyList := [
     "Left", "Right", "Up", "Down",
     "!Left",  "!Right",  "!+Right",  "!+Left",
     "^Left",  "^Right",  "^+Right",  "^+Left",
-    "#Left",  "#Right",  "#Up",      "#Down",
-    "#^Left", "#^Right", "#^Up",     "#^Down",
+    "#Left",  "#Right",  "#Up",       "#Down",
+    "#^Left", "#^Right", "#^Up",      "#^Down",
     "^+Up",   "^+Down",
     "!Up",    "!Down",
-    "!a",     "!d",      "!w",       "!s",
+    "!a",     "!d",      "!w",        "!s",
     "!q",     "!e",
 
     ; PageUp/Down
@@ -103,7 +105,7 @@ HotKeyList := [
 
     ; Ctrl 조합
     "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
-    "^+a",
+    "+A",
 
     ; 단독키
     "RShift", "~F2", "F12", "Esc",
@@ -159,25 +161,25 @@ HotKeyList := [
 
 
 ; ==========================================================================
-; [상태 표시 UI 레이어] 이모티콘 교체 + ON 제거 + 마우스 미세 회피
+; [상태 표시 UI 레이어] 이모티콘 교체 + ON 제거 + 마우스 미세 회피 (수정본)
 ; ==========================================================================
 
-; 1. UI 객체 생성 및 스타일 설정
+; 1. UI 객체 생성 및 스타일 설정 (가로 폭 및 글꼴 크기 상향)
 StatusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
 StatusGui.BackColor := "111111"
-StatusGui.SetFont("S10 Bold Q5", "Malgun Gothic")
+StatusGui.SetFont("S11 Bold Q5", "Malgun Gothic") ; S10 -> S11 로 크기 업
 
-StatusText := StatusGui.Add("Text", "cWhite Center W220", "상태 로딩 중...")
+guiW := 260  ; UI 가로 폭 확대 (220 -> 260)
+StatusText := StatusGui.Add("Text", "cWhite Center W" . guiW, "상태 로딩 중...")
 WinSetTransparent(135, StatusGui)
 
 ; 기본 위치 정의 (Y=45)
-guiW := 220  
 defaultX := (A_ScreenWidth - guiW) // 2
 defaultY := 45
 
-; 살짝만 피할 위치 (기본 위치에서 아래로 35px 더 이동)
+; [수정] 피할 위치 조정: 기본 위치에서 아래로 55px 이동 (기존 +35px에서 회피 거리 상향)
 dodgeX := defaultX
-dodgeY := defaultY + 35
+dodgeY := defaultY + 55
 
 isDodged := false
 
@@ -187,42 +189,52 @@ UpdateGuiPosition() {
     
     MouseGetPos(&mouseX, &mouseY)
     
-    ; [감지 영역]
+    ; [감지 영역 설정] UI 확대에 맞게 터치 범위 자동 조절
     xMin := defaultX - 30
     xMax := defaultX + guiW + 30
     yMin := 0
     yMax := defaultY + 45  
     
-    ; 1) 마우스가 영역 안에 들어왔을 때 -> 살짝 아래로 피하기
-    if (!isDodged && (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)) {
+    inZone := (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)
+    
+    ; 1) 마우스가 영역 안에 들어왔고, 아직 안 피했을 때 -> 아래로 이동
+    if (inZone && !isDodged) {
         isDodged := true
         StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
     }
     
-    ; 2) 마우스가 영역을 완전히 벗어났을 때 -> 다시 기본 위치로 복귀
-    else if (isDodged) {
+    ; 2) 마우스가 영역을 벗어났고, 현재 피하고 있는 상태일 때 -> 복귀
+    else if (!inZone && isDodged) {
         dxMin := dodgeX - 30
         dxMax := dodgeX + guiW + 30
         dyMin := 0
         dyMax := dodgeY + 45
         
-        if (!(mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax) && 
-            !(mouseX >= dxMin && mouseX <= dxMax && mouseY >= dyMin && mouseY <= dyMax)) {
+        inDodgeZone := (mouseX >= dxMin && mouseX <= dxMax && mouseY >= dyMin && mouseY <= dyMax)
+        
+        ; 회피 영역에서도 완전히 마우스가 벗어났을 때 복귀 처리
+        if (!inDodgeZone) {
             isDodged := false
             StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
         }
     }
 }
 
-; 3. 변수 상태 실시간 업데이트 함수 (이모티콘 변경 및 ON 제거)
+; 3. 변수 상태 실시간 업데이트 함수 (글자 레이아웃이 변경되었을 때만 갱신)
 UpdateStatusUI() {
     global NumSuspended, NumPadSuspended, StatusText
+    static prevText := ""
     
-    ; 서로 이모티콘을 바꾸고 ON 텍스트를 제거했습니다.
     strNum    := NumSuspended    ? "❌" : "⌨️"
     strPad    := NumPadSuspended ? "❌" : "🔢"
     
-    StatusText.Text := "[숫자]: " strNum "   |   [넘패드]: " strPad
+    currentText := "[숫자]: " strNum "    |    [넘패드]: " strPad
+    
+    ; 이전 텍스트와 실제로 달라졌을 경우에만 UI 내부 컴포넌트 데이터 갱신
+    if (currentText != prevText) {
+        StatusText.Text := currentText
+        prevText := currentText
+    }
 }
 
 ; 4. 최초 실행 및 타이머 등록
