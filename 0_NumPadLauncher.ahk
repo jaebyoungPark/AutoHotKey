@@ -1,38 +1,62 @@
 ﻿#Requires AutoHotkey v2.0
 
-; 스크립트 전역에서 정규표현식(|) 매칭을 기본으로 사용하도록 설정
+; ==================================================
+; 전역 설정
+; ==================================================
+
+; 스크립트 전역에서 정규표현식(|) 매칭 사용
 SetTitleMatchMode("RegEx")
 
+
 ; ==================================================
-; [함수 1] 창 활성화 전용 (창 전환 -> 탭 순환 -> 없으면 최소화 완벽 지원)
+; [함수 1]
+; 창 활성화 / 순환 / 최소화
 ; ==================================================
-ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
+ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true)
+{
     static WinIndexes := Map()
-    
+
     if !WinIndexes.Has(searchTitle)
         WinIndexes[searchTitle] := 1
-    
+
     windows := WinGetList(searchTitle)
     count := windows.Length
-    
-    ; 1. 창이 아예 없는 경우: 프로그램 실행 또는 URL 오픈
-    if (count = 0) {
-        if (runCommand != "") {
+
+    ; --------------------------------------------------
+    ; 창이 없으면 실행
+    ; --------------------------------------------------
+    if (count = 0)
+    {
+        if (runCommand != "")
+        {
             Run(runCommand)
-            
-            ; 새 창이 로딩될 때까지 최대 2초간 대기하며 고유 ID(HWND)를 직접 획득
-            if (hwnd := WinWait(searchTitle, , 2)) {
 
-                ; 현재 마우스 커서가 위치한 모니터 좌표 획득
-                coords := GetMouseMonitorCoords()
+            ; 최대 2초 대기
+            if WinWait(searchTitle, , 2)
+            {
+                ; 최종 실제 HWND 다시 획득
+                hwnd := WinExist(searchTitle)
 
-                ; 고유 ID(ahk_id)를 사용하여 에러 원천 차단
-                WinMove(coords.X, coords.Y, , , "ahk_id " hwnd)
+                if hwnd
+                {
+                    ; 현재 마우스 모니터 좌표
+                    coords := GetMouseMonitorCoords()
 
-                ; 고유 ID로 최대화 실행
-                WinMaximize("ahk_id " hwnd)
+                    ; 창 이동
+                    try WinMove(
+                        coords.X,
+                        coords.Y,
+                        ,
+                        ,
+                        "ahk_id " hwnd
+                    )
+
+                    ; 최대화
+                    try WinMaximize("ahk_id " hwnd)
+                }
             }
         }
+
         return
     }
 
@@ -40,44 +64,46 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
         WinIndexes[searchTitle] := 1
 
     currentIndex := WinIndexes[searchTitle]
-    activeHwnd := WinActive("A")
+    activeHwnd  := WinActive("A")
 
     ; ==================================================
     ; 현재 활성 창이 이미 해당 창인 경우
     ; ==================================================
-    if (activeHwnd = windows[currentIndex]) {
-
-        if (cycleTabIfSingle) {
-
-            if (count > 1) {
-
-                ; 다음 창 순환
-                currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
-
-            } else {
-
-                ; 현재 탭 제목 저장
+    if (activeHwnd = windows[currentIndex])
+    {
+        if (cycleTabIfSingle)
+        {
+            ; 여러 창이면 다음 창
+            if (count > 1)
+            {
+                currentIndex := (currentIndex >= count)
+                    ? 1
+                    : currentIndex + 1
+            }
+            else
+            {
+                ; 현재 탭 제목
                 currentTitle := WinGetTitle("A")
 
                 ; 다음 탭
                 Send "^{Tab}"
 
-                ; 탭 제목 변경 대기
+                ; 탭 변경 대기
                 Sleep 30
 
                 ; 새 제목
                 newTitle := WinGetTitle("A")
 
                 ; 탭 하나뿐이면 최소화
-                if (newTitle = currentTitle) {
-
+                if (newTitle = currentTitle)
+                {
                     WinMinimize(windows[currentIndex])
                     return
                 }
 
-                ; 새 탭이 조건 불일치면 복귀 후 최소화
-                if !WinActive(searchTitle) {
-
+                ; 새 탭이 조건 불일치면 원복 후 최소화
+                if !WinActive(searchTitle)
+                {
                     Send "^+{Tab}"
                     Sleep 20
 
@@ -88,10 +114,10 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
                 ; 정상 이동
                 return
             }
-
-        } else {
-
-            ; 순환 옵션 꺼져있으면 최소화
+        }
+        else
+        {
+            ; 순환 비활성화 시 최소화
             WinMinimize(windows[currentIndex])
             return
         }
@@ -100,8 +126,8 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     ; ==================================================
     ; 최소화 상태면 복구 후 활성화
     ; ==================================================
-    try {
-
+    try
+    {
         if (WinGetMinMax(windows[currentIndex]) = -1)
             WinRestore(windows[currentIndex])
 
@@ -111,33 +137,38 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     }
 }
 
-; ==================================================
-; [함수 2] 사이트 전용 (짧게: 전환 / 길게: 새 탭 추가)
-; ==================================================
-OpenSite(keyName, searchTitle, url) {
 
+; ==================================================
+; [함수 2]
+; 사이트 열기
+;
+; 짧게 : 전환
+; 길게 : 새 탭
+; ==================================================
+OpenSite(keyName, searchTitle, url)
+{
     ; 0.27초 기준
-    if KeyWait(keyName, "T0.27") {
-
+    if KeyWait(keyName, "T0.27")
+    {
         ActivateOrCycleEx(
             searchTitle . " ahk_exe chrome.exe",
             'chrome.exe --new-window "' . url . '"',
             true
         )
-
-    } else {
-
+    }
+    else
+    {
         ; 길게 누름 = 새 탭
-        if WinActive("ahk_exe chrome.exe") {
-
+        if WinActive("ahk_exe chrome.exe")
+        {
             Send "^t"
             Sleep 150
 
             SendText url
             Send "{Enter}"
-
-        } else {
-
+        }
+        else
+        {
             Run 'chrome.exe "' . url . '"'
         }
 
@@ -145,50 +176,73 @@ OpenSite(keyName, searchTitle, url) {
     }
 }
 
-; ==================================================
-; [함수 3] 현재 마우스 위치 모니터 좌표 구하기
-; ==================================================
-GetMouseMonitorCoords() {
 
+; ==================================================
+; [함수 3]
+; 현재 마우스 위치 모니터 좌표 구하기
+; ==================================================
+GetMouseMonitorCoords()
+{
     MouseGetPos(&mouseX, &mouseY)
 
     monitorCount := MonitorGetCount()
 
-    Loop monitorCount {
-
+    Loop monitorCount
+    {
         MonitorGet(A_Index, &Left, &Top, &Right, &Bottom)
 
-        if (mouseX >= Left && mouseX <= Right
-         && mouseY >= Top  && mouseY <= Bottom) {
-
-            return {X: Left, Y: Top}
+        if (
+               mouseX >= Left
+            && mouseX <= Right
+            && mouseY >= Top
+            && mouseY <= Bottom
+        ) {
+            return {
+                X: Left,
+                Y: Top
+            }
         }
     }
 
     ; fallback
     MonitorGet(1, &Left, &Top)
 
-    return {X: Left, Y: Top}
+    return {
+        X: Left,
+        Y: Top
+    }
 }
 
+
 ; ==================================================
-; [함수 4] 듀얼 모니터 마우스 순간이동 및 클릭 공통 로직
+; [함수 4]
+; 듀얼 모니터 마우스 순간이동
 ; ==================================================
-MoveMouseToOtherMonitor() {
+MoveMouseToOtherMonitor()
+{
     monitorCount := MonitorGetCount()
 
-    ; 듀얼 모니터가 아니면 작동 안 함
+    ; 듀얼 모니터 아니면 종료
     if (monitorCount < 2)
         return
 
     CoordMode("Mouse", "Screen")
+
     MouseGetPos &mouseX, &mouseY
+
     currentMonitor := 0
 
-    ; 현재 마우스가 위치한 모니터 탐색
-    Loop monitorCount {
+    ; 현재 마우스 모니터 탐색
+    Loop monitorCount
+    {
         MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
-        if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
+
+        if (
+               mouseX >= mLeft
+            && mouseX <  mRight
+            && mouseY >= mTop
+            && mouseY <  mBottom
+        ) {
             currentMonitor := A_Index
             break
         }
@@ -197,26 +251,47 @@ MoveMouseToOtherMonitor() {
     if (currentMonitor = 0)
         return
 
-    ; 반대편 모니터 결정 (1번이면 2번으로, 2번이면 1번으로)
-    if (currentMonitor = 1)
-        nextMonitor := 2
-    else
-        nextMonitor := 1
+    ; 반대 모니터 결정
+    nextMonitor := (currentMonitor = 1)
+        ? 2
+        : 1
 
-    ; 대상 모니터 영역 정보 획득
-    MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
+    ; 대상 모니터 영역
+    MonitorGet(
+        nextMonitor,
+        &nLeft,
+        &nTop,
+        &nRight,
+        &nBottom
+    )
 
-    ; 정중앙 좌표 계산
+    ; 중앙 좌표
     targetX := nLeft + (nRight - nLeft) / 2
-    targetY := nTop + (nBottom - nTop) / 2
+    targetY := nTop  + (nBottom - nTop) / 2
 
-    ; 순간이동 후 클릭하여 창 활성화
+    ; 순간이동 + 클릭
     MouseMove(targetX, targetY, 0)
     Click
 
-    ; 화면에 안내 피드백 출력
+    ; 피드백
     ToolTip "🖱️ Monitor Switched"
     SetTimer () => ToolTip(), -120
+}
+
+
+; ==================================================
+; 개발 환경 판별
+; ==================================================
+IsDevEnvironment()
+{
+    return (
+           WinActive("ahk_exe UE4Editor.exe")
+        || WinActive("ahk_exe UnrealEditor.exe")
+        || InStr(WinGetTitle("A"), "Unreal Editor")
+        || WinActive("ahk_class UnrealWindow")
+
+        || WinActive("ahk_exe devenv.exe")
+    )
 }
 
 
@@ -224,35 +299,42 @@ MoveMouseToOtherMonitor() {
 ; 단축키 설정 영역
 ; ==================================================
 
-; -------------------------
+; ==================================================
 ; 프로그램
-; -------------------------
-; 클래스 이름을 사용하여 DebugGame 등 모든 빌드 구성을 한 번에 매칭
-Numpad1:: ActivateOrCycleEx("ahk_class UnrealWindow", , false)
+; ==================================================
 
+; Unreal Engine
+Numpad1:: ActivateOrCycleEx(
+    "ahk_class UnrealWindow",
+    ,
+    false
+)
+
+; Visual Studio
 Numpad2:: ActivateOrCycleEx(
     "ahk_exe devenv.exe",
     "devenv.exe",
     false
 )
 
-; -------------------------
+
+; ==================================================
 ; 사진 / 메모장
-; -------------------------
+; ==================================================
 Numpad8::
 {
-    ; 0.27초 기준
-    if KeyWait("Numpad8", "T0.27") {
-
+    ; 짧게 : 사진 앱
+    if KeyWait("Numpad8", "T0.27")
+    {
         ActivateOrCycleEx(
             "ahk_exe Photos.exe",
             "ms-photos:",
             true
         )
-
-    } else {
-
-        ; 이전 탭/세션 복원을 위해 윈도우 11 메모장 앱 고유의 쉘 주소로 실행
+    }
+    else
+    {
+        ; 길게 : 메모장
         ActivateOrCycleEx(
             "ahk_exe notepad.exe",
             "shell:AppsFolder\Microsoft.WindowsNotepad_8wekyb3d8bbwe!App",
@@ -263,71 +345,81 @@ Numpad8::
     }
 }
 
-; -------------------------
+
+; ==================================================
 ; 웹사이트
-; -------------------------
+; ==================================================
+
+; Udemy
 Numpad3:: OpenSite(
     "Numpad3",
     "Udemy",
     "https://www.udemy.com/home/my-courses/learning/"
 )
 
+; CHZZK
 Numpad4:: OpenSite(
     "Numpad4",
     "치지직|CHZZK",
     "https://chzzk.naver.com/"
 )
 
+; SOOP
 Numpad5:: OpenSite(
     "Numpad5",
     "SOOP|아프리카|Afreeca",
     "https://www.sooplive.com/"
 )
 
+; YouTube
 Numpad6:: OpenSite(
     "Numpad6",
     "YouTube",
     "https://www.youtube.com/"
 )
 
+; NAVER
 Numpad7:: OpenSite(
     "Numpad7",
     "NAVER|네이버",
     "https://www.naver.com/"
 )
 
+; Claude
 NumpadAdd:: OpenSite(
     "NumpadAdd",
     "Claude",
     "https://claude.ai/"
 )
 
+; Gemini
 NumpadSub:: OpenSite(
     "NumpadSub",
     "Gemini",
     "https://gemini.google.com/"
 )
 
+; DCInside
 NumLock:: OpenSite(
     "NumLock",
     "dcinside|디시인사이드|노산",
     "https://gall.dcinside.com/mgallery/board/lists/?id=nobirth"
 )
 
-; -------------------------
+
+; ==================================================
 ; 새 창
-; -------------------------
+; ==================================================
 Numpad9::
 {
-    ; 0.27초 기준
-    if KeyWait("Numpad9", "T0.27") {
-
-        ; 크롬 새 창
+    ; 짧게 : 크롬 새 창
+    if KeyWait("Numpad9", "T0.27")
+    {
         Run 'chrome.exe --new-window'
-
-    } else {
-
-        ; 길게 누르면 다음
+    }
+    else
+    {
+        ; 길게 : 다음
         OpenSite(
             "Numpad9",
             "Daum|다음",
@@ -338,18 +430,20 @@ Numpad9::
     }
 }
 
-; -------------------------
+
+; ==================================================
 ; 최소화 / 전체화면
-; -------------------------
+; ==================================================
 Numpad0::
 {
-    ; 0.27초 기준
-    if KeyWait("Numpad0", "T0.27") {
-
+    ; 짧게 : 최소화
+    if KeyWait("Numpad0", "T0.27")
+    {
         WinMinimize("A")
-
-    } else {
-
+    }
+    else
+    {
+        ; 길게 : 전체화면
         Send "{F11}"
 
         KeyWait("Numpad0")
@@ -358,28 +452,13 @@ Numpad0::
 
 
 ; ==================================================
-; 언리얼 / 개발 환경 판별
-; ==================================================
-IsDevEnvironment()
-{
-    ; Unreal + Visual Studio
-    return (
-           WinActive("ahk_exe UE4Editor.exe")
-        || WinActive("ahk_exe UnrealEditor.exe")
-        || InStr(WinGetTitle("A"), "Unreal Editor")
-        || WinActive("ahk_class UnrealWindow")
-
-        || WinActive("ahk_exe devenv.exe")
-    )
-}
-; ==================================================
-; 이전 탭 / 마우스 모니터 이동 (NumpadDiv: 키패드 /)
+; 이전 탭 / 모니터 이동
 ; ==================================================
 NumpadDiv::
 {
     ; 개발 환경이면 즉시 모니터 이동
-    if IsDevEnvironment() {
-
+    if IsDevEnvironment()
+    {
         ToolTip "🟣 Dev Mode : Mouse Teleport (/)"
         SetTimer () => ToolTip(), -300
 
@@ -388,31 +467,34 @@ NumpadDiv::
     }
 
     ; 일반 환경
-    if KeyWait("NumpadDiv", "T0.27") {
-
-        ; 짧게 누름: 이전 탭
+    if KeyWait("NumpadDiv", "T0.27")
+    {
+        ; 짧게 : 이전 탭
         Send "^+{Tab}"
-
-    } else {
-
-        ; 길게 누름: 모니터 이동
+    }
+    else
+    {
+        ; 길게 : 모니터 이동
         MoveMouseToOtherMonitor()
+
         KeyWait("NumpadDiv")
     }
 }
 
+
 ; ==================================================
-; 다음 탭 (NumpadMult: 키패드 *)
+; 다음 탭
 ; ==================================================
 NumpadMult::
 {
-    ; 언리얼 환경 예외 처리
-    if WinActive("ahk_class UnrealWindow") {
+    ; 언리얼이면 모니터 이동
+    if WinActive("ahk_class UnrealWindow")
+    {
         MoveMouseToOtherMonitor()
         return
     }
 
-    ; 일반 환경: 다음 탭
+    ; 일반 환경
     Send "^{Tab}"
 }
 
@@ -421,81 +503,63 @@ NumpadMult::
 ; 숫자 키 매핑
 ; ==================================================
 
-; ==================================================
 ; 1 → Unreal Engine
-; ==================================================
 1:: ActivateOrCycleEx(
     "ahk_class UnrealWindow",
     ,
     false
 )
 
-; ==================================================
 ; 2 → Visual Studio
-; ==================================================
 2:: ActivateOrCycleEx(
     "ahk_exe devenv.exe",
     "devenv.exe",
     false
 )
 
-; ==================================================
 ; 3 → Udemy
-; ==================================================
 3:: OpenSite(
     "3",
     "Udemy",
     "https://www.udemy.com/home/my-courses/learning/"
 )
 
-; ==================================================
 ; 4 → CHZZK
-; ==================================================
 4:: OpenSite(
     "4",
     "치지직|CHZZK",
     "https://chzzk.naver.com/"
 )
 
-; ==================================================
 ; 5 → SOOP
-; ==================================================
 5:: OpenSite(
     "5",
     "SOOP|아프리카|Afreeca",
     "https://www.sooplive.com/"
 )
 
-; ==================================================
 ; 6 → YouTube
-; ==================================================
 6:: OpenSite(
     "6",
     "YouTube",
     "https://www.youtube.com/"
 )
 
-; ==================================================
 ; 7 → NAVER
-; ==================================================
 7:: OpenSite(
     "7",
     "NAVER|네이버",
     "https://www.naver.com/"
 )
 
-; ==================================================
 ; 8 → Claude
-; ==================================================
 8:: OpenSite(
     "8",
     "Claude",
     "https://claude.ai/"
 )
 
-; ==================================================
 ; 9 → DCInside
-; ==================================================
 9:: OpenSite(
     "9",
     "dcinside|디시인사이드|노산",
