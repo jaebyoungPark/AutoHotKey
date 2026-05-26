@@ -552,12 +552,30 @@ NumpadMult::
     "https://www.naver.com/"
 )
 
-; 8 → Claude
-8:: OpenSite(
-    "8",
-    "Claude",
-    "https://claude.ai/"
-)
+; 8 → 사진 / 메모장
+8::
+{
+    ; 짧게 : 사진 앱
+    if KeyWait("8", "T0.27")
+    {
+        ActivateOrCycleEx(
+            "ahk_exe Photos.exe",
+            "ms-photos:",
+            true
+        )
+    }
+    else
+    {
+        ; 길게 : 메모장
+        ActivateOrCycleEx(
+            "ahk_exe notepad.exe",
+            "shell:AppsFolder\Microsoft.WindowsNotepad_8wekyb3d8bbwe!App",
+            true
+        )
+
+        KeyWait("8")
+    }
+}
 
 ; 9 → DCInside
 9:: OpenSite(
