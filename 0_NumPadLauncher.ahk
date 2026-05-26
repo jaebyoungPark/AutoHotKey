@@ -336,8 +336,8 @@ Numpad8::
     {
         ; 길게 : 메모장
         ActivateOrCycleEx(
-            "ahk_exe notepad.exe",
-            "shell:AppsFolder\Microsoft.WindowsNotepad_8wekyb3d8bbwe!App",
+            "ahk_class Notepad",
+            "notepad.exe",
             true
         )
 
@@ -568,8 +568,8 @@ NumpadMult::
     {
         ; 길게 : 메모장
         ActivateOrCycleEx(
-            "ahk_exe notepad.exe",
-            "shell:AppsFolder\Microsoft.WindowsNotepad_8wekyb3d8bbwe!App",
+            "ahk_class Notepad",
+            "notepad.exe",
             true
         )
 
