@@ -102,11 +102,7 @@ HotKeyList := [
 
 "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton",
 
-"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
 
-"Numpad0", "Numpad1", "Numpad2", "Numpad3",
-"Numpad4", "Numpad5", "Numpad6",
-"Numpad7", "Numpad8", "Numpad9"
 ]
 
 ; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음

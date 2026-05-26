@@ -1,39 +1,99 @@
 ﻿$`::
 {
     global MySuspended, HotkeyList
-    
-    start := A_TickCount
-    while GetKeyState("``", "P")
-        Sleep 10
-    elapsed := A_TickCount - start
-    
-    if (elapsed >= 250 && elapsed <= 1000)
-    {
-        MySuspended := !MySuspended
+    global NumSuspended, NumPadSuspended
+    global NumKeyList, NumPadKeyList
 
-        for key in HotkeyList {
-            try {
-                Hotkey(key, "", MySuspended ? "Off" : "On")
-            } catch {
-                ; 무시
+    start := A_TickCount
+    toggled := false
+
+    while GetKeyState("``", "P")
+    {
+        elapsed := A_TickCount - start
+
+        ; 250ms 넘는 순간 즉시 토글
+        if (!toggled && elapsed >= 250)
+        {
+            toggled := true
+
+            ; =========================
+            ; 전체 토글 상태 반전
+            ; =========================
+            MySuspended := !MySuspended
+
+            ; =========================
+            ; 숫자/넘패드 UI 상태 동기화
+            ; true  = ❌
+            ; false = 활성
+            ; =========================
+            NumSuspended := true
+            NumPadSuspended := true
+
+            ; UI 즉시 갱신
+            UpdateStatusUI()
+
+            ; =========================
+            ; ON / OFF 상태 문자열
+            ; =========================
+            state := MySuspended ? "Off" : "On"
+
+            ; =========================
+            ; 일반 핫키 토글
+            ; =========================
+            for key in HotkeyList
+            {
+                try {
+                    Hotkey(key, "", state)
+                } catch {
+                }
+            }
+
+		; =========================
+; 숫자키 강제 OFF
+; =========================
+for key in NumKeyList
+{
+    try {
+        Hotkey(key, "", "Off")
+    } catch {
+    }
+}
+
+; =========================
+; 넘패드 강제 OFF
+; =========================
+for key in NumPadKeyList
+{
+    try {
+        Hotkey(key, "", "Off")
+    } catch {
+    }
+}
+
+            ; =========================
+            ; 툴팁
+            ; =========================
+            ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
+            SetTimer(() => ToolTip(), -800)
+
+            ; =========================
+            ; 사운드
+            ; =========================
+            if MySuspended
+            {
+                SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav", 1
+            }
+            else
+            {
+                SoundPlay "C:\Windows\Media\notify_Amplified.wav", 1
             }
         }
 
-        ; ✅ 1. 먼저 문구 출력
-        ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON")
-        SetTimer(() => ToolTip(), -800)
-
-        ; ✅ 2. 그 다음 사운드
-        if MySuspended
-        {
-            SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav", 1
-        }
-        else
-        {
-            SoundPlay "C:\Windows\Media\notify_Amplified.wav", 1
-        }
+        Sleep 10
     }
-    else if (elapsed < 250)
+
+    ; 짧게 누르면 백틱 입력
+    if (!toggled)
     {
         Send "{``}"
     }
