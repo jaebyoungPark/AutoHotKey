@@ -3,20 +3,34 @@
 ; 메인 스크립트
 #Include 0_Includes.ahk
 
-MySuspended     := false
-NumSuspended := true
-NumPadSuspended := true
+MySuspended      := false
+NumSuspended     := true
+NumPadSuspended  := true
 
 ; =========================
 ; 일반 숫자 키 / 넘패드 키 정의 및 해제
 ; =========================
-NumKeyList := ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-NumPadKeyList := ["Numpad1", "Numpad2", "Numpad3", "Numpad4", "Numpad5", "Numpad6", "Numpad7", "Numpad8", "Numpad9", "NumpadSub", "NumpadAdd", "NumpadDiv", "NumpadMult", "Numpad0", "NumLock"]
+NumKeyList := [
+    "1", "2", "3", "4", "5",
+    "6", "7", "8", "9", "0"
+]
 
-for key in NumKeyList {
+NumPadKeyList := [
+    "Numpad1", "Numpad2", "Numpad3",
+    "Numpad4", "Numpad5", "Numpad6",
+    "Numpad7", "Numpad8", "Numpad9",
+    "NumpadSub", "NumpadAdd",
+    "NumpadDiv", "NumpadMult",
+    "Numpad0", "NumLock"
+]
+
+for key in NumKeyList
+{
     try Hotkey(key, "Off")
 }
-for key in NumPadKeyList {
+
+for key in NumPadKeyList
+{
     try Hotkey(key, "Off")
 }
 
@@ -28,12 +42,13 @@ HotKeyList := [
 
     ; 마우스
     "RButton", "XButton1", "XButton2", "MButton",
-    "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton",
+    "LButton", "+!LButton", "+!RButton",
+    "^LButton", "~LButton", "!LButton",
 
     ; 휠
     "^+WheelUp", "^+WheelDown",
-    "!WheelUp",  "!WheelDown",
-    "+WheelUp",  "+WheelDown",
+    "!WheelUp", "!WheelDown",
+    "+WheelUp", "+WheelDown",
     "^!WheelUp", "^!WheelDown",
 
     ; 숫자
@@ -47,38 +62,43 @@ HotKeyList := [
 
     ; 방향키
     "Left", "Right", "Up", "Down",
-    "!Left",  "!Right",  "!+Right",  "!+Left",
-    "^Left",  "^Right",  "^+Right",  "^+Left",
-    "#Left",  "#Right",  "#Up",       "#Down",
-    "#^Left", "#^Right", "#^Up",      "#^Down",
-    "^+Up",   "^+Down",
-    "!Up",    "!Down",
-    "!a",     "!d",      "!w",        "!s",
-    "!q",     "!e",
+    "!Left", "!Right", "!+Right", "!+Left",
+    "^Left", "^Right", "^+Right", "^+Left",
+    "#Left", "#Right", "#Up", "#Down",
+    "#^Left", "#^Right", "#^Up", "#^Down",
+    "^+Up", "^+Down",
+    "!Up", "!Down",
+    "!a", "!d", "!w", "!s",
+    "!q", "!e",
 
     ; PageUp/Down
     "PgUp", "PgDn", "^PgDown",
 
     ; NumpadEnter
-    "#NumpadEnter", "^NumpadEnter", "^!NumpadEnter", "!NumpadEnter",
+    "#NumpadEnter", "^NumpadEnter",
+    "^!NumpadEnter", "!NumpadEnter",
 
     ; Win+Numpad
     "#Numpad5", "#Numpad4", "#Numpad1",
     "!Numpad1", "!Numpad2",
 
     ; 기타 Win키
-    "#,", "#.", "#[", "#]", "#End", "#Delete",
+    "#,", "#.", "#[", "#]",
+    "#End", "#Delete",
     "#1", "#f",
 
     ; Shift 조합
-    "+Delete", "+End", "+,", "+.", "+Enter",
+    "+Delete", "+End",
+    "+,", "+.", "+Enter",
 
     ; Alt 조합
-    "!n", "!m", "!j", "!i", "!k", "!l",
+    "!n", "!m", "!j",
+    "!i", "!k", "!l",
     "!,", "!.",
 
     ; Ctrl 조합
-    "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o",
+    "^c", "^t", "^m", "^f",
+    "^i", "^u", "^p", "^o",
     "+A",
 
     ; 단독키
@@ -86,11 +106,15 @@ HotKeyList := [
 
     ; RShift 조합
     "RShift & Tab",
-    "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5",
-    "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0",
+    "RShift & 1", "RShift & 2",
+    "RShift & 3", "RShift & 4",
+    "RShift & 5", "RShift & 6",
+    "RShift & 7", "RShift & 8",
+    "RShift & 9", "RShift & 0",
 
     ; VK15 (한/영) 조합
-    "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d",
+    "VK15 & w", "VK15 & a",
+    "VK15 & s", "VK15 & d",
 
     ; vk19 (한자) 조합
     "vk19 + Q", "vk19 + W", "vk19 + E",
@@ -98,133 +122,227 @@ HotKeyList := [
     "vk19 + Z", "vk19 + X", "vk19 + C",
 
     ; LWin 조합
-    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right",
+    "LWin & Up", "LWin & Left",
+    "LWin & Down", "LWin & Right",
 
-"^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton",
-
-
+    "^+RButton", "^+LButton",
+    "#LButton", "^RButton", "^LButton",
 ]
 
-; "^+F11" (GoLeft) 는 토글용이기도 하므로 일부러 핫키에 안넣음
+; "^+F11" (GoLeft) 는 토글용이므로 제외
 
 ;======================================
 ; Shift+F1 + Esc 0.5초 유지 → 종료
 ;======================================
-~+F1:: {
+
+~+F1::
+{
     start := A_TickCount
-    while GetKeyState("Esc", "P") {
+
+    while GetKeyState("Esc", "P")
+    {
         Sleep 10
-        if (A_TickCount - start >= 500) {
+
+        if (A_TickCount - start >= 500)
+        {
             SoundPlay "C:\Windows\Media\Windows Critical Stop.wav", 1
+
             ToolTip "🛑 Script Terminated"
+
             Sleep 500
+
             ExitApp
         }
     }
 }
 
 ; ==========================================================================
-; [상태 표시 UI 레이어] UI 위치 기반 자동 감지 영역 연동 버전
+; [상태 표시 UI 레이어]
 ; ==========================================================================
 
+; ==================================================
 ; 1. UI 객체 생성 및 스타일 설정
+; ==================================================
+
 StatusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
+
 StatusGui.BackColor := "111111"
+
 StatusGui.SetFont("S11 Bold Q5", "Malgun Gothic")
 
-guiW := 260  
-guiH := 35   
-StatusText := StatusGui.Add("Text", "cWhite Center W" . guiW, "상태 로딩 중...")
+guiW := 260
+guiH := 35
+
+StatusText := StatusGui.Add(
+    "Text",
+    "cWhite Center W" . guiW,
+    "상태 로딩 중..."
+)
+
 WinSetTransparent(100, StatusGui)
 
-; ---------------------------------------------------------
-; 📍 [UI의 위치를 설정하는 핵심 컨트롤 타워]
-; ---------------------------------------------------------
-; ① 실제 눈에 보이는 UI 박스의 기본 위치
+; ==================================================
+; UI 위치 설정
+; ==================================================
+
 defaultX := (A_ScreenWidth - guiW) // 2
 defaultY := 45
 
-; ② UI가 마우스를 피해 도망갈 위치
 dodgeX := defaultX
-dodgeY := defaultY + 100 
+dodgeY := defaultY + 100
 
-; ---------------------------------------------------------
-; ③ [수정] UI 위치와 상관없이 감지 영역 위치를 강제로 지정하기
-; ---------------------------------------------------------
-pad := 33                 ; 감지 영역 테두리 여유 공간
+; ==================================================
+; 감지 영역 설정
+; ==================================================
 
-; 💡 여기에 원하는 화면 좌표 숫자를 직접 입력하세요! (예: X=700, Y=200 위치)
-sensorX := 1150            ; 👈 감지 영역이 시작될 모니터의 X 좌표
-sensorY := 45            ; 👈 감지 영역이 시작될 모니터의 Y 좌표
+pad := 33
 
-; 감지 영역의 전체 크기 설정 (기존 UI 크기 기반 유지 혹은 숫자로 고정 가능)
-sensorW := guiW + (pad * 5) 
-sensorH := guiH + (pad * 1) 
-; ---------------------------------------------------------
+sensorX := 1150
+sensorY := 45
+
+sensorW := guiW + (pad * 5)
+sensorH := guiH + (pad * 1)
 
 isDodged := false
 
+; ==================================================
 ; 2. UI 표시 및 마우스 위치 감시 함수
-UpdateGuiPosition() {
-    global isDodged, defaultX, defaultY, dodgeX, dodgeY
-    global sensorX, sensorY, sensorW, sensorH
-    
+; ==================================================
+
+UpdateGuiPosition()
+{
+    global isDodged
+    global defaultX, defaultY
+    global dodgeX, dodgeY
+    global sensorX, sensorY
+    global sensorW, sensorH
+    global StatusGui
+    global MySuspended
+
+    ; 전체 Suspend 상태면 위치 처리 안함
+    if (MySuspended)
+        return
+
     MouseGetPos(&mouseX, &mouseY)
-    
-    ; UI 박스 기본 위치를 기준으로 생성된 영역을 체크합니다.
+
     xMin := sensorX
     xMax := sensorX + sensorW
+
     yMin := sensorY
     yMax := sensorY + sensorH
-    
-    inZone := (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)
-    
-    if (!isDodged) {
-        ; 마우스가 UI 근처 감지 영역 진입 시 -> 아래로 회피
-        if (inZone) {
+
+    inZone := (
+        mouseX >= xMin
+        && mouseX <= xMax
+        && mouseY >= yMin
+        && mouseY <= yMax
+    )
+
+    if (!isDodged)
+    {
+        if (inZone)
+        {
             isDodged := true
-            StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
+
+            StatusGui.Show(
+                "X" . dodgeX
+                . " Y" . dodgeY
+                . " NoActivate"
+            )
         }
-    } 
-    else {
-        ; 마우스가 UI 근처 감지 영역을 완전히 벗어나면 -> 원래 위치 복귀
-        if (!inZone) {
+    }
+    else
+    {
+        if (!inZone)
+        {
             isDodged := false
-            StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+
+            StatusGui.Show(
+                "X" . defaultX
+                . " Y" . defaultY
+                . " NoActivate"
+            )
         }
     }
 }
 
+; ==================================================
 ; 3. 변수 상태 실시간 업데이트 함수
-UpdateStatusUI() {
-    global NumSuspended, NumPadSuspended, StatusText
+; ==================================================
+
+UpdateStatusUI()
+{
+    global MySuspended
+    global NumSuspended
+    global NumPadSuspended
+    global StatusText
+    global StatusGui
+
+    ; ==================================================
+    ; 전체 Suspend 상태면 UI 숨김
+    ; ==================================================
+    if (MySuspended)
+    {
+        StatusGui.Hide()
+        return
+    }
+
+    ; ==================================================
+    ; 다시 활성화되면 UI 표시
+    ; ==================================================
+    StatusGui.Show("NoActivate")
+
     static prevText := ""
-    
-    strNum    := NumSuspended    ? "❌" : "⌨️"
-    strPad    := NumPadSuspended ? "❌" : "🔢"
-    
-    currentText := "[숫자]: " strNum "    |    [넘패드]: " strPad
-    
-    if (currentText != prevText) {
+
+    strNum := NumSuspended ? "❌" : "⌨️"
+    strPad := NumPadSuspended ? "❌" : "🔢"
+
+    currentText :=
+        "[숫자]: " strNum
+        . "    |    [넘패드]: "
+        . strPad
+
+    if (currentText != prevText)
+    {
         StatusText.Text := currentText
         prevText := currentText
     }
 }
 
+; ==================================================
 ; 30초마다 최상단 권한 리프레시
-RefreshAlwaysOnTop() {
+; ==================================================
+
+RefreshAlwaysOnTop()
+{
     global StatusGui
-    if WinExist(StatusGui) {
+    global MySuspended
+
+    ; Suspend 상태면 무시
+    if (MySuspended)
+        return
+
+    if WinExist(StatusGui)
+    {
         WinSetAlwaysOnTop(False, StatusGui)
         WinSetAlwaysOnTop(True, StatusGui)
     }
 }
 
+; ==================================================
 ; 4. 최초 실행 및 타이머 등록
-StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+; ==================================================
+
+StatusGui.Show(
+    "X" . defaultX
+    . " Y" . defaultY
+    . " NoActivate"
+)
+
 WinSetAlwaysOnTop(True, StatusGui)
+
 UpdateStatusUI()
 
-SetTimer(UpdateStatusUI, 200)   
+SetTimer(UpdateStatusUI, 200)
 SetTimer(UpdateGuiPosition, 80)
 SetTimer(RefreshAlwaysOnTop, 30000)
