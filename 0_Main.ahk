@@ -139,7 +139,7 @@ StatusGui.SetFont("S11 Bold Q5", "Malgun Gothic")
 guiW := 260  
 guiH := 35   
 StatusText := StatusGui.Add("Text", "cWhite Center W" . guiW, "상태 로딩 중...")
-WinSetTransparent(160, StatusGui)
+WinSetTransparent(100, StatusGui)
 
 ; ---------------------------------------------------------
 ; 📍 [UI의 위치를 설정하는 핵심 컨트롤 타워]
@@ -163,7 +163,7 @@ sensorY := 45            ; 👈 감지 영역이 시작될 모니터의 Y 좌표
 
 ; 감지 영역의 전체 크기 설정 (기존 UI 크기 기반 유지 혹은 숫자로 고정 가능)
 sensorW := guiW + (pad * 5) 
-sensorH := guiH + (pad * 1.8) 
+sensorH := guiH + (pad * 1) 
 ; ---------------------------------------------------------
 
 isDodged := false
