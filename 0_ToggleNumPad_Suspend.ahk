@@ -44,16 +44,17 @@ $NumpadDot::
         Send "{NumpadDot}"
 }
 
-; ==========================================
-; $F2: 일반 숫자 키 전용 토글
-; ==========================================
-$F2::
+#Requires AutoHotkey v2.0
+
+$*F2::
 {
-    ; 💡 일반 숫자 전용 변수(NumSuspended)와 리스트(NumKeyList) 사용
     global NumSuspended, NumKeyList
 
     start := A_TickCount
     triggered := false
+
+    ; 원본 F2 차단
+    KeyWait "F2", "T0"
 
     while GetKeyState("F2", "P")
     {
@@ -61,16 +62,12 @@ $F2::
         {
             triggered := true
 
-            ; 일반 숫자 상태 반전
             NumSuspended := !NumSuspended
 
             for key in NumKeyList
             {
                 try {
-                    ; 💡 v2 올바른 문법: 두 번째 매개변수에 On/Off를 직접 지정
                     Hotkey(key, NumSuspended ? "Off" : "On")
-                } catch {
-                    ; 예외 무시
                 }
             }
 
@@ -82,7 +79,9 @@ $F2::
         Sleep 10
     }
 
-    ; 짧게 탭했을 때만 F2 입력
+    ; 짧게 눌렀을 때만 우리가 직접 F2 전달
     if (!triggered)
-        Send "{F2}"
+    {
+        SendEvent "{F2}"
+    }
 }
