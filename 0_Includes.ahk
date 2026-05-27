@@ -15,7 +15,7 @@
 #Include 0_ToggleNumPad_Suspend.ahk
 
 #Include 0_NumPadLauncher.ahk
-#Include MouseFinder.ahk
+
 
 ;======================================
 ;Toggle
