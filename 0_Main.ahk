@@ -186,10 +186,10 @@ WinSetTransparent(100, StatusGui)
 ; ==================================================
 
 defaultX := (A_ScreenWidth - guiW) // 2
-defaultY := 45
+defaultY := 48
 
 dodgeX := defaultX
-dodgeY := defaultY + 100
+dodgeY := defaultY + 200
 
 ; ==================================================
 ; 감지 영역 설정
@@ -198,10 +198,10 @@ dodgeY := defaultY + 100
 pad := 33
 
 sensorX := 1150
-sensorY := 45
+sensorY := 10
 
 sensorW := guiW + (pad * 5)
-sensorH := guiH + (pad * 1)
+sensorH := guiH + (pad * 2)
 
 isDodged := false
 
