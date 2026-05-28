@@ -63,6 +63,7 @@
 
 #Include RShift_Delete.ahk
 #Include RShift_NumPad.ahk
+#Include RAlt+Num.ahk
 
 ;======================================
 ;Visual Studio
@@ -75,8 +76,10 @@
 #Include VS_WordCopyWithMouse.ahk
 
 
-
-
+;=======================================
+;F
+;=======================================
+#Include F1_SwitchCursor.ahk
 
 
 
