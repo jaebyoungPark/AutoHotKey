@@ -2,105 +2,65 @@
 #SingleInstance Force
 
 ; =========================================================
-; [MAIN LAUNCHER - 구조 설명]
-; =========================================================
-; 이 스크립트를 아이콘화하여 실행하면,
-; 실제 MAIN 스크립트(0_Main.ahk)가 변경되더라도
-; 이 런처 파일(MainLauncher)은 수정/재컴파일/재아이콘화할 필요가 없다.
-;
-; 즉, "실행 진입점(Launcher)" 역할만 담당하도록 설계된 구조이다.
-;
-; ---------------------------------------------------------
-; [동작 방식]
-; ---------------------------------------------------------
-; - 짧게 누름 (< 0.4초)
-;     → 원래 F12 입력 그대로 전달
-;
-; - 길게 누름 (≥ 0.4초)
-;     → MAIN ON / OFF 토글 실행
-;
-; ---------------------------------------------------------
-; [장점]
-; ---------------------------------------------------------
-; - MAIN 경로(MainPath)만 수정하면 전체 시스템 유지 가능
-; - MAIN 로직 변경 시 Launcher 재빌드 불필요
-; - 항상 동일한 실행 진입점 유지
+; [MAIN LAUNCHER] - 수정 및 최적화 버전
 ; =========================================================
 
 global MainRunning := false
-global Triggered := false
-
 MainPath := "E:\GitProject\AutoHotKey\AutoHotKey\0_Main.ahk"
 
-F12::
-{
-    global Triggered
-
-    if (Triggered)
-        return
-
-    Triggered := true
-
-    ; 0.4초 후 길게 눌렀는지 체크
-    SetTimer CheckHold, -400
-}
-
-F12 Up::
-{
-    global Triggered
-
-    ; =========================
-    ; 짧게 눌렀을 때 (0.4초 미만)
-    ; =========================
-    if (Triggered)
-    {
-        Triggered := false
-        Send "{F12}"
-    }
-}
-
-CheckHold()
+; $ 접두사로 무한 루프 방지 및 키보드 훅 사용
+$F12::
 {
     global MainRunning
-    global Triggered
     global MainPath
 
-    ; =========================
-    ; 길게 눌렀을 때만 실행
-    ; =========================
-    if (Triggered && GetKeyState("F12", "P"))
+    ; F12 키가 떼어질 때까지 최대 0.4초(400ms) 동안 대기합니다.
+    ; T0.4 옵션은 0.4초 안에 키를 떼면 ErrorLevel(0)을, 계속 누르고 있으면 1을 반환합니다.
+    KeyReleased := KeyWait("F12", "T0.4")
+
+    if (KeyReleased)
     {
-        ; =========================
-        ; OFF -> ON
-        ; =========================
+        ; -------------------------------------------------
+        ; 1. 짧게 누름 (< 0.4초): 원래 F12 기능 수행
+        ; -------------------------------------------------
+        ; 핫키를 바이패스하여 본래 기능을 수행하도록 SendLevel을 조정하거나
+        ; 가장 안전하게는 핫키를 잠시 끄고(값 전달) 다시 켭니다.
+        HotIf
+        SetKeyDelay -1
+        Send "{Blind}{F12}"  ; {Blind}를 붙여 다른 수식 키와의 혼선을 방지
+    }
+    else
+    {
+        ; -------------------------------------------------
+        ; 2. 길게 누름 (≥ 0.4초): MAIN ON / OFF 토글
+        ; -------------------------------------------------
         if (!MainRunning)
         {
+            ; OFF -> ON
             SoundPlay "C:\Windows\Media\notify_Amplified.wav"
-
             Run MainPath
             MainRunning := true
 
             ToolTip "MAIN ON"
             SetTimer () => ToolTip(), -1200
         }
-        ; =========================
-        ; ON -> OFF
-        ; =========================
         else
         {
+            ; ON -> OFF
             SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav"
-
+            
             DetectHiddenWindows true
             SetTitleMatchMode 2
-
             WinClose "0_Main.ahk ahk_class AutoHotkey"
-
+            
             MainRunning := false
 
             ToolTip "MAIN OFF"
             SetTimer () => ToolTip(), -1200
         }
+        
+        ; 길게 누르고 있는 동안 연속으로 실행되는 것을 방지하기 위해 
+        ; 최종적으로 키에서 손을 뗄 때까지 대기합니다.
+        KeyWait "F12"
     }
-
-    Triggered := false
 }

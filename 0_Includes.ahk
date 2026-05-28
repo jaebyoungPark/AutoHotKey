@@ -37,7 +37,6 @@
 #Include MediaSpeed.ahk
 #Include ToggleSubstitute.ahk
 #Include Volume.ahk
-#Include SwitchCursor.ahk
 #Include ScrollWithMouse.ahk
 
 #Include MouseLeftPressed.ahk
