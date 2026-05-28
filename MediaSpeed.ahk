@@ -1,10 +1,12 @@
 ﻿#Requires AutoHotkey v2.0
-
+#SingleInstance Force
 
 ; ==============================
 ; 전역 변수
 ; ==============================
-magnifierOn1 := false
+global magnifierOn1 := false
+global isComboTriggered := false
+global isVirtualDown := false ; vk15 대신 '잠금 상태'를 기억할 전역 플래그
 
 ; ==============================
 ; Unreal Engine 활성 판별 함수
@@ -18,15 +20,8 @@ IsUnrealActive() {
     )
 }
 
-#Requires AutoHotkey v2.0
-#SingleInstance Force
-
-; --- 전역 변수 설정 ---
-global isComboTriggered := false
-global isVirtualDown := false ; ★ vk15 대신 '잠금 상태'를 기억할 전역 플래그
-
 ; ==============================================================================
-; 1. Ctrl+Alt+Shift+P 단축키 구역 (Visual Studio & Unreal Engine 토글 연동)
+; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
 ; ==============================================================================
 ^!+p::
 {
@@ -34,7 +29,7 @@ global isVirtualDown := false ; ★ vk15 대신 '잠금 상태'를 기억할 전
     KeyWait "p"
     elapsed := A_TickCount - start
 
-    ; GOM64
+    ; [1] GOM64 (최우선 처리)
     if WinActive("ahk_exe GOM64.EXE") {
         if (elapsed < 250) {
             Send "c"
@@ -42,7 +37,7 @@ global isVirtualDown := false ; ★ vk15 대신 '잠금 상태'를 기억할 전
         }
     }
 
-    ; YouTube / Udemy
+    ; [2] YouTube (최우선 처리)
     title := WinGetTitle("A")
     if InStr(title, "YouTube") {
         ToolTip "▶ Speed Up"
@@ -50,74 +45,80 @@ global isVirtualDown := false ; ★ vk15 대신 '잠금 상태'를 기억할 전
         SendInput "+."
         return
     }
-    else if InStr(title, "Udemy") {
+    
+    ; [3] Udemy (단독 로직 유지, 가상 잠금 대상에서 완전 제외)
+    if InStr(title, "Udemy") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"
         return
     }
 
-    ; Visual Studio
+    ; [4] Visual Studio 특정 기능 (550ms 미만 헤더 전환 유지)
     if WinActive("ahk_exe devenv.exe") {
-        if (elapsed < 200) {
-            ToggleVirtualLock() ; ★ 가상 잠금 함수 호출
-        }
-        else if (elapsed < 550) {
+        if (elapsed >= 200 && elapsed < 550) {
             ToolTip "Header"
             SetTimer(() => ToolTip(), -600)
             Send "^!{F12}"
+            return
         }
-        return
     }
 
-    ; Unreal Engine
-    CoordMode "Mouse", "Screen"
+    ; [5] Unreal Engine 특정 기능 (450ms 미만 에셋 서랍 유지)
     if IsUnrealActive() {
-        if (elapsed < 200) {
-            ToggleVirtualLock() ; ★ 가상 잠금 함수 호출
-        }
-        else if (elapsed < 450) {
+        if (elapsed >= 200 && elapsed < 450) {
+            CoordMode "Mouse", "Screen"
             ToolTip "Content Drawer"
             SetTimer(() => ToolTip(), -700)
             Send "^ "
+            return
         }
+    }
+
+    ; Udemy를 제외한 모든 환경에서 200ms 미만인 경우 가상 잠금 작동
+    if (elapsed < 200) {
+        ToggleVirtualLock()
         return
     }
 }
 
-; ★ 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
+; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
 ToggleVirtualLock() {
     global isVirtualDown, isComboTriggered
     
-    isVirtualDown := !isVirtualDown ; 상태 반전 (true <-> false)
+    isVirtualDown := !isVirtualDown 
     
     if (isVirtualDown) {
         isComboTriggered := false
-        ShowDebug("가상 잠금 ON (숫자 대기 중...)")
+        ShowDebug("가상 잠금 ON (숫자 사용 가능)")
     } else {
-        ShowDebug("가상 잠금 OFF (해제)")
+        ShowDebug("가상 잠금 OFF (플랫폼 스위칭)")
     }
 }
 
 
 ; ==============================================================================
-; 2. 한/영 키(vk15) 자체를 물리적으로 제어하는 구역 (올려주신 깔끔한 방식 유지)
+; 2. 한/영 키(vk15) 자체를 물리적으로 제어하는 구역
 ; ==============================================================================
-vk15:: {
+
+; 한/영 키를 누르면 윈도우 메커니즘에 의해 일단 한/영이 즉시 바뀝니다.
+~vk15:: {
     global isComboTriggered := false
     ShowDebug("vk15 물리 누름")
 }
 
-vk15 up:: {
+; 키를 뗄 때의 구역입니다.
+~vk15 up:: {
     global isComboTriggered, isVirtualDown
     
-    ; 가상 잠금 상태가 아닐 때만 단독 입력 처리
     if (!isVirtualDown) {
         if (!isComboTriggered) {
-            Send("{vk15}") 
-            ShowDebug("vk15 단독 입력: 한/영 전환")
+            ; 숫자를 한 번도 안 누르고 그냥 뗐다면, 누를 때 정상적으로 바뀐 상태가 그대로 유지됩니다.
+            ShowDebug("vk15 단독 입력: 한/영 전환 완료")
         } else {
-            ShowDebug("조합 입력 완료: 한/영 전환 차단됨")
+            ; ★ 중요: 이미 숫자를 누르는 순간(HandleKey) 한/영을 제자리로 돌려놓았기 때문에,
+            ; 뗄 때는 추가적인 Send("{vk15}") 없이 조용히 디버깅 문구만 띄우고 종료합니다.
+            ShowDebug("조합 입력 완료: 한/영 복구 완료 상태")
         }
     }
 }
@@ -126,7 +127,6 @@ vk15 up:: {
 ; ==============================================================================
 ; 3. 조합 키 작동 구역
 ; ==============================================================================
-; 진짜 한/영 키를 누르고 있거나(P), ^!+p로 가상 잠금이 켜진 상태(isVirtualDown) 둘 다 작동!
 #HotIf GetKeyState("vk15", "P") || isVirtualDown
 $1:: HandleKey("1")
 $2:: HandleKey("2")
@@ -142,17 +142,26 @@ $0:: HandleKey("0")
 
 
 ; --- 보조 함수들 ---
+; ★ 요청하신 즉시 복구 로직이 적용된 구간입니다.
 HandleKey(num) {
-    global isComboTriggered := true
+    global isComboTriggered, isVirtualDown
+    
+    ; [★ 핵심 수정] 
+    ; ^!+p 가상 잠금 상태가 아닐 때(즉, 진짜 손가락으로 한/영 키를 누르고 있는 상태에서)
+    ; 처음으로 숫자가 눌린 타이밍이라면 바뀐 한/영 키를 즉시 원래대로 돌려놓습니다.
+    if (!isVirtualDown && !isComboTriggered) {
+        Send("{vk15}") 
+        ShowDebug("숫자 입력 감지: 한/영 즉시 원상복구!")
+    }
+    
+    isComboTriggered := true ; 조합이 실행되었음을 마킹
     SendInput(num)
-    ShowDebug("조합 키 " num " 입력 성공!")
 }
 
 ShowDebug(message) {
     ToolTip("[디버깅] " message)
     SetTimer(() => ToolTip(), -1000)
 }
-
 ; ==============================
 ; Ctrl+Alt+Shift+O
 ; ==============================
