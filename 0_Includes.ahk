@@ -63,7 +63,7 @@
 
 #Include RShift_Delete.ahk
 #Include RShift_NumPad.ahk
-#Include RAlt+Num.ahk
+;#Include RAlt+Num.ahk
 
 ;======================================
 ;Visual Studio
