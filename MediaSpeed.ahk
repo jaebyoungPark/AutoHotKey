@@ -83,6 +83,7 @@ IsUnrealActive() {
 }
 
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
+; [숫자] 가 On 일때 의미있는 토글. (NumSuspeded 가 False 일 때)
 ToggleVirtualLock() {
     global isVirtualDown, isComboTriggered
     
@@ -90,8 +91,18 @@ ToggleVirtualLock() {
     
     if (isVirtualDown) {
         isComboTriggered := false
+
+	 ; ON 사운드
+        SoundPlay "C:\Windows\Media\Windows Notify System Generic.wav"
+
         ShowDebug("가상 잠금 ON (숫자 사용 가능)")
+
+
     } else {
+
+        ; OFF 사운드
+        SoundPlay "C:\Windows\Media\Windows Critical Stop.wav"
+
         ShowDebug("가상 잠금 OFF (플랫폼 스위칭)")
     }
 }
@@ -104,7 +115,7 @@ ToggleVirtualLock() {
 ; 한/영 키를 누르면 윈도우 메커니즘에 의해 일단 한/영이 즉시 바뀝니다.
 ~vk15:: {
     global isComboTriggered := false
-    ShowDebug("vk15 물리 누름")
+    ;ShowDebug("vk15 물리 누름")
 }
 
 ; 키를 뗄 때의 구역입니다.
@@ -114,11 +125,11 @@ ToggleVirtualLock() {
     if (!isVirtualDown) {
         if (!isComboTriggered) {
             ; 숫자를 한 번도 안 누르고 그냥 뗐다면, 누를 때 정상적으로 바뀐 상태가 그대로 유지됩니다.
-            ShowDebug("vk15 단독 입력: 한/영 전환 완료")
+            ;ShowDebug("vk15 단독 입력: 한/영 전환 완료")
         } else {
             ; ★ 중요: 이미 숫자를 누르는 순간(HandleKey) 한/영을 제자리로 돌려놓았기 때문에,
             ; 뗄 때는 추가적인 Send("{vk15}") 없이 조용히 디버깅 문구만 띄우고 종료합니다.
-            ShowDebug("조합 입력 완료: 한/영 복구 완료 상태")
+            ;ShowDebug("조합 입력 완료: 한/영 복구 완료 상태")
         }
     }
 }
@@ -143,6 +154,7 @@ $0:: HandleKey("0")
 
 ; --- 보조 함수들 ---
 ; ★ 요청하신 즉시 복구 로직이 적용된 구간입니다.
+; [숫자] 가 On 일 때 의미있는 토글. (NumSuspended 가 False 일 때)
 HandleKey(num) {
     global isComboTriggered, isVirtualDown
     
