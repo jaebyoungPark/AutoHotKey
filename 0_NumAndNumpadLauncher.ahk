@@ -303,9 +303,9 @@ IsDevEnvironment()
 ; 프로그램
 ; ==================================================
 
-; Unreal Engine
+; Unreal Engine (프로젝트명 변경 및 모든 빌드 환경/파일이름 완벽 대응)
 Numpad1:: ActivateOrCycleEx(
-    "ahk_class UnrealWindow",
+    "Unreal Editor ahk_exe i)UnrealEditor",
     ,
     false
 )
@@ -503,9 +503,9 @@ NumpadMult::
 ; 숫자 키 매핑
 ; ==================================================
 
-; 1 → Unreal Engine
+; 아랫부분의 숫자 1 매핑도 함께 변경
 1:: ActivateOrCycleEx(
-    "ahk_class UnrealWindow",
+    "Unreal Editor ahk_exe i)UnrealEditor",
     ,
     false
 )

@@ -123,17 +123,21 @@ $7:: HandleKey("7")
 $8:: HandleKey("8")
 $9:: HandleKey("9")
 $0:: HandleKey("0")
-; [넘패드 숫자 키 추가] - 재귀 방지($) 적용
-$Numpad1:: HandleKey("{Numpad1}")
-$Numpad2:: HandleKey("{Numpad2}")
-$Numpad3:: HandleKey("{Numpad3}")
-$Numpad4:: HandleKey("{Numpad4}")
-$Numpad5:: HandleKey("{Numpad5}")
-$Numpad6:: HandleKey("{Numpad6}")
-$Numpad7:: HandleKey("{Numpad7}")
-$Numpad8:: HandleKey("{Numpad8}")
-$Numpad9:: HandleKey("{Numpad9}")
-$Numpad0:: HandleKey("{Numpad0}") ; 필요할 경우를 위해 0도 함께 추가했습니다.
+#HotIf
+
+; --- [구역 B] 넘패드 키 구역 (vk15 및 플래그와 무관, 오직 가상 잠금 때만 작동) ---
+#HotIf isVirtualDown
+$Numpad1::SendInput "{Blind}{Numpad1}"
+$Numpad2::SendInput "{Blind}{Numpad2}"
+$Numpad3::SendInput "{Blind}{Numpad3}"
+$Numpad4::SendInput "{Blind}{Numpad4}"
+$Numpad5::SendInput "{Blind}{Numpad5}"
+$Numpad6::SendInput "{Blind}{Numpad6}"
+$Numpad7::SendInput "{Blind}{Numpad7}"
+$Numpad8::SendInput "{Blind}{Numpad8}"
+$Numpad9::SendInput "{Blind}{Numpad9}"
+$Numpad0::SendInput "{Blind}{Numpad0}"
+#HotIf
 
 HandleKey(num) {
     global isComboTriggered, isVirtualDown
