@@ -370,8 +370,11 @@ SetTimer(RefreshAlwaysOnTop, 30000)
 
 
 ; ==========================================================================
-; [외부 애니메이션 커서(.ani) 절대 경로 주입 레이어]
+; [외부 애니메이션 커서(.ani) 주입 + 스크립트 종료 시 자동 복구 레이어]
 ; ==========================================================================
+
+; 스크립트가 어떤 이유로든 종료될 때(ExitApp 등) 특정 함수를 강제로 실행하도록 등록
+OnExit(ExitReleaseCursor)
 
 ; 메모장/편집기 등에서 커서가 강제로 풀리는 현상을 원천 차단
 OnMessage(0x0020, WM_SETCURSOR_INTERCEPT)
@@ -386,15 +389,14 @@ WatchCursorByVirtualLock()
     
     if (isVirtualDown)
     {
-        ; 💡 요청하신 Rainbow Ultimate XXL 애니메이션 커서의 절대 경로를 직접 지정합니다.
         targetPath := "E:\GitProject\AutoHotKey\AutoHotKey\Icon And Cursor\Rainbow-Ultimate-Horizontal-XXL-93ca173e\arrow.ani"
         SetCustomCursorFile(targetPath) 
         prevStatus := true
     }
     else if (prevStatus)
     {
-        ; 🔓 가상 잠금이 해제되면 원래 기본 윈도우 마우스 커서로 완전 리셋
-        DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
+        ; 가상 잠금이 해제되면 원래 기본 마우스 커서로 리셋
+        ResetSystemCursor()
         prevStatus := false
     }
 }
@@ -403,23 +405,34 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
 {
     global isVirtualDown
     if (isVirtualDown)
-        return 1 ; 잠금 상태일 땐 프로그램들이 커서를 제어하지 못하게 씹어버림
+        return 1
 }
 
 SetCustomCursorFile(fullPath)
 {
-    ; LR_LOADFROMFILE (0x00000010) 플래그를 사용하여 지정된 절대 경로에서 .ani 파일을 로드합니다.
     local hCursor := DllCall("User32.dll\LoadImage", "Ptr", 0, "Str", fullPath, "UInt", 2, "Int", 0, "Int", 0, "UInt", 0x00000010, "Ptr")
-    
     if (!hCursor)
-        return ; 만약 경로가 틀렸거나 파일이 없으면 오류 없이 패스합니다.
+        return
 
-    ; 애니메이션 프레임을 유지하기 위해 CopyIcon으로 안전하게 복사본 생성
     local hCopy1 := DllCall("User32.dll\CopyIcon", "Ptr", hCursor, "Ptr")
     local hCopy2 := DllCall("User32.dll\CopyIcon", "Ptr", hCursor, "Ptr")
     
-    ; 일반 화살표(32512), 메모장 텍스트창(32513), 기타 시스템 슬롯까지 해당 애니메이션 커서로 덮어씌웁니다.
     DllCall("User32.dll\SetSystemCursor", "Ptr", hCopy1, "UInt", 32512)
     DllCall("User32.dll\SetSystemCursor", "Ptr", hCopy2, "UInt", 32513)
     DllCall("User32.dll\SetSystemCursor", "Ptr", hCursor, "UInt", 32649)
+}
+
+; 윈도우 순정 커서 복구 함수
+ResetSystemCursor()
+{
+    ; SPI_SETCURSORS (0x0057) 명령을 내려 시스템 전체 커서를 원래 테마 기본값으로 강제 리프레시합니다.
+    DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
+}
+
+; ★ [핵심] 스크립트가 꺼질 때 자동으로 호출되는 유언 함수
+ExitReleaseCursor(ExitReason, ExitCode)
+{
+    ResetSystemCursor()
+    ; 대기 시간 없이 즉시 종료 처리를 허가함 (0 반환)
+    return 0 
 }

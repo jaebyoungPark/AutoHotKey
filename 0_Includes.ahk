@@ -48,7 +48,7 @@
 #Include Win+F.ahk
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
-
+#Include CtrlAndPointerCheck.ahk
 
 
 
