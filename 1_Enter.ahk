@@ -4,7 +4,28 @@
 enterPressTime := 0
 isHolding := false
 
-; ------------------------- 
+
+; ==================================================
+; 넘패드 엔터 (유데미 분기 처리 및 재귀 방지)
+; ==================================================
+$NumpadEnter::
+{
+    ; Chrome에서 Udemy 사이트가 활성화되어 있는 경우
+    if (WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy"))
+    {
+        ToolTip "⏸️/▶️ Udemy: Space"
+        SetTimer(() => ToolTip(), -700)
+        SendInput "{Space}"
+    }
+    else
+    {
+        ; 일반 환경에서는 원래의 넘패드 엔터 수행 (Blind로 수정 키 유지)
+        SendInput "{Blind}{NumpadEnter}"
+    }
+}
+
+
+
 ; 상단 Enter (Win + Enter)
 #Enter::
 {
