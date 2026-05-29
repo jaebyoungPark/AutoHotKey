@@ -1,0 +1,46 @@
+[Version]
+signature="$CHICAGO$"
+
+[DefaultInstall]
+CopyFiles = Scheme.Cur
+AddReg = Scheme.Reg
+
+[DestinationDirs]
+Scheme.Cur = 25,Cursors
+
+[Scheme.Cur]
+ns.ani
+nwse.ani
+text.ani
+no.ani
+person.ani
+arrow.ani
+cross.ani
+working.ani
+busy.ani
+ew.ani
+link.ani
+help.ani
+location.ani
+move.ani
+nesw.ani
+
+[Scheme.Reg]
+HKCU,"Control Panel\Cursors","SizeNS",,"%25%\Cursors\ns.ani"
+HKCU,"Control Panel\Cursors","SizeNWSE",,"%25%\Cursors\nwse.ani"
+HKCU,"Control Panel\Cursors","IBeam",,"%25%\Cursors\text.ani"
+HKCU,"Control Panel\Cursors","No",,"%25%\Cursors\no.ani"
+HKCU,"Control Panel\Cursors","Person",,"%25%\Cursors\person.ani"
+HKCU,"Control Panel\Cursors","Arrow",,"%25%\Cursors\arrow.ani"
+HKCU,"Control Panel\Cursors","Cross",,"%25%\Cursors\cross.ani"
+HKCU,"Control Panel\Cursors","AppStarting",,"%25%\Cursors\working.ani"
+HKCU,"Control Panel\Cursors","Wait",,"%25%\Cursors\busy.ani"
+HKCU,"Control Panel\Cursors","SizeWE",,"%25%\Cursors\ew.ani"
+HKCU,"Control Panel\Cursors","Hand",,"%25%\Cursors\link.ani"
+HKCU,"Control Panel\Cursors","Help",,"%25%\Cursors\help.ani"
+HKCU,"Control Panel\Cursors","Pin",,"%25%\Cursors\location.ani"
+HKCU,"Control Panel\Cursors","SizeAll",,"%25%\Cursors\move.ani"
+HKCU,"Control Panel\Cursors","SizeNESW",,"%25%\Cursors\nesw.ani"
+; Set scheme name
+HKCU,"Control Panel\Cursors","(Default)",,"Rainbow Ultimate Horizontal XXL"
+HKCU,"Control Panel\Cursors\Schemes","Rainbow Ultimate Horizontal XXL",,""

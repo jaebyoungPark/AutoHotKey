@@ -1,12 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; ==============================
-; 전역 변수
-; ==============================
-global magnifierOn1 := false
-global isComboTriggered := false
-global isVirtualDown := false ; vk15 대신 '잠금 상태'를 기억할 전역 플래그
+; ⚠️ [중요] 최상단에 있던 변수 초기화 구문(global 변수 := false)을 모두 삭제했습니다.
+; 이제 이 파일은 main.ahk에 선언된 변수를 '가져와서' 사용합니다.
 
 ; ==============================
 ; Unreal Engine 활성 판별 함수
@@ -26,10 +22,20 @@ IsUnrealActive() {
 ^!+p::
 {
     start := A_TickCount
-    KeyWait "p"
+    
+    ; ⚡ 반응성 개선: 200ms 동안만 P 키가 떼어지기를 기다립니다 (블로킹 방지)
+    isReleased := KeyWait("p", "T0.2")
     elapsed := A_TickCount - start
 
-    ; [1] GOM64 (최우선 처리)
+    title := WinGetTitle("A")
+
+    ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
+    if (elapsed < 200 && isReleased && !InStr(title, "Udemy")) {
+        ToggleVirtualLock()
+        return
+    }
+
+    ; [1] GOM64
     if WinActive("ahk_exe GOM64.EXE") {
         if (elapsed < 250) {
             Send "c"
@@ -37,8 +43,7 @@ IsUnrealActive() {
         }
     }
 
-    ; [2] YouTube (최우선 처리)
-    title := WinGetTitle("A")
+    ; [2] YouTube
     if InStr(title, "YouTube") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
@@ -46,7 +51,7 @@ IsUnrealActive() {
         return
     }
     
-    ; [3] Udemy (단독 로직 유지, 가상 잠금 대상에서 완전 제외)
+    ; [3] Udemy
     if InStr(title, "Udemy") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
@@ -54,7 +59,7 @@ IsUnrealActive() {
         return
     }
 
-    ; [4] Visual Studio 특정 기능 (550ms 미만 헤더 전환 유지)
+    ; [4] Visual Studio 특정 기능
     if WinActive("ahk_exe devenv.exe") {
         if (elapsed >= 200 && elapsed < 550) {
             ToolTip "Header"
@@ -64,7 +69,7 @@ IsUnrealActive() {
         }
     }
 
-    ; [5] Unreal Engine 특정 기능 (450ms 미만 에셋 서랍 유지)
+    ; [5] Unreal Engine 특정 기능
     if IsUnrealActive() {
         if (elapsed >= 200 && elapsed < 450) {
             CoordMode "Mouse", "Screen"
@@ -74,66 +79,35 @@ IsUnrealActive() {
             return
         }
     }
-
-    ; Udemy를 제외한 모든 환경에서 200ms 미만인 경우 가상 잠금 작동
-    if (elapsed < 200) {
-        ToggleVirtualLock()
-        return
-    }
 }
 
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
-; [숫자] 가 On 일때 의미있는 토글. (NumSuspeded 가 False 일 때)
 ToggleVirtualLock() {
+    ; main.ahk에 선언된 전역 변수를 함수 내부로 명시적 호출
     global isVirtualDown, isComboTriggered
     
     isVirtualDown := !isVirtualDown 
     
     if (isVirtualDown) {
         isComboTriggered := false
-
-	 ; ON 사운드
         SoundPlay "C:\Windows\Media\Windows Notify System Generic.wav"
-
         ShowDebug("가상 잠금 ON (숫자 사용 가능)")
-
-
     } else {
-
-        ; OFF 사운드
         SoundPlay "C:\Windows\Media\Windows Critical Stop.wav"
-
         ShowDebug("가상 잠금 OFF (플랫폼 스위칭)")
     }
 }
 
-
 ; ==============================================================================
 ; 2. 한/영 키(vk15) 자체를 물리적으로 제어하는 구역
 ; ==============================================================================
-
-; 한/영 키를 누르면 윈도우 메커니즘에 의해 일단 한/영이 즉시 바뀝니다.
 ~vk15:: {
     global isComboTriggered := false
-    ;ShowDebug("vk15 물리 누름")
 }
 
-; 키를 뗄 때의 구역입니다.
 ~vk15 up:: {
     global isComboTriggered, isVirtualDown
-    
-    if (!isVirtualDown) {
-        if (!isComboTriggered) {
-            ; 숫자를 한 번도 안 누르고 그냥 뗐다면, 누를 때 정상적으로 바뀐 상태가 그대로 유지됩니다.
-            ;ShowDebug("vk15 단독 입력: 한/영 전환 완료")
-        } else {
-            ; ★ 중요: 이미 숫자를 누르는 순간(HandleKey) 한/영을 제자리로 돌려놓았기 때문에,
-            ; 뗄 때는 추가적인 Send("{vk15}") 없이 조용히 디버깅 문구만 띄우고 종료합니다.
-            ;ShowDebug("조합 입력 완료: 한/영 복구 완료 상태")
-        }
-    }
 }
-
 
 ; ==============================================================================
 ; 3. 조합 키 작동 구역
@@ -151,22 +125,15 @@ $9:: HandleKey("9")
 $0:: HandleKey("0")
 #HotIf
 
-
-; --- 보조 함수들 ---
-; ★ 요청하신 즉시 복구 로직이 적용된 구간입니다.
-; [숫자] 가 On 일 때 의미있는 토글. (NumSuspended 가 False 일 때)
 HandleKey(num) {
     global isComboTriggered, isVirtualDown
     
-    ; [★ 핵심 수정] 
-    ; ^!+p 가상 잠금 상태가 아닐 때(즉, 진짜 손가락으로 한/영 키를 누르고 있는 상태에서)
-    ; 처음으로 숫자가 눌린 타이밍이라면 바뀐 한/영 키를 즉시 원래대로 돌려놓습니다.
     if (!isVirtualDown && !isComboTriggered) {
         Send("{vk15}") 
         ShowDebug("숫자 입력 감지: 한/영 즉시 원상복구!")
     }
     
-    isComboTriggered := true ; 조합이 실행되었음을 마킹
+    isComboTriggered := true
     SendInput(num)
 }
 
@@ -174,12 +141,13 @@ ShowDebug(message) {
     ToolTip("[디버깅] " message)
     SetTimer(() => ToolTip(), -1000)
 }
+
 ; ==============================
-; Ctrl+Alt+Shift+O
+; Ctrl+Alt+Shift+O 구역
 ; ==============================
 ^!+o::
 {
-    global magnifierOn1
+    global magnifierOn1  ; main.ahk의 전역 변수를 가져옴
     start := A_TickCount
     KeyWait "o"
     elapsed := A_TickCount - start
@@ -191,13 +159,8 @@ ShowDebug(message) {
             return
         }
     }
-	 ; Notepad (메모장)
-    if (
-       WinActive("ahk_exe notepad.exe")
-    || WinActive("ahk_exe Notepad.exe")
-    || WinActive("ahk_class Notepad")
-    )
-    {
+    ; Notepad (메모장)
+    if (WinActive("ahk_exe notepad.exe") || WinActive("ahk_exe Notepad.exe") || WinActive("ahk_class Notepad")) {
         if (elapsed < 250) {
             Send "^s"
             ToolTip "💾 저장 완료"
@@ -261,7 +224,7 @@ ShowDebug(message) {
         if (elapsed < 250) {
             ToolTip "컴파일 후 저장"
             SetTimer(() => ToolTip(), -700)
-	    Send "{Enter}"     ; 먼저 Enter
+            Send "{Enter}"
             Sleep 100
             SendInput "{F7}"
             Sleep 300
@@ -285,56 +248,25 @@ ShowDebug(message) {
     }
 }
 
-
-; ==============================
-; Shift + , / .  (Udemy 전용)
-; 이거 동작 이상해서 보류하고 그 아래에 있는걸로 사용함
-; ==============================
-; ~+,::
-; {
-;     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
-;     {
-;         ToolTip "◀ Speed Down"
-;         SetTimer(() => ToolTip(), -700)
-;         SendInput "+{Left}"
-;     }
-; }
-
-; ~+.:: 
-; {
-;     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
-;     {
-;         ToolTip "▶ Speed Up"
-;         SetTimer(() => ToolTip(), -700)
-;         SendInput "+{Right}"
-;     }
-; }
-
-
+; Udemy 전용 단축키 유지
 $+,::
 {
-    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
-    {
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
         ToolTip "◀ Speed Down"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Left}"
-    }
-    else
-    {
-        SendInput "+,"   ; 🔥 원래 동작 직접 실행
+    } else {
+        SendInput "+,"
     }
 }
 
 $+.::
 {
-    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy")
-    {
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"
-    }
-    else
-    {
-        SendInput "+."   ; 🔥 원래 동작 직접 실행
+    } else {
+        SendInput "+."
     }
 }

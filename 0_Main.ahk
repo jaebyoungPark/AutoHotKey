@@ -1,11 +1,24 @@
 ﻿#Requires AutoHotkey v2.0
+#SingleInstance Force
 
-; 메인 스크립트
+; ==========================================================================
+; [전역 변수 선언] - 무조건 #Include 보다 위에 있어야 다른 파일들이 참조할 수 있습니다.
+; ==========================================================================
+global MySuspended      := false
+global NumSuspended      := true
+global NumPadSuspended  := true
+
+; ★ mediaspeed.ahk에서 사용하던 변수들을 메인 전역 공간으로 가져왔습니다.
+global magnifierOn1     := false
+global isComboTriggered := false
+global isVirtualDown    := false ; vk15 대신 '잠금 상태'를 기억할 전역 플래그
+
+
+; ==========================================================================
+; [인클루드 영역]
+; ==========================================================================
 #Include 0_Includes.ahk
 
-MySuspended      := false
-NumSuspended     := true
-NumPadSuspended  := true
 
 ; =========================
 ; 일반 숫자 키 / 넘패드 키 정의 및 해제
@@ -353,3 +366,60 @@ UpdateStatusUI()
 SetTimer(UpdateStatusUI, 200)
 SetTimer(UpdateGuiPosition, 80)
 SetTimer(RefreshAlwaysOnTop, 30000)
+
+
+
+; ==========================================================================
+; [외부 애니메이션 커서(.ani) 절대 경로 주입 레이어]
+; ==========================================================================
+
+; 메모장/편집기 등에서 커서가 강제로 풀리는 현상을 원천 차단
+OnMessage(0x0020, WM_SETCURSOR_INTERCEPT)
+
+; 0.1초마다 가상잠금 상태를 체크합니다.
+SetTimer(WatchCursorByVirtualLock, 100)
+
+WatchCursorByVirtualLock()
+{
+    global isVirtualDown
+    static prevStatus := false
+    
+    if (isVirtualDown)
+    {
+        ; 💡 요청하신 Rainbow Ultimate XXL 애니메이션 커서의 절대 경로를 직접 지정합니다.
+        targetPath := "E:\GitProject\AutoHotKey\AutoHotKey\Icon And Cursor\Rainbow-Ultimate-Horizontal-XXL-93ca173e\arrow.ani"
+        SetCustomCursorFile(targetPath) 
+        prevStatus := true
+    }
+    else if (prevStatus)
+    {
+        ; 🔓 가상 잠금이 해제되면 원래 기본 윈도우 마우스 커서로 완전 리셋
+        DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
+        prevStatus := false
+    }
+}
+
+WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
+{
+    global isVirtualDown
+    if (isVirtualDown)
+        return 1 ; 잠금 상태일 땐 프로그램들이 커서를 제어하지 못하게 씹어버림
+}
+
+SetCustomCursorFile(fullPath)
+{
+    ; LR_LOADFROMFILE (0x00000010) 플래그를 사용하여 지정된 절대 경로에서 .ani 파일을 로드합니다.
+    local hCursor := DllCall("User32.dll\LoadImage", "Ptr", 0, "Str", fullPath, "UInt", 2, "Int", 0, "Int", 0, "UInt", 0x00000010, "Ptr")
+    
+    if (!hCursor)
+        return ; 만약 경로가 틀렸거나 파일이 없으면 오류 없이 패스합니다.
+
+    ; 애니메이션 프레임을 유지하기 위해 CopyIcon으로 안전하게 복사본 생성
+    local hCopy1 := DllCall("User32.dll\CopyIcon", "Ptr", hCursor, "Ptr")
+    local hCopy2 := DllCall("User32.dll\CopyIcon", "Ptr", hCursor, "Ptr")
+    
+    ; 일반 화살표(32512), 메모장 텍스트창(32513), 기타 시스템 슬롯까지 해당 애니메이션 커서로 덮어씌웁니다.
+    DllCall("User32.dll\SetSystemCursor", "Ptr", hCopy1, "UInt", 32512)
+    DllCall("User32.dll\SetSystemCursor", "Ptr", hCopy2, "UInt", 32513)
+    DllCall("User32.dll\SetSystemCursor", "Ptr", hCursor, "UInt", 32649)
+}
