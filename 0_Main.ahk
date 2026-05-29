@@ -410,7 +410,14 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
 
 SetCustomCursorFile(fullPath)
 {
-    local hCursor := DllCall("User32.dll\LoadImage", "Ptr", 0, "Str", fullPath, "UInt", 2, "Int", 0, "Int", 0, "UInt", 0x00000010, "Ptr")
+    ; 💡 .ani 파일의 고집을 꺾기 위해 LR_DEFAULTSIZE(0x00000040) 플래그를 제거하고
+    ; IMAGE_CURSOR(2) 타입 대신 내부 리소스를 직접 건드리는 방식을 사용합니다.
+    ; 가로/세로를 24x24 또는 16x16 수준으로 확 줄여서 시스템에 주입합니다.
+    local targetW := 24
+    local targetH := 24
+
+    ; [핵심] 마지막 인자에 0x00000010(LR_LOADFROMFILE)만 남겨두고 크기를 강제 매핑합니다.
+    local hCursor := DllCall("User32.dll\LoadImage", "Ptr", 0, "Str", fullPath, "UInt", 2, "Int", targetW, "Int", targetH, "UInt", 0x0010, "Ptr")
     if (!hCursor)
         return
 
