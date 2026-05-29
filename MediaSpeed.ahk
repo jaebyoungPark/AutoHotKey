@@ -123,7 +123,17 @@ $7:: HandleKey("7")
 $8:: HandleKey("8")
 $9:: HandleKey("9")
 $0:: HandleKey("0")
-#HotIf
+; [넘패드 숫자 키 추가] - 재귀 방지($) 적용
+$Numpad1:: HandleKey("{Numpad1}")
+$Numpad2:: HandleKey("{Numpad2}")
+$Numpad3:: HandleKey("{Numpad3}")
+$Numpad4:: HandleKey("{Numpad4}")
+$Numpad5:: HandleKey("{Numpad5}")
+$Numpad6:: HandleKey("{Numpad6}")
+$Numpad7:: HandleKey("{Numpad7}")
+$Numpad8:: HandleKey("{Numpad8}")
+$Numpad9:: HandleKey("{Numpad9}")
+$Numpad0:: HandleKey("{Numpad0}") ; 필요할 경우를 위해 0도 함께 추가했습니다.
 
 HandleKey(num) {
     global isComboTriggered, isVirtualDown

@@ -141,21 +141,21 @@ isHolding := false
     }
 }
 
-; ------------------------- 
-; [원래 상태 복구] Esc → 홀드 중이면 해제
-; ------------------------- 
-~$Esc::
+; Esc → 홀드 중이면 해제 / 아니면 원래 Esc 그대로
+Esc::
 {
     global isHolding
-    
-    ; 현재 마우스 드래그 홀드("눌림") 상태라면 해제
     if (isHolding) {
         Send "{LButton Up}"
         isHolding := false
         ToolTip "Left Click"
         SetTimer () => ToolTip(), -800
     }
-}+Enter::
+    else {
+        Send "{Esc}"  ; ← 이 부분이 핵심!
+    }
+}
++Enter::
 {
     Send "{LButton}"
     ToolTip "Shift+Enter → Left Click"
