@@ -436,3 +436,19 @@ ExitReleaseCursor(ExitReason, ExitCode)
     ; 대기 시간 없이 즉시 종료 처리를 허가함 (0 반환)
     return 0 
 }
+
+
+; ==========================================================================
+; [가상 잠금 ON 상태일 때의 키 매핑]
+; ==========================================================================
+#HotIf isVirtualDown  ; 이 아래의 핫키들은 isVirtualDown이 true(ON)일 때만 동작합니다.
+
+*q::SendInput "{Blind}6"
+*w::SendInput "{Blind}7"
+*e::SendInput "{Blind}8"
+*r::SendInput "{Blind}9"
+*t::SendInput "{Blind}0"
+*a::SendInput "{Blind}."       ; a 누르면 마침표(.) 입력
+*s::SendInput "{Blind}{Enter}" ; s 누르면 엔터(Enter) 입력
+
+#HotIf  ; 핫키 조건 영역을 닫아줍니다 (기존 다른 핫키에 영향 주지 않기 위함)

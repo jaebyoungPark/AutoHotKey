@@ -1,11 +1,18 @@
-﻿#Requires AutoHotkey v2.0
+﻿
+#Requires AutoHotkey v2.0
 
-; *Editor 의 Zoom -1 일 때만 가능*
+; =========================================================================
+; [필수] 독립 실행을 위해 스크립트 최상단에 그룹 등록
+; =========================================================================
+GroupAdd "UnrealEnvironments", "ahk_exe UnrealEditor.exe"
+GroupAdd "UnrealEnvironments", "ahk_class UnrealWindow"
+
+; *Editor 의 Zoom -2여도 되고 -3이어도 되는데 언제 되는지 잘모르겠음  
 
 ^4::  ; Ctrl + 4
 {
-    ; Unreal Editor에서만 동작
-    if !WinActive("ahk_exe UnrealEditor.exe")
+    ; 등록된 언리얼 환경 그룹 중 하나라도 활성화되어 있지 않으면 작동 안 함
+    if !WinActive("ahk_group UnrealEnvironments")
         return
 
     ; ------------------------------
@@ -73,6 +80,4 @@
     ; ------------------------------
     Send "{Left 3}"
     Sleep 100
-
-
 }
