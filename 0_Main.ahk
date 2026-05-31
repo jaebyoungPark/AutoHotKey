@@ -355,54 +355,34 @@ HotKeyList := [
 
 
 ; ==========================================================================
-
 ; [상태 표시 UI 레이어]
-
 ; ==========================================================================
 
-
-
 ; ==================================================
-
 ; 1. UI 객체 생성 및 스타일 설정
-
 ; ==================================================
-
-
 
 StatusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
 
+; 배경은 투명화용 초록색으로 유지
+StatusGui.BackColor := "00FF00"
 
-
-StatusGui.BackColor := "111111"
-
-
-
-StatusGui.SetFont("S11 Bold Q5", "Malgun Gothic")
-
-
+; 📌 [변경] 이모지와 텍스트 크기 밸런스가 가장 좋고 왜곡이 적은 'Segoe UI' 폰트로 변경합니다.
+StatusGui.SetFont("S11 Bold Q4", "Segoe UI")
 
 guiW := 260
+guiH := 38  ; 📌 수직 정렬 공간 확보를 위해 높이를 미세하게 조정했습니다.
 
-guiH := 35
-
-
-
+; 📌 [핵심 변경] 
+; 'Center'로 가로 정렬을 잡고, '+0x200'(SS_CENTERIMAGE) 옵션을 추가하여 '수직 가운데 정렬'을 강제합니다.
 StatusText := StatusGui.Add(
-
     "Text",
-
-    "cWhite Center W" . guiW,
-
+    "Center +0x200 Background111111 cWhite W" . guiW . " H" . guiH,
     "상태 로딩 중..."
-
 )
 
-
-
-WinSetTransparent(100, StatusGui)
-
-
+; 초록색 날리고 검은색 배경에 투명도 150 부여 (글자는 100% 진하게 유지)
+WinSetTransColor("00FF00 120", StatusGui)
 
 ; ==================================================
 
@@ -412,7 +392,7 @@ WinSetTransparent(100, StatusGui)
 
 
 
-defaultX := Floor((A_ScreenWidth - guiW) / 1.5)
+defaultX := Floor((A_ScreenWidth - guiW) / 1.25)
 
 defaultY := 80
 
@@ -436,7 +416,7 @@ pad := 50
 
 
 
-sensorX := 1500
+sensorX := 1800
 
 sensorY := 58
 
