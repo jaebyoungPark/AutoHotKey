@@ -29,11 +29,18 @@ IsUnrealActive() {
 
     title := WinGetTitle("A")
 
-    ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
-    if (elapsed < 200 && isReleased && !InStr(title, "Udemy")) {
-        ToggleVirtualLock()
-        return
-    }
+title := WinGetTitle("A")
+
+; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
+if (
+    elapsed < 200
+    && isReleased
+    && !InStr(title, "Udemy")
+    && !InStr(title, "YouTube")
+) {
+    ToggleVirtualLock()
+    return
+}
 
     ; [1] GOM64
     if WinActive("ahk_exe GOM64.EXE") {
