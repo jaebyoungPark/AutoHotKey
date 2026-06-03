@@ -744,40 +744,70 @@ SetTimer(WatchCursorByVirtualLock, 100)
 
 
 
+SetTimer(WatchCursorByVirtualLock, 100)
+
 WatchCursorByVirtualLock()
-
 {
-
     global isVirtualDown
+    global NumSuspended
+    global NumPadSuspended
 
-    static prevStatus := false
+    static prevPath := ""
 
-    
-
+    ; ======================================
+    ; Virtual Lock ON
+    ; ======================================
     if (isVirtualDown)
-
     {
-
-        targetPath := "E:\GitProject\AutoHotKey\AutoHotKey\Icon And Cursor\Rainbow-Ultimate-Horizontal-XXL-93ca173e\arrow.ani"
-
-        SetCustomCursorFile(targetPath) 
-
-        prevStatus := true
-
+        if (!NumSuspended && NumPadSuspended)
+        {
+            targetPath := "C:\Windows\Cursors\OnlyRed_Grape.cur"
+        }
+        else if (NumSuspended && !NumPadSuspended)
+        {
+            targetPath := "C:\Windows\Cursors\OnlyBlue_Grape.cur"
+        }
+        else if (NumSuspended && NumPadSuspended)
+        {
+            targetPath := "C:\Windows\Cursors\Grape.cur"
+        }
+        else
+        {
+            targetPath := "C:\Windows\Cursors\RedAndBlue_Grape.cur"
+        }
     }
 
-    else if (prevStatus)
-
+    ; ======================================
+    ; Virtual Lock OFF
+    ; ======================================
+    else
     {
-
-        ; 가상 잠금이 해제되면 원래 기본 마우스 커서로 리셋
-
-        ResetSystemCursor()
-
-        prevStatus := false
-
+        if (!NumSuspended && NumPadSuspended)
+        {
+            targetPath := "C:\Windows\Cursors\OnlyRed.cur"
+        }
+        else if (NumSuspended && !NumPadSuspended)
+        {
+            targetPath := "C:\Windows\Cursors\OnlyBlue.cur"
+        }
+        else if (NumSuspended && NumPadSuspended)
+        {
+            targetPath := "C:\Windows\Cursors\NotGrape.cur"
+        }
+        else
+        {
+            targetPath := "C:\Windows\Cursors\RedAndBlue.cur"
+        }
     }
 
+    ; ======================================
+    ; 변경될 때만 적용
+    ; ======================================
+    if (targetPath != prevPath)
+    {
+        SetCustomCursorFile(targetPath)
+        prevPath := targetPath
+    }
 }
 
 
