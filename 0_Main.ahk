@@ -761,11 +761,11 @@ WatchCursorByVirtualLock()
     {
         if (!NumSuspended && NumPadSuspended)
         {
-            targetPath := "C:\Windows\Cursors\OnlyRed_Grape.cur"
+            targetPath := "C:\Windows\Cursors\Grape_Red.cur"
         }
         else if (NumSuspended && !NumPadSuspended)
         {
-            targetPath := "C:\Windows\Cursors\OnlyBlue_Grape.cur"
+            targetPath := "C:\Windows\Cursors\Grape_Blue.cur"
         }
         else if (NumSuspended && NumPadSuspended)
         {
@@ -773,7 +773,7 @@ WatchCursorByVirtualLock()
         }
         else
         {
-            targetPath := "C:\Windows\Cursors\RedAndBlue_Grape.cur"
+            targetPath := "C:\Windows\Cursors\Grape_RedAndBlue.cur"
         }
     }
 
@@ -784,11 +784,11 @@ WatchCursorByVirtualLock()
     {
         if (!NumSuspended && NumPadSuspended)
         {
-            targetPath := "C:\Windows\Cursors\OnlyRed.cur"
+            targetPath := "C:\Windows\Cursors\Red.cur"
         }
         else if (NumSuspended && !NumPadSuspended)
         {
-            targetPath := "C:\Windows\Cursors\OnlyBlue.cur"
+            targetPath := "C:\Windows\Cursors\Blue.cur"
         }
         else if (NumSuspended && NumPadSuspended)
         {
@@ -825,59 +825,32 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
 }
 
 
-
 SetCustomCursorFile(fullPath)
-
 {
-
-    ; 💡 .ani 파일의 고집을 꺾기 위해 LR_DEFAULTSIZE(0x00000040) 플래그를 제거하고
-
-    ; IMAGE_CURSOR(2) 타입 대신 내부 리소스를 직접 건드리는 방식을 사용합니다.
-
-    ; 가로/세로를 24x24 또는 16x16 수준으로 확 줄여서 시스템에 주입합니다.
-
-    local targetW := 24
-
-    local targetH := 24
-
-
-
-    ; [핵심] 마지막 인자에 0x00000010(LR_LOADFROMFILE)만 남겨두고 크기를 강제 매핑합니다.
-
-    local hCursor := DllCall("User32.dll\LoadImage", "Ptr", 0, "Str", fullPath, "UInt", 2, "Int", targetW, "Int", targetH, "UInt", 0x0010, "Ptr")
-
-    if (!hCursor)
-
-        return
-
-
-
-    local hCopy1 := DllCall("User32.dll\CopyIcon", "Ptr", hCursor, "Ptr")
-
-    local hCopy2 := DllCall("User32.dll\CopyIcon", "Ptr", hCursor, "Ptr")
-
+    ; 윈도우 기본 화살표(Arrow), 커서(IBeam) 등의 레지스트리 경로 정의
+    static regPath := "HKCU\Control Panel\Cursors"
     
+    ; 1. 레지스트리에 변경할 커서 파일 경로 등록 (시스템 기본값 변경 방식)
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "Arrow")      ; 일반 선택 화살표
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "AppStarting") ; 백그라운드 작업 중
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "Arrow")      ; 가상잠금 상태에서 전천후 활용을 위해 덮어씀
 
-    DllCall("User32.dll\SetSystemCursor", "Ptr", hCopy1, "UInt", 32512)
-
-    DllCall("User32.dll\SetSystemCursor", "Ptr", hCopy2, "UInt", 32513)
-
-    DllCall("User32.dll\SetSystemCursor", "Ptr", hCursor, "UInt", 32649)
-
+    ; 2. SPI_SETCURSORS (0x0057) 명령을 발송하여 윈도우 엔진이 레지스트리를 읽어 
+    ;    원본 해상도 및 스케일링을 자동 계산하여 '초고화질'로 다시 그리도록 강제 리프레시합니다.
+    DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
 }
 
-
-
-; 윈도우 순정 커서 복구 함수
-
+; 윈도우 순정 커서 복구 함수도 함께 최적화합니다.
 ResetSystemCursor()
-
 {
-
-    ; SPI_SETCURSORS (0x0057) 명령을 내려 시스템 전체 커서를 원래 테마 기본값으로 강제 리프레시합니다.
-
+    static regPath := "HKCU\Control Panel\Cursors"
+    
+    ; 레지스트리 값을 원래 윈도우 기본값(공백)으로 돌려놓습니다.
+    RegWrite("", "REG_EXPAND_SZ", regPath, "Arrow")
+    RegWrite("", "REG_EXPAND_SZ", regPath, "AppStarting")
+    
+    ; 시스템에 원래 테마로 복구하라고 신호를 보냅니다.
     DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
-
 }
 
 
