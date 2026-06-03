@@ -48,6 +48,7 @@
 #Include Win+F.ahk
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
+#Include MouseHighlight.ahk
 
 
 

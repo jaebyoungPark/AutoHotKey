@@ -873,35 +873,24 @@ ExitReleaseCursor(ExitReason, ExitCode)
 
 
 ; ==========================================================================
-
 ; [가상 잠금 ON 상태일 때의 키 매핑]
-
 ; ==========================================================================
-
 #HotIf isVirtualDown  ; 이 아래의 핫키들은 isVirtualDown이 true(ON)일 때만 동작합니다.
 
-
-
-
-
 *q::SendInput "{Blind}5"       ; q 누르면 5 입력
-
 *w::SendInput "{Blind}6"       ; w 누르면 6 입력
-
 *e::SendInput "{Blind}7"       ; e 누르면 7 입력
-
 *r::SendInput "{Blind}8"       ; r 누르면 8 입력
-
 *a::SendInput "{Blind}9"       ; a 누르면 9 입력
-
 *s::SendInput "{Blind}0"       ; s 누르면 0 입력
-
 *d::SendInput "{Blind}."       ; d 누르면 마침표(.) 입력
-
 *f::SendInput "{Blind}{BS}"    ; f 누르면 백스페이스(Backspace) 입력
-
 *g::SendInput "{Blind}{Enter}" ; g 누르면 엔터(Enter) 입력
 
-
+; ➕ [새로 추가된 사칙연산 키 매핑]
+*z::SendInput "{Blind}{+}"     ; z 누르면 덧셈(+) 입력 (AHK에서 +는 Shift 의미라 중괄호 처리)
+*x::SendInput "{Blind}-"       ; x 누르면 뺄셈(-) 입력
+*c::SendInput "{Blind}*"       ; c 누르면 곱셈(*) 입력
+*v::SendInput "{Blind}/"       ; v 누르면 나눗셈(/) 입력
 
 #HotIf  ; 핫키 조건 영역을 닫아줍니다 (기존 다른 핫키에 영향 주지 않기 위함)
