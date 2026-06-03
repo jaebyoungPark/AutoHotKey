@@ -12,7 +12,7 @@
 
 global MySuspended      := false
 
-global NumSuspended      := true
+global NumSuspended      := false
 
 global NumPadSuspended  := true
 
@@ -75,25 +75,23 @@ NumPadKeyList := [
 ]
 
 
+; =========================
+; 일반 숫자 키 / 넘패드 키 정의 및 해제
+; =========================
 
+; ... (NumKeyList 및 NumPadKeyList 정의 부분은 그대로 유지) ...
+
+; NumSuspended가 true(중지)면 "Off", false(활성)면 "On"
 for key in NumKeyList
-
 {
-
-    try Hotkey(key, "Off")
-
+    try Hotkey(key, NumSuspended ? "Off" : "On")
 }
 
-
-
+; NumPadSuspended가 true(중지)면 "Off", false(활성)면 "On"
 for key in NumPadKeyList
-
 {
-
-    try Hotkey(key, "Off")
-
+    try Hotkey(key, NumPadSuspended ? "Off" : "On")
 }
-
 
 
 ;======================================
