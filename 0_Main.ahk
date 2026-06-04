@@ -825,22 +825,22 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
 }
 
 
+
 SetCustomCursorFile(fullPath)
 {
     ; 윈도우 기본 화살표(Arrow), 커서(IBeam) 등의 레지스트리 경로 정의
     static regPath := "HKCU\Control Panel\Cursors"
     
-    ; 1. 레지스트리에 변경할 커서 파일 경로 등록 (시스템 기본값 변경 방식)
-    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "Arrow")      ; 일반 선택 화살표
-    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "AppStarting") ; 백그라운드 작업 중
-    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "Arrow")      ; 가상잠금 상태에서 전천후 활용을 위해 덮어씀
+    ; 1. 레지스트리에 변경할 커서 파일 경로 등록
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "Arrow")       ; 일반 선택 화살표
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "AppStarting")  ; 백그라운드 작업 중
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "IBeam")        ; ⭐ 텍스트 선택(I-Beam) 커서 추가!
 
-    ; 2. SPI_SETCURSORS (0x0057) 명령을 발송하여 윈도우 엔진이 레지스트리를 읽어 
-    ;    원본 해상도 및 스케일링을 자동 계산하여 '초고화질'로 다시 그리도록 강제 리프레시합니다.
+    ; 2. SPI_SETCURSORS (0x0057) 명령을 발송하여 윈도우 엔진이 레지스트리를 읽어 강제 리프레시
     DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
 }
 
-; 윈도우 순정 커서 복구 함수도 함께 최적화합니다.
+; 윈도우 순정 커서 복구 함수
 ResetSystemCursor()
 {
     static regPath := "HKCU\Control Panel\Cursors"
@@ -848,11 +848,11 @@ ResetSystemCursor()
     ; 레지스트리 값을 원래 윈도우 기본값(공백)으로 돌려놓습니다.
     RegWrite("", "REG_EXPAND_SZ", regPath, "Arrow")
     RegWrite("", "REG_EXPAND_SZ", regPath, "AppStarting")
+    RegWrite("", "REG_EXPAND_SZ", regPath, "IBeam")         ; ⭐ 텍스트 선택 커서도 기본값으로 복구!
     
     ; 시스템에 원래 테마로 복구하라고 신호를 보냅니다.
     DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
 }
-
 
 
 ; ★ [핵심] 스크립트가 꺼질 때 자동으로 호출되는 유언 함수
