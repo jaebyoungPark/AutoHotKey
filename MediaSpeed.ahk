@@ -133,7 +133,9 @@ $0:: HandleKey("0")
 #HotIf
 
 ; --- [구역 B] 넘패드 키 구역 (vk15 및 플래그와 무관, 오직 가상 잠금 때만 작동) ---
+
 #HotIf isVirtualDown
+
 $Numpad1::SendInput "{Blind}{Numpad1}"
 $Numpad2::SendInput "{Blind}{Numpad2}"
 $Numpad3::SendInput "{Blind}{Numpad3}"
@@ -144,6 +146,12 @@ $Numpad7::SendInput "{Blind}{Numpad7}"
 $Numpad8::SendInput "{Blind}{Numpad8}"
 $Numpad9::SendInput "{Blind}{Numpad9}"
 $Numpad0::SendInput "{Blind}{Numpad0}"
+
+$NumpadDiv::SendInput "{Blind}{NumpadDiv}"      ; /
+$NumpadMult::SendInput "{Blind}{NumpadMult}"    ; *
+$NumpadSub::SendInput "{Blind}{NumpadSub}"      ; -
+$NumpadAdd::SendInput "{Blind}{NumpadAdd}"      ; +
+
 #HotIf
 
 HandleKey(num) {

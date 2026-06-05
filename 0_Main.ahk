@@ -353,368 +353,189 @@ HotKeyList := [
 
 
 ; ==========================================================================
-; [상태 표시 UI 레이어]
+; [상태 표시 UI 레이어 - 30초 주기 자동 해상도 대응형]
 ; ==========================================================================
 
-; ==================================================
-; 1. UI 객체 생성 및 스타일 설정
-; ==================================================
-
-StatusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
-
-; 배경은 투명화용 초록색으로 유지
-StatusGui.BackColor := "00FF00"
-
-; 📌 [변경] 이모지와 텍스트 크기 밸런스가 가장 좋고 왜곡이 적은 'Segoe UI' 폰트로 변경합니다.
-StatusGui.SetFont("S11 Bold Q4", "Segoe UI")
+; 전역 좌표 변수 초기 선언
+global defaultX := 0, defaultY := 0
+global dodgeX   := 0, dodgeY   := 0
+global sensorX  := 0, sensorY  := 0
+global sensorW  := 0, sensorH  := 0
+global isDodged := false
 
 guiW := 260
-guiH := 38  ; 📌 수직 정렬 공간 확보를 위해 높이를 미세하게 조정했습니다.
+guiH := 38
+pad  := 50
 
-; 📌 [핵심 변경] 
-; 'Center'로 가로 정렬을 잡고, '+0x200'(SS_CENTERIMAGE) 옵션을 추가하여 '수직 가운데 정렬'을 강제합니다.
+; --------------------------------------------------
+; 1. UI 객체 생성 및 스타일 설정
+; --------------------------------------------------
+StatusGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
+StatusGui.BackColor := "00FF00"
+StatusGui.SetFont("S11 Bold Q4", "Segoe UI")
+
 StatusText := StatusGui.Add(
     "Text",
     "Center +0x200 Background111111 cWhite W" . guiW . " H" . guiH,
     "상태 로딩 중..."
 )
 
-; 초록색 날리고 검은색 배경에 투명도 150 부여 (글자는 100% 진하게 유지)
 WinSetTransColor("00FF00 120", StatusGui)
 
-; ==================================================
-
-; UI 위치 설정
-
-; ==================================================
-
-
-
-defaultX := Floor((A_ScreenWidth - guiW) / 1.25)
-
-defaultY := 80
-
-
-
-dodgeX := defaultX
-
-dodgeY := defaultY + 200
-
-
-
-; ==================================================
-
-; 감지 영역 설정
-
-; ==================================================
-
-
-
-pad := 50
-
-
-
-sensorX := 1800
-
-sensorY := 58
-
-
-
-sensorW := guiW + (pad * 5)
-
-sensorH := guiH + (pad * 1.5)
-
-
-
-isDodged := false
-
-
-
-; ==================================================
-
-; 2. UI 표시 및 마우스 위치 감시 함수
-
-; ==================================================
-
-
-
-UpdateGuiPosition()
-
+; --------------------------------------------------
+; 2. 해상도 실시간 감지 및 좌표 갱신 함수 (30초 타이머 작동)
+; --------------------------------------------------
+CheckAndSetResolution()
 {
+    global defaultX, defaultY, dodgeX, dodgeY, sensorX, sensorY, sensorW, sensorH
+    global guiW, guiH, pad, StatusGui, isDodged
 
-    global isDodged
+    ; 현재 실행 시점의 해상도 체크
+    sw := A_ScreenWidth
+    sh := A_ScreenHeight
 
-    global defaultX, defaultY
+    static prevW := 0, prevH := 0
 
-    global dodgeX, dodgeY
+    ; 해상도가 이전과 달라졌을 때만 좌표 재계산 (최초 1회 포함)
+    if (sw != prevW || sh != prevH)
+    {
+        if (sw = 2560 && sh = 1440)
+        {
+            ; ■ [QHD 2560x1440] 설정
+            defaultX := Floor((sw - guiW) / 1.25)
+            defaultY := 80
+            dodgeX   := defaultX
+            dodgeY   := defaultY + 200
+            sensorX  := 1800
+            sensorY  := 58
+        }
+        else if (sw = 1920 && sh = 1080)
+        {
+            ; ■ [FHD 1920x1080] 설정 (사용자 지정값)
+            defaultX := 1400  
+            defaultY := 60    
+            dodgeX   := defaultX
+            dodgeY   := defaultY + 150 
+            sensorX  := 1350  
+            sensorY  := 40    
+        }
+        else
+        {
+            ; ■ [그 외 해상도] 기본 배치
+            defaultX := Floor((sw - guiW) / 2)
+            defaultY := 20
+            dodgeX   := defaultX
+            dodgeY   := defaultY + 100
+            sensorX  := defaultX - 20
+            sensorY  := defaultY - 20
+        }
 
-    global sensorX, sensorY
+        ; 감지 영역 크기 계산
+        sensorW := guiW + (pad * 5)
+        sensorH := guiH + (pad * 1.5)
 
-    global sensorW, sensorH
+        ; 해상도가 바뀌면 회피 상태를 초기화하고 기본 위치로 리포지셔닝
+        isDodged := false
+        if WinExist(StatusGui)
+            StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
 
-    global StatusGui
+        ; 백업
+        prevW := sw
+        prevH := sh
+    }
+}
 
-    global MySuspended
-
-
-
-    ; 전체 Suspend 상태면 위치 처리 안함
+; --------------------------------------------------
+; 3. UI 표시 및 마우스 위치 감시 함수
+; --------------------------------------------------
+UpdateGuiPosition()
+{
+    global isDodged, StatusGui, MySuspended
+    global defaultX, defaultY, dodgeX, dodgeY
+    global sensorX, sensorY, sensorW, sensorH
 
     if (MySuspended)
-
         return
-
-
 
     MouseGetPos(&mouseX, &mouseY)
 
-
-
     xMin := sensorX
-
     xMax := sensorX + sensorW
-
-
-
     yMin := sensorY
-
     yMax := sensorY + sensorH
 
+    inZone := (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)
 
-
-    inZone := (
-
-        mouseX >= xMin
-
-        && mouseX <= xMax
-
-        && mouseY >= yMin
-
-        && mouseY <= yMax
-
-    )
-
-
-
-    if (!isDodged)
-
+    if (!isDodged && inZone)
     {
-
-        if (inZone)
-
-        {
-
-            isDodged := true
-
-
-
-            StatusGui.Show(
-
-                "X" . dodgeX
-
-                . " Y" . dodgeY
-
-                . " NoActivate"
-
-            )
-
-        }
-
+        isDodged := true
+        StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
     }
-
-    else
-
+    else if (isDodged && !inZone)
     {
-
-        if (!inZone)
-
-        {
-
-            isDodged := false
-
-
-
-            StatusGui.Show(
-
-                "X" . defaultX
-
-                . " Y" . defaultY
-
-                . " NoActivate"
-
-            )
-
-        }
-
+        isDodged := false
+        StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
     }
-
 }
 
-
-
-; ==================================================
-
-; 3. 변수 상태 실시간 업데이트 함수
-
-; ==================================================
-
-
-
+; --------------------------------------------------
+; 4. 변수 상태 실시간 업데이트 함수
+; --------------------------------------------------
 UpdateStatusUI()
-
 {
-
-    global MySuspended
-
-    global NumSuspended
-
-    global NumPadSuspended
-
-    global StatusText
-
-    global StatusGui
-
-
-
-    ; ==================================================
-
-    ; 전체 Suspend 상태면 UI 숨김
-
-    ; ==================================================
+    global MySuspended, NumSuspended, NumPadSuspended, StatusText, StatusGui
 
     if (MySuspended)
-
     {
-
         StatusGui.Hide()
-
         return
-
     }
-
-
-
-    ; ==================================================
-
-    ; 다시 활성화되면 UI 표시
-
-    ; ==================================================
 
     StatusGui.Show("NoActivate")
 
-
-
     static prevText := ""
-
-
-
     strNum := NumSuspended ? "❌" : "⌨️"
-
     strPad := NumPadSuspended ? "❌" : "🔢"
 
-
-
-    currentText :=
-
-        "[숫자]: " strNum
-
-        . "    |    [넘패드]: "
-
-        . strPad
-
-
+    currentText := "[숫자]: " strNum . "    |    [넘패드]: " . strPad
 
     if (currentText != prevText)
-
     {
-
         StatusText.Text := currentText
-
         prevText := currentText
-
     }
-
 }
 
-
-
-; ==================================================
-
-; 30초마다 최상단 권한 리프레시
-
-; ==================================================
-
-
-
+; --------------------------------------------------
+; 5. 최상단 권한 리프레시 함수
+; --------------------------------------------------
 RefreshAlwaysOnTop()
-
 {
-
-    global StatusGui
-
-    global MySuspended
-
-
-
-    ; Suspend 상태면 무시
-
+    global StatusGui, MySuspended
     if (MySuspended)
-
         return
 
-
-
     if WinExist(StatusGui)
-
     {
-
         WinSetAlwaysOnTop(False, StatusGui)
-
         WinSetAlwaysOnTop(True, StatusGui)
-
     }
-
 }
 
-
-
-; ==================================================
-
-; 4. 최초 실행 및 타이머 등록
-
-; ==================================================
-
-
-
-StatusGui.Show(
-
-    "X" . defaultX
-
-    . " Y" . defaultY
-
-    . " NoActivate"
-
-)
-
-
+; --------------------------------------------------
+; 6. 최초 초기화 및 타이머 일괄 등록
+; --------------------------------------------------
+; 실행하자마자 해상도를 먼저 감지하여 좌표 세팅
+CheckAndSetResolution() 
 
 WinSetAlwaysOnTop(True, StatusGui)
-
-
-
 UpdateStatusUI()
 
-
-
-SetTimer(UpdateStatusUI, 200)
-
-SetTimer(UpdateGuiPosition, 80)
-
-SetTimer(RefreshAlwaysOnTop, 30000)
-
-
-
-
+; 타이머 가동 목록
+SetTimer(UpdateStatusUI, 200)      ; UI 텍스트 갱신 (0.2초)
+SetTimer(UpdateGuiPosition, 80)    ; 마우스 감지 및 회피 (0.08초)
+SetTimer(CheckAndSetResolution, 30000) ; ★ 30초마다 해상도 변경 감지 (자동화)
+SetTimer(RefreshAlwaysOnTop, 30000)    ; 30초마다 항상위 권한 리프레시
 
 
 

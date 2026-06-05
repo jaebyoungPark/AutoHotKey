@@ -456,6 +456,13 @@ Numpad0::
 ; ==================================================
 NumpadDiv::
 {
+    ; 사진 앱이면 이전 사진
+    if WinActive("ahk_exe Photos.exe")
+    {
+        Send "{Left}"
+        return
+    }
+
     ; 개발 환경이면 즉시 모니터 이동
     if IsDevEnvironment()
     {
@@ -487,6 +494,13 @@ NumpadDiv::
 ; ==================================================
 NumpadMult::
 {
+    ; 사진 앱이면 다음 사진
+    if WinActive("ahk_exe Photos.exe")
+    {
+        Send "{Right}"
+        return
+    }
+
     ; 언리얼이면 모니터 이동
     if WinActive("ahk_class UnrealWindow")
     {
@@ -497,7 +511,6 @@ NumpadMult::
     ; 일반 환경
     Send "^{Tab}"
 }
-
 
 ; ==================================================
 ; 숫자 키 매핑
