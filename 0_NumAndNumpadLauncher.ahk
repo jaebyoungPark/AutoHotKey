@@ -452,10 +452,17 @@ Numpad0::
 
 
 ; ==================================================
-; 이전 탭 / 모니터 이동
+; NumpadDiv (나누기 키) : ChatGPT일 때 위 방향키 2번
 ; ==================================================
 NumpadDiv::
 {
+    ; ChatGPT 앱이면 위 방향키 2번
+    if WinActive("ahk_exe ChatGPT.exe")
+    {
+        Send "{Up 2}"
+        return
+    }
+
     ; 사진 앱이면 이전 사진
     if WinActive("ahk_exe Photos.exe")
     {
@@ -483,17 +490,22 @@ NumpadDiv::
     {
         ; 길게 : 모니터 이동
         MoveMouseToOtherMonitor()
-
         KeyWait("NumpadDiv")
     }
 }
 
-
 ; ==================================================
-; 다음 탭
+; NumpadMult (곱하기 키) : ChatGPT일 때 아래 방향키 2번
 ; ==================================================
 NumpadMult::
 {
+    ; ChatGPT 앱이면 아래 방향키 2번
+    if WinActive("ahk_exe ChatGPT.exe")
+    {
+        Send "{Down 2}"
+        return
+    }
+
     ; 사진 앱이면 다음 사진
     if WinActive("ahk_exe Photos.exe")
     {
@@ -511,7 +523,6 @@ NumpadMult::
     ; 일반 환경
     Send "^{Tab}"
 }
-
 ; ==================================================
 ; 숫자 키 매핑
 ; ==================================================
