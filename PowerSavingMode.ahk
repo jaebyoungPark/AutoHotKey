@@ -30,7 +30,7 @@ CheckIdle() {
     }
 
     ; 19분 55초 경과 & UI 아직 안 띄웠으면 → 카운트다운 UI 표시
-    if (!uiVisible && !sleeping && idleMs >= 1195000) {
+    if (!uiVisible && !sleeping && idleMs >= 119500) {
         ShowCountdownUI()
         return
     }

@@ -574,64 +574,54 @@ WatchCursorByVirtualLock()
     global NumPadSuspended
 
     static prevPath := ""
+    static prevCrossPath := ""
+    targetCrossPath := ""
 
     ; ======================================
-    ; Virtual Lock ON
+    ; Virtual Lock ON (가상 잠금 켜짐)
     ; ======================================
     if (isVirtualDown)
     {
-        if (!NumSuspended && NumPadSuspended)
-        {
-            targetPath := "C:\Windows\Cursors\Grape_Red.cur"
-        }
-        else if (NumSuspended && !NumPadSuspended)
-        {
-            targetPath := "C:\Windows\Cursors\Grape_Blue.cur"
-        }
-        else if (NumSuspended && NumPadSuspended)
-        {
-            targetPath := "C:\Windows\Cursors\Grape.cur"
-        }
-        else
-        {
-            targetPath := "C:\Windows\Cursors\Grape_RedAndBlue.cur"
-        }
-    }
+        ; 켜졌을 때는 요청하셨던 Grape_cross.cur 사용
+        targetCrossPath := "C:\Windows\Cursors\Grape_cross.cur"
 
+        if (!NumSuspended && NumPadSuspended)
+            targetPath := "C:\Windows\Cursors\Grape_Red.cur"
+        else if (NumSuspended && !NumPadSuspended)
+            targetPath := "C:\Windows\Cursors\Grape_Blue.cur"
+        else if (NumSuspended && NumPadSuspended)
+            targetPath := "C:\Windows\Cursors\Grape.cur"
+        else
+            targetPath := "C:\Windows\Cursors\Grape_RedAndBlue.cur"
+    }
     ; ======================================
-    ; Virtual Lock OFF
+    ; Virtual Lock OFF (가상 잠금 꺼짐)
     ; ======================================
     else
     {
+        ; ⭐ 가상 잠금이 꺼지면 기본 cross_r.cur 파일로 지정!
+        targetCrossPath := "C:\Windows\Cursors\cross_r.cur"
+
         if (!NumSuspended && NumPadSuspended)
-        {
             targetPath := "C:\Windows\Cursors\Red.cur"
-        }
         else if (NumSuspended && !NumPadSuspended)
-        {
             targetPath := "C:\Windows\Cursors\Blue.cur"
-        }
         else if (NumSuspended && NumPadSuspended)
-        {
             targetPath := "C:\Windows\Cursors\NotGrape.cur"
-        }
         else
-        {
             targetPath := "C:\Windows\Cursors\RedAndBlue.cur"
-        }
     }
 
     ; ======================================
     ; 변경될 때만 적용
     ; ======================================
-    if (targetPath != prevPath)
+    if (targetPath != prevPath || targetCrossPath != prevCrossPath)
     {
-        SetCustomCursorFile(targetPath)
+        SetCustomCursorFile(targetPath, targetCrossPath)
         prevPath := targetPath
+        prevCrossPath := targetCrossPath
     }
 }
-
-
 
 WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
 
@@ -647,17 +637,22 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd)
 
 
 
-SetCustomCursorFile(fullPath)
+SetCustomCursorFile(fullPath, crossPath)
 {
-    ; 윈도우 기본 화살표(Arrow), 커서(IBeam) 등의 레지스트리 경로 정의
     static regPath := "HKCU\Control Panel\Cursors"
     
-    ; 1. 레지스트리에 변경할 커서 파일 경로 등록
+    ; 1. 기존 일반/로딩/텍스트 커서 등록
     RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "Arrow")       ; 일반 선택 화살표
     RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "AppStarting")  ; 백그라운드 작업 중
-    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "IBeam")        ; ⭐ 텍스트 선택(I-Beam) 커서 추가!
+    RegWrite(fullPath, "REG_EXPAND_SZ", regPath, "IBeam")        ; 텍스트 선택(I-Beam)
 
-    ; 2. SPI_SETCURSORS (0x0057) 명령을 발송하여 윈도우 엔진이 레지스트리를 읽어 강제 리프레시
+    ; 2. 십자선(Crosshair) 커서 등록 처리
+    if (crossPath != "")
+        RegWrite(crossPath, "REG_EXPAND_SZ", regPath, "Crosshair")
+    else
+        RegWrite("", "REG_EXPAND_SZ", regPath, "Crosshair") ; 비어있으면 기본값으로
+
+    ; 3. SPI_SETCURSORS (0x0057) 명령 발송하여 시스템 새로고침
     DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
 }
 
@@ -666,12 +661,15 @@ ResetSystemCursor()
 {
     static regPath := "HKCU\Control Panel\Cursors"
     
-    ; 레지스트리 값을 원래 윈도우 기본값(공백)으로 돌려놓습니다.
+    ; 레지스트리 값을 원래 기본값으로 복구
     RegWrite("", "REG_EXPAND_SZ", regPath, "Arrow")
     RegWrite("", "REG_EXPAND_SZ", regPath, "AppStarting")
-    RegWrite("", "REG_EXPAND_SZ", regPath, "IBeam")         ; ⭐ 텍스트 선택 커서도 기본값으로 복구!
+    RegWrite("", "REG_EXPAND_SZ", regPath, "IBeam")        
     
-    ; 시스템에 원래 테마로 복구하라고 신호를 보냅니다.
+    ; ⭐ 스크립트 종료 시 평상시 쓰던 cross_r.cur 로 복구
+    RegWrite("C:\Windows\Cursors\cross_r.cur", "REG_EXPAND_SZ", regPath, "Crosshair")
+    
+    ; 시스템에 테마 복구 신호 발송
     DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
 }
 
