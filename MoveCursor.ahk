@@ -123,32 +123,53 @@ RShift & q::
     start := A_TickCount
     isLShift := GetKeyState("LShift", "P")
     isAlt := GetKeyState("Alt", "P")
+
     while GetKeyState("RShift", "P") && GetKeyState("q", "P")
         Sleep 10
+
     elapsed := (A_TickCount - start) / 1000
 
-    if (elapsed < 0.25) {
-        if (isAlt) {
+    if (elapsed < 0.25)
+    {
+        if (isAlt)
+        {
             Send("!{Left}")
             ShowTooltip("⬅ 단어 뒤로")
-        } else {
-            SendArrow("Left", 3, isLShift)
-            ShowTooltip(isLShift ? "◀◀ 3칸 선택" : "◀◀ 3칸")
         }
-    } else if (elapsed < 0.5) {
-        if (isLShift) {
+        else if (isLShift)
+        {
+            Send("+{Left 3}")
+            ShowTooltip("◀◀ 3칸 선택")
+        }
+        else
+        {
+            Send("{Left 3}")
+            ShowTooltip("◀◀ 3칸")
+        }
+    }
+    else if (elapsed < 0.5)
+    {
+        if (isLShift)
+        {
             Send("+{Left 9}")
             ShowTooltip("⏮ 9칸 선택")
-        } else {
-            SendArrow("Left", 9)
+        }
+        else
+        {
+            Send("{Left 9}")
             ShowTooltip("⏮ 9칸")
         }
-    } else {
-        if (isLShift) {
+    }
+    else
+    {
+        if (isLShift)
+        {
             Send("+{Left 30}")
             ShowTooltip("⏮⏮ 30칸 선택")
-        } else {
-            SendArrow("Left", 30)
+        }
+        else
+        {
+            Send("{Left 30}")
             ShowTooltip("⏮⏮ 30칸")
         }
     }
@@ -162,32 +183,53 @@ RShift & w::
     start := A_TickCount
     isLShift := GetKeyState("LShift", "P")
     isAlt := GetKeyState("Alt", "P")
+
     while GetKeyState("RShift", "P") && GetKeyState("w", "P")
         Sleep 10
+
     elapsed := (A_TickCount - start) / 1000
 
-    if (elapsed < 0.25) {
-        if (isAlt) {
+    if (elapsed < 0.25)
+    {
+        if (isAlt)
+        {
             Send("!{Right}")
             ShowTooltip("➡ 멤버 목록 열기")
-        } else {
-            SendArrow("Right", 3, isLShift)
-            ShowTooltip(isLShift ? "▶▶ 3칸 선택" : "▶▶ 3칸")
         }
-    } else if (elapsed < 0.5) {
-        if (isLShift) {
+        else if (isLShift)
+        {
+            Send("+{Right 3}")
+            ShowTooltip("▶▶ 3칸 선택")
+        }
+        else
+        {
+            Send("{Right 3}")
+            ShowTooltip("▶▶ 3칸")
+        }
+    }
+    else if (elapsed < 0.5)
+    {
+        if (isLShift)
+        {
             Send("+{Right 9}")
             ShowTooltip("⏭ 9칸 선택")
-        } else {
-            SendArrow("Right", 9)
+        }
+        else
+        {
+            Send("{Right 9}")
             ShowTooltip("⏭ 9칸")
         }
-    } else {
-        if (isLShift) {
+    }
+    else
+    {
+        if (isLShift)
+        {
             Send("+{Right 30}")
             ShowTooltip("⏭⏭ 30칸 선택")
-        } else {
-            SendArrow("Right", 30)
+        }
+        else
+        {
+            Send("{Right 30}")
             ShowTooltip("⏭⏭ 30칸")
         }
     }

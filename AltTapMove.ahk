@@ -32,20 +32,28 @@ $!k::
 
 $!a::
 {
-    ; 파일 탐색기
-    if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    ; Visual Studio
+    if WinActive("ahk_exe devenv.exe")
     {
-        Send "{Alt Down}{Left}"
+        ToolTip("Visual Studio 감지 - Enter 전송")
+        SetTimer(() => ToolTip(), -1000)
+
+        Send("{Enter}")
+    }
+    ; 파일 탐색기
+    else if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    {
+        Send("{Alt Down}{Left}")
     }
     ; 크롬
     else if WinActive("ahk_class Chrome_WidgetWin_1")
     {
-        Send "{Down 2}"
+        Send("{Down 2}")
     }
     ; 기타 프로그램
     else
     {
-        Send "!a"
+        Send("!a")
     }
 }
 
