@@ -15,28 +15,28 @@ global gCountdown := ""
 global uiVisible := false
 global sleeping := false
 
-; 100ms마다 유휴 시간 체크
-SetTimer(CheckIdle, 100)
+; 1초마다 유휴 시간 체크
+SetTimer(CheckIdle, 1000)
 
 CheckIdle() {
     global uiVisible, sleeping
 
-    idleMs := A_TimeIdlePhysical  ; 마지막 키보드/마우스 입력 후 경과 ms
+    idleSec := Floor(A_TimeIdlePhysical / 1000)
 
-    ; 절전 해제 직후 감지: sleeping 상태였는데 입력이 들어오면 리셋
-    if (sleeping && idleMs < 2000) {
+    ; 절전 해제 직후 감지
+    if (sleeping && idleSec < 2) {
         ResetAll()
         return
     }
 
-    ; 19분 55초 경과 & UI 아직 안 띄웠으면 → 카운트다운 UI 표시
-    if (!uiVisible && !sleeping && idleMs >= 119500) {
+    ; 19분 55초 경과 → 5초 카운트다운 시작
+    if (!uiVisible && !sleeping && idleSec >= 1195) {
         ShowCountdownUI()
         return
     }
 
-    ; 입력 감지 → UI 떠 있으면 취소
-    if (uiVisible && idleMs < 500) {
+    ; 입력 감지 → 카운트다운 취소
+    if (uiVisible && idleSec < 1) {
         ResetAll()
         return
     }

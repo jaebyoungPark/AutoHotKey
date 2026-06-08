@@ -51,12 +51,34 @@ $!a::
 
 $!d::
 {
-    ; 파일 탐색기
+    ; 1. 파일 탐색기인 경우
     if WinActive("ahk_class XamlExplorerHostIslandWindow")
     {
         Send "{Alt Down}{Right}"
     }
-    ; 기타 프로그램
+    ; 2. Visual Studio인 경우 (한영키 체크 후 !d 수행)
+    else if WinActive("ahk_exe devenv.exe")
+    {
+        hwnd := WinGetID("A")
+        
+        ; 내부 함수: 현재 한글 입력 상태인지 체크
+        IsKoreanMode(winHwnd) {
+            if !(hIME := DllCall("imm32\ImmGetDefaultIMEWnd", "Ptr", winHwnd, "Ptr"))
+                return false
+            res := DllCall("user32\SendMessage", "Ptr", hIME, "UInt", 0x0283, "UPtr", 1, "Ptr", 0, "Ptr")
+            return (res & 1)
+        }
+
+        ; 한글 모드라면 영어 모드로 전환
+        if IsKoreanMode(hwnd)
+        {
+            Send("{vk15}") ; 한/영 키 입력
+            Sleep(50)      ; 안정적인 전환을 위한 딜레이
+        }
+
+        Send("!d")
+    }
+    ; 3. 그 외 기타 프로그램인 경우
     else
     {
         Send "!d"
@@ -103,15 +125,29 @@ $!s::
 
 $!q::
 {
-    ; 크롬
-    if WinActive("ahk_class Chrome_WidgetWin_1")
+    ; Visual Studio
+    if WinActive("ahk_exe devenv.exe")
     {
-        Send "{Up 2}"
+        ToolTip("Visual Studio 감지 - Backspace 전송")
+        SetTimer(() => ToolTip(), -1000)
+
+        Send("{Backspace}")
+    }
+    ; 크롬
+    else if WinActive("ahk_class Chrome_WidgetWin_1")
+    {
+        ToolTip("Chrome 감지 - Up 2회 전송")
+        SetTimer(() => ToolTip(), -1000)
+
+        Send("{Up 2}")
     }
     ; 기타 프로그램
     else
     {
-        Send "!q"
+        ToolTip("기타 프로그램 - Alt+Q 전송")
+        SetTimer(() => ToolTip(), -1000)
+
+        Send("!q")
     }
 }
 

@@ -294,6 +294,8 @@ HotKeyList := [
 
     "#LButton", "^RButton", "^LButton",
 
+    "!d"
+
 ]
 
 
