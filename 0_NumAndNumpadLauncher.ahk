@@ -123,6 +123,7 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true)
         }
     }
 
+
     ; ==================================================
     ; 최소화 상태면 복구 후 활성화
     ; ==================================================
@@ -613,7 +614,7 @@ NumpadMult::
 ; ==================================================
 F3:: OpenSite(
     "F3",
-    "Claude",
+    "Claude",  
     "https://claude.ai/"
 )
 

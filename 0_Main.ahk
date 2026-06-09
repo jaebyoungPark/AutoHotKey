@@ -224,7 +224,7 @@ HotKeyList := [
 
     "^i", "^u", "^p", "^o",
 
-    "+A",
+    "+A", "^l"
 
 
 
@@ -294,7 +294,7 @@ HotKeyList := [
 
     "#LButton", "^RButton", "^LButton",
 
-    "!d"
+    "!d", "^+Space"
 
 ]
 

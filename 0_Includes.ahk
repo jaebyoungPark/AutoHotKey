@@ -49,6 +49,7 @@
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
 #Include MouseHighlight.ahk
+#Include OpenChatGPT.ahk
 
 
 
@@ -126,6 +127,7 @@
 #Include Ctrl+P.ahk
 #Include Ctrl+;'.ahk
 #Include Ctrl+`.ahk
+#Include Ctrl+L.ahk
 
 
 ;======================================

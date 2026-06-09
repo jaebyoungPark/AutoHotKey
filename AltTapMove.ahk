@@ -32,16 +32,8 @@ $!k::
 
 $!a::
 {
-    ; Visual Studio
-    if WinActive("ahk_exe devenv.exe")
-    {
-        ToolTip("Visual Studio 감지 - Enter 전송")
-        SetTimer(() => ToolTip(), -1000)
-
-        Send("{Enter}")
-    }
     ; 파일 탐색기
-    else if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    if WinActive("ahk_class XamlExplorerHostIslandWindow")
     {
         Send("{Alt Down}{Left}")
     }
@@ -50,10 +42,10 @@ $!a::
     {
         Send("{Down 2}")
     }
-    ; 기타 프로그램
+    ; 그 외 모든 프로그램
     else
     {
-        Send("!a")
+        Send("{Enter}")
     }
 }
 
@@ -133,29 +125,18 @@ $!s::
 
 $!q::
 {
-    ; Visual Studio
-    if WinActive("ahk_exe devenv.exe")
-    {
-        ToolTip("Visual Studio 감지 - Backspace 전송")
-        SetTimer(() => ToolTip(), -1000)
-
-        Send("{Backspace}")
-    }
     ; 크롬
-    else if WinActive("ahk_class Chrome_WidgetWin_1")
+    if WinActive("ahk_class Chrome_WidgetWin_1")
     {
         ToolTip("Chrome 감지 - Up 2회 전송")
         SetTimer(() => ToolTip(), -1000)
 
         Send("{Up 2}")
     }
-    ; 기타 프로그램
+    ; 그 외 모든 프로그램
     else
     {
-        ToolTip("기타 프로그램 - Alt+Q 전송")
-        SetTimer(() => ToolTip(), -1000)
-
-        Send("!q")
+        Send("{Backspace}")
     }
 }
 
