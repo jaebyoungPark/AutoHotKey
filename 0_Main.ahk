@@ -230,7 +230,7 @@ HotKeyList := [
 
     ; 단독키
 
-    "RShift", "~F2", "F12", "Esc",
+    "RShift", "F2", "F12", "Esc",
 
 
 
@@ -294,7 +294,7 @@ HotKeyList := [
 
     "#LButton", "^RButton", "^LButton",
 
-    "!d", "^+Space"
+    "!d", "^+Space", "NumpadDot", "^v"
 
 ]
 
@@ -566,18 +566,31 @@ OnMessage(0x0020, WM_SETCURSOR_INTERCEPT)
 SetTimer(WatchCursorByVirtualLock, 100)
 
 
-
-SetTimer(WatchCursorByVirtualLock, 100)
-
 WatchCursorByVirtualLock()
 {
     global isVirtualDown
     global NumSuspended
     global NumPadSuspended
+    global MySuspended
 
     static prevPath := ""
     static prevCrossPath := ""
     targetCrossPath := ""
+
+    if MySuspended
+    {
+        targetPath := "C:\Windows\Cursors\Suspended2.cur"
+        targetCrossPath := "C:\Windows\Cursors\Suspended2.cur"`
+
+        if (targetPath != prevPath || targetCrossPath != prevCrossPath)
+        {
+            SetCustomCursorFile(targetPath, targetCrossPath)
+            prevPath := targetPath
+            prevCrossPath := targetCrossPath
+        }
+
+        return
+    }
 
     ; ======================================
     ; Virtual Lock ON (가상 잠금 켜짐)

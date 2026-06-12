@@ -76,6 +76,7 @@
 #Include VS_LineSelect.ahk
 #Include VS_DeleteAndAddSameThing.ahk
 #Include VS_WordCopyWithMouse.ahk
+#Include VS_PasteAndFormat.ahk
 
 
 ;=======================================

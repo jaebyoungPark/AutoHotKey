@@ -1,5 +1,4 @@
-﻿
-$`::
+﻿$`::
 {
     global MySuspended, HotkeyList
     global NumSuspended, NumPadSuspended
@@ -22,73 +21,67 @@ $`::
             ; 전체 토글 상태 반전 (On <-> Off)
             MySuspended := !MySuspended
 
+
             ; ==================================================
-            ; [수정] 숫자키는 전체 상태와 동기화 (다시 켤 때 false가 되어 활성화)
-            ; 넘패드는 기존처럼 강제 비활성화(true) 유지
+            ; 숫자키는 전체 상태와 동기화
+            ; 넘패드는 항상 비활성화
             ; ==================================================
-            NumSuspended    := MySuspended  ;전체 활성화시 false, 비활성화시 true
-            NumPadSuspended := true         ;기존 유지
+            NumSuspended := MySuspended
+            NumPadSuspended := true
 
             ; UI 즉시 갱신
             UpdateStatusUI()
 
             ; ON / OFF 상태 문자열 지정
             state := MySuspended ? "Off" : "On"
-            numState := NumSuspended ? "Off" : "On" ; 숫자키 전용 상태 문자열
-
-            ; 일반 핫키 토글
-            for key in HotkeyList
-            {
-                try {
-                    Hotkey(key, "", state)
-                }
-                catch {
-                }
-            }
+            numState := NumSuspended ? "Off" : "On"
 
             ; ==================================================
-            ; [수정] 숫자키 동적 활성화/비활성화 제어
+            ; 일반 핫키 토글
+            ; ==================================================
+            for key in HotkeyList
+            {
+                try Hotkey(key, "", state)
+            }
+
+            ; hotkeylist에 안 먹는 F2 별도 처리
+            try Hotkey("$*F2", "", state)
+
+            ; ==================================================
+            ; 숫자키 동적 활성화/비활성화
             ; ==================================================
             for key in NumKeyList
             {
-                try {
-                    Hotkey(key, "", numState) ; 이제 켤 때는 "On"으로 들어갑니다.
-                }
-                catch {
-                }
+                try Hotkey(key, "", numState)
             }
 
-            ; 넘패드는 무조건 강제 OFF 유지
+            ; ==================================================
+            ; 넘패드는 항상 OFF
+            ; ==================================================
             for key in NumPadKeyList
             {
-                try {
-                    Hotkey(key, "", "Off")
-                }
-                catch {
-                }
+                try Hotkey(key, "", "Off")
             }
 
-            ; 툴팁 및 사운드 출력
+            ; ==================================================
+            ; UI 및 사운드
+            ; ==================================================
             ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON (NumKey Active)")
             SetTimer(() => ToolTip(), -100)
 
             if MySuspended
-            {
-                SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav", 1
-            }
+                SoundPlay("C:\Windows\Media\Windows Critical Stop_Amplified.wav", 1)
             else
-            {
-                SoundPlay "C:\Windows\Media\notify_Amplified.wav", 1
-            }
+                SoundPlay("C:\Windows\Media\notify_Amplified.wav", 1)
 
             break
         }
 
-        Sleep 10
+        Sleep(10)
     }
 
-    if (!toggled)
+    if !toggled
     {
-        Send "{``}"
+        Send("{``}")
     }
 }

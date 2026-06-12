@@ -125,19 +125,9 @@ $!s::
 
 $!q::
 {
-    ; 크롬
-    if WinActive("ahk_class Chrome_WidgetWin_1")
-    {
-        ToolTip("Chrome 감지 - Up 2회 전송")
-        SetTimer(() => ToolTip(), -1000)
-
-        Send("{Up 2}")
-    }
-    ; 그 외 모든 프로그램
-    else
-    {
-        Send("{Backspace}")
-    }
+    ToolTip("Backspace")
+    Send("{Backspace}")
+    SetTimer(() => ToolTip(), -1000) ; 1초 후 툴팁 제거
 }
 
 $!e::

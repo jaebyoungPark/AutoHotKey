@@ -8,7 +8,16 @@
     ; 250ms 이하
     if (elapsed <= 250)
     {
-        SendInput "{Left}"
+        if WinActive("ahk_exe devenv.exe") ; Visual Studio
+        {
+            SendInput "^+f"
+            Sleep 100
+            SendInput "{Enter}"
+        }
+        else
+        {
+            SendInput "{Left}"
+        }
     }
     ; 250 ~ 1000ms
     else if (elapsed <= 1000)
