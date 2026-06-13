@@ -1,13 +1,5 @@
-﻿; =====================================================
-;  모니터 + 본체 절전 스크립트 (AutoHotkey v2)
-;  마지막 입력 후 15초 동안 아무것도 안 하면:
-;    → 5초 카운트다운 UI 표시 (10초 경과 시점)
-;    → 모니터 절전 (15초 경과 시점)
-;    → 2초 후 본체 절전
-;  절전 해제 후 입력 감지되면 다시 타이머 시작
-; =====================================================
-
-#Requires AutoHotkey v2.0
+﻿#Requires AutoHotkey v2.0
+#SingleInstance Force
 
 global countdown := 5
 global txtCount := ""
@@ -15,35 +7,67 @@ global gCountdown := ""
 global uiVisible := false
 global sleeping := false
 
+; ⚡ [추가] 실제 절전 진입 순간의 마우스 좌표를 기록할 전역 변수
+global EndMouseX := 0
+global EndMouseY := 0
+
 ; 1초마다 유휴 시간 체크
 SetTimer(CheckIdle, 1000)
 
 CheckIdle() {
-    global uiVisible, sleeping
+    global uiVisible, sleeping, StartMouseX, StartMouseY, EndMouseX, EndMouseY
 
     idleSec := Floor(A_TimeIdlePhysical / 1000)
 
-    ; 절전 해제 직후 감지
-    if (sleeping && idleSec < 2) {
-        ResetAll()
-        return
+    ; 🎯 [수정] 진짜 절전 모드(모니터 꺼짐) 상태에서 깨어날 때의 조건
+    if (sleeping) {
+        if (idleSec < 2) {
+            CoordMode "Mouse", "Screen"
+            MouseGetPos &NowX, &NowY
+            
+            ; 절전 진입 시점(EndMouse)과의 직선 거리 계산
+            dist := Sqrt((NowX - EndMouseX)**2 + (NowY - EndMouseY)**2)
+            
+            ; ⚡ 150픽셀 이상 크게 움직여야만 완전히 해제하고 다시 유휴 체크 시작
+            if (dist >= 150) {
+                ResetAll()
+            }
+            return
+        }
     }
 
-    ; 19분 55초 경과 → 5초 카운트다운 시작
-    if (!uiVisible && !sleeping && idleSec >= 1195) {
+    ; 4분 55초 경과 → 5초 카운트다운 시작
+    if (!uiVisible && !sleeping && idleSec >= 495) {
         ShowCountdownUI()
         return
     }
 
-    ; 입력 감지 → 카운트다운 취소
-    if (uiVisible && idleSec < 1) {
-        ResetAll()
-        return
+    ; [카운트다운 UI 표시 중] 마우스/키보드 입력 감지 시 처리
+    if (uiVisible) {
+        ; 키보드나 마우스 입력이 감지되어 유휴 시간이 초기화되었을 때
+        if (idleSec < 1) {
+            CoordMode "Mouse", "Screen"
+            MouseGetPos &NowX, &NowY
+
+            dx := Abs(NowX - StartMouseX)
+            dy := Abs(NowY - StartMouseY)
+
+            ; 1. 마우스가 200픽셀 이상 움직였거나
+            ; 2. 마우스는 안 움직였는데 idleSec가 줄었다면 (즉, 키보드를 눌렀다면) 취소
+            if (dx > 200 || dy > 200 || (dx == 0 && dy == 0)) {
+                ResetAll()
+                return
+            }
+        }
     }
 }
 
 ShowCountdownUI() {
     global gCountdown, txtCount, uiVisible, countdown
+    global StartMouseX, StartMouseY
+
+    CoordMode "Mouse", "Screen"
+    MouseGetPos(&StartMouseX, &StartMouseY)
 
     uiVisible := true
     countdown := 5
@@ -75,13 +99,18 @@ ShowCountdownUI() {
 }
 
 UpdateCountdown() {
-    global countdown, txtCount, gCountdown, sleeping
+    global countdown, txtCount, gCountdown, sleeping, EndMouseX, EndMouseY
 
     countdown -= 1
 
     if (countdown <= 0) {
         SetTimer(UpdateCountdown, 0)
         sleeping := true
+        
+        ; 🎯 [추가] 모니터가 꺼지기 직전 최종 마우스 위치를 기억합니다.
+        CoordMode "Mouse", "Screen"
+        MouseGetPos &EndMouseX, &EndMouseY
+        
         try gCountdown.Destroy()
 
         ; 모니터 절전

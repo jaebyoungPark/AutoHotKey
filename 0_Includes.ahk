@@ -49,7 +49,7 @@
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
 #Include MouseHighlight.ahk
-#Include OpenChatGPT.ahk
+
 
 
 

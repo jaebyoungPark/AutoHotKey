@@ -7,15 +7,15 @@
 ; ==========================================================================
 
 
-; MouseOverExe(exeName)
-; {
-;     MouseGetPos ,, &hwnd
-;
-;     try
-;         return WinGetProcessName("ahk_id " hwnd) = exeName
-;     catch
-;         return false
-; }
+ MouseOverExe(exeName)
+ {
+     MouseGetPos ,, &hwnd
+
+     try
+         return WinGetProcessName("ahk_id " hwnd) = exeName
+     catch
+         return false
+ }
 
 
 ; GetMouseWindowTitle()
