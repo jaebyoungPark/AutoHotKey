@@ -611,8 +611,8 @@ WatchCursorByVirtualLock()
 
     if MySuspended
     {
-        targetPath := "C:\Windows\Cursors\Suspended2.cur"
-        targetCrossPath := "C:\Windows\Cursors\Suspended2.cur"`
+        targetPath := "C:\Windows\Cursors\Suspended3.cur"
+        targetCrossPath := "C:\Windows\Cursors\Suspended3.cur"`
 
         if (targetPath != prevPath || targetCrossPath != prevCrossPath)
         {
