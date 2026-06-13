@@ -1,9 +1,6 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; 언리얼이나 비주얼스튜디오는 절대 winacitve 가 아니라 Main 의MouseOverExe 같은 커서인식으로 active 여부를 판별하지
-; 말고, 너가 직접 마우스 클릭해서 활성화 시키고 winactive 로 실행해. 안그러면 저장 안될 가능성이 있어서 진짜 위험하다. 
-
 ; ⚠️ [중요] 최상단에 있던 변수 초기화 구문(global 변수 := false)을 모두 삭제했습니다.
 ; 이제 이 파일은 main.ahk에 선언된 변수를 '가져와서' 사용합니다.
 
@@ -30,18 +27,9 @@ IsUnrealActive() {
     isReleased := KeyWait("p", "T0.2")
     elapsed := A_TickCount - start
 
-    ;title := WinGetTitle("A") 아래걸로 대체.
+    title := WinGetTitle("A")
 
-       ; 🔍 마우스 커서 아래에 있는 창의 ID(Hwnd)와 타이틀을 정확히 가져옴
-    MouseGetPos ,, &mouseHwnd
-    try {
-        title := WinGetTitle("ahk_id " mouseHwnd)
-    } catch {
-        title := ""
-    }
-
-
-
+title := WinGetTitle("A")
 
 ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
 if (
@@ -62,19 +50,16 @@ if (
         }
     }
 
-    ; [2] YouTube (마우스 위치 창 활성화 로직 반영)
+    ; [2] YouTube
     if InStr(title, "YouTube") {
-        EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+."
         return
     }
     
-    
-    ; [3] Udemy (마우스 위치 창 활성화 로직 반영)
+    ; [3] Udemy
     if InStr(title, "Udemy") {
-        EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"
@@ -196,10 +181,6 @@ ShowDebug(message) {
     KeyWait "o"
     elapsed := A_TickCount - start
 
-    ; 마우스 커서 아래 창의 HWND 미리 획득
-    MouseGetPos ,, &mouseHwnd
-
-
     ; GOM64
     if WinActive("ahk_exe GOM64.EXE") {
         if (elapsed < 250) {
@@ -240,21 +221,14 @@ ShowDebug(message) {
             return
         }
 
-        try {
-            mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-        } catch {
-            mouseTitle := ""
-        }
-
-        if InStr(mouseTitle, "YouTube") {
-            EnsureWindowActive(mouseHwnd)
+        title := WinGetTitle("A")
+        if InStr(title, "YouTube") {
             ToolTip "◀ Speed Down"
             SetTimer(() => ToolTip(), -700)
             SendInput "+,"
             return
         }
-        else if InStr(mouseTitle, "Udemy") {
-            EnsureWindowActive(mouseHwnd)
+        else if InStr(title, "Udemy") {
             ToolTip "◀ Speed Down"
             SetTimer(() => ToolTip(), -700)
             SendInput "+{Left}"
@@ -303,20 +277,10 @@ ShowDebug(message) {
     }
 }
 
-; ==============================================================================
-; 5. Udemy 전용 단축키 (마우스 오버 활성화 로직 추가)
-; ==============================================================================
+; Udemy 전용 단축키 유지
 $+,::
 {
-    MouseGetPos ,, &mouseHwnd
-    try {
-        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-    } catch {
-        mouseTitle := ""
-    }
-
-    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
-        EnsureWindowActive(mouseHwnd)
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
         ToolTip "◀ Speed Down"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Left}"
@@ -327,15 +291,7 @@ $+,::
 
 $+.::
 {
-    MouseGetPos ,, &mouseHwnd
-    try {
-        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-    } catch {
-        mouseTitle := ""
-    }
-
-    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
-        EnsureWindowActive(mouseHwnd)
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"

@@ -2,7 +2,39 @@
 
 #SingleInstance Force
 
+; ==========================================================================
+; [공용 함수]  - MediaSpeed.ahk, 1_CompileAndSave.ahk, 안쓰는게 좋음. 활성화 여부를 보장하기 어려워서 마우스클릭으로 명시적 활성화하는게 나음 
+; ==========================================================================
 
+
+; MouseOverExe(exeName)
+; {
+;     MouseGetPos ,, &hwnd
+;
+;     try
+;         return WinGetProcessName("ahk_id " hwnd) = exeName
+;     catch
+;         return false
+; }
+
+
+; GetMouseWindowTitle()
+; {
+;     MouseGetPos ,, &hwnd
+;
+;     try
+;         return WinGetTitle("ahk_id " hwnd)
+;     catch
+;         return ""
+; }
+
+
+ EnsureWindowActive(hwnd) {
+     if !WinActive("ahk_id " hwnd) {
+         WinActivate("ahk_id " hwnd)
+         WinWaitActive("ahk_id " hwnd,, 1)
+     }
+ }
 
 ; ==========================================================================
 
