@@ -1,14 +1,14 @@
-﻿#Requires AutoHotkey v2.0
+﻿
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; ==========================================
 ; 설정 변수
 ; ==========================================
-global HighlightInterval := 5000   ; 사라진 후 0.5초 뒤 재출현 (총 5초 애니메이션 + 0.5초 대기)
-global MoveResetInterval := 1000  ; 💡 마우스 움직인 후 다시 그려질 때까지의 대기 시간 (1초)
-global CircleRadius := 600       
-global InnerRadius := 595        
-global CircleColor := "FFFF00"
+global HighlightInterval := 5000   ; 사라진 후 0.5초 뒤 재출현
+global MoveResetInterval := 1000  ; 마우스 움직인 후 다시 그려질 때까지의 대기 시간 (1초)
+global CircleRadius := 500       
+global InnerRadius := 490        
 global TargetAlpha := 70
 
 global FadeInDuration := 300
@@ -23,6 +23,10 @@ global FadeMode := 0
 
 global BaseMouseX := 0
 global BaseMouseY := 0
+
+; 💡 알록달록 색상 관련 변수
+global ColorHue := 0             ; 현재 색상 값 (0 ~ 360)
+global ColorSpeed := 2           ; 색상이 변하는 속도 (숫자가 클수록 빠르게 변함)
 
 ; ==========================================
 ; F11 핫키
@@ -42,7 +46,7 @@ $F11:: {
 ; 토글
 ; ==========================================
 ToggleHighlight() {
-    global IsActive, HighlightInterval
+    global IsActive
 
     IsActive := !IsActive
 
@@ -64,17 +68,17 @@ StopAllTimers() {
     SetTimer(FadeAnimate, 0)
     SetTimer(CheckMouseMovement, 0)
     SetTimer(SwitchToFadeOut, 0)
+    SetTimer(ChangeColorAnimate, 0) ; 💡 색상 타이머도 정지
 }
+
 ; ==========================================
 ; 원 생성
 ; ==========================================
 ShowHighlight() {
-    global HighlightGui, CircleRadius, InnerRadius, CircleColor
+    global HighlightGui, CircleRadius, InnerRadius
     global CurrentAlpha, FadeMode, FadeInDuration, FadingSteps
     global BaseMouseX, BaseMouseY
-    global HighlightInterval
 
-    ; 💡 새로운 원을 그리기 전에 모든 타이머를 확실히 꺼서 겹침 방지
     StopAllTimers()
     DestroyHighlight()
 
@@ -85,7 +89,10 @@ ShowHighlight() {
     BaseMouseY := mouseY
 
     HighlightGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
-    HighlightGui.BackColor := CircleColor
+    
+    ; 초기 색상을 가져와 지정합니다.
+    initialColor := HSVtoRGB(ColorHue, 100, 100)
+    HighlightGui.BackColor := initialColor
 
     diameter := CircleRadius * 2
     HighlightGui.Show("X" (mouseX - CircleRadius) " Y" (mouseY - CircleRadius)
@@ -107,9 +114,10 @@ ShowHighlight() {
     stepTime := FadeInDuration / FadingSteps
     SetTimer(FadeAnimate, stepTime)
     
-    ; 원이 성공적으로 그려진 '이 시점'부터 감지 및 반복 타이머를 가동합니다.
     SetTimer(CheckMouseMovement, 10)
-
+    
+    ; 💡 원이 켜져 있는 동안 실시간으로 색상을 바꾸는 타이머 가동 (30ms 주기)
+    SetTimer(ChangeColorAnimate, 30)
 }
 
 ; ==========================================
@@ -122,12 +130,8 @@ CheckMouseMovement() {
     MouseGetPos(&cX, &cY)
     
     if (cX != BaseMouseX || cY != BaseMouseY) {
-        ; 💡 마우스 움직임이 감지되면 즉시 모든 타이머를 중단하고 원을 지웁니다.
         StopAllTimers()
         DestroyHighlight()
-        
-        ; 정확히 MoveResetInterval(1초) 후에 ShowHighlight가 '단 한 번만(-)' 켜지도록 예약합니다.
-        ; 이렇게 해야 1초 뒤에 새로 그려지면서 내부에서 5.5초 타이머가 깨끗하게 시작됩니다.
         SetTimer(ShowHighlight, -MoveResetInterval)
     }
 }
@@ -137,7 +141,7 @@ CheckMouseMovement() {
 ; ==========================================
 FadeAnimate() {
     global HighlightGui, TargetAlpha, CurrentAlpha, FadeMode, FadingSteps
-    global CircleDuration, FadeOutDuration
+    global CircleDuration
 
     static currentStep := 0
 
@@ -160,22 +164,20 @@ FadeAnimate() {
             return
         }
     }
-else {
-    CurrentAlpha := TargetAlpha * (1 - (currentStep / FadingSteps))
+    else {
+        CurrentAlpha := TargetAlpha * (1 - (currentStep / FadingSteps))
 
-    if (CurrentAlpha <= 0 || currentStep >= FadingSteps) {
-        SetTimer(FadeAnimate, 0)
-        currentStep := 0
-        SetTimer(CheckMouseMovement, 0)
+        if (CurrentAlpha <= 0 || currentStep >= FadingSteps) {
+            SetTimer(FadeAnimate, 0)
+            currentStep := 0
+            SetTimer(CheckMouseMovement, 0)
+            SetTimer(ChangeColorAnimate, 0) ; 💡 사라질 때 색상 타이머 종료
 
-        DestroyHighlight()
-
-        ; 0.5초 후 다시 생성
-        SetTimer(ShowHighlight, -500)
-
-        return
+            DestroyHighlight()
+            SetTimer(ShowHighlight, -500)
+            return
+        }
     }
-}
 
     WinSetTransparent(Max(1, Integer(CurrentAlpha)), HighlightGui.Hwnd)
 }
@@ -193,6 +195,54 @@ DestroyHighlight() {
         HighlightGui.Destroy()
         HighlightGui := ""
     }
+}
+
+; ==========================================
+; 💡 알록달록 색상 변경 함수
+; ==========================================
+ChangeColorAnimate() {
+    global HighlightGui, ColorHue, ColorSpeed
+    if !(HighlightGui is Gui)
+        return
+
+    ; 색상(Hue) 값을 계속 증가시켜 무지개색 효과 유도
+    ColorHue := Mod(ColorHue + ColorSpeed, 360)
+    rgbColor := HSVtoRGB(ColorHue, 100, 100)
+    
+    ; GUI의 배경색 실시간 변경
+    HighlightGui.BackColor := rgbColor
+}
+
+; 💡 HSV(색상, 채도, 명도)를 HEX(RGB) 코드로 변환해주는 헬퍼 함수
+HSVtoRGB(h, s, v) {
+    s /= 100, v /= 100
+    if (s == 0) {
+        hex := Format("{:02X}{:02X}{:02X}", Integer(v*255), Integer(v*255), Integer(v*255))
+        return hex
+    }
+    
+    h /= 60
+    i := Floor(h)
+    f := h - i
+    p := v * (1 - s)
+    q := v * (1 - s * f)
+    t := v * (1 - s * (1 - f))
+    
+    if (i == 0) {
+        r := v, g := t, b := p
+    } else if (i == 1) {
+        r := q, g := v, b := p
+    } else if (i == 2) {
+        r := p, g := v, b := t
+    } else if (i == 3) {
+        r := p, g := q, b := v
+    } else if (i == 4) {
+        r := t, g := p, b := v
+    } else {
+        r := v, g := p, b := q
+    }
+    
+    return Format("{:02X}{:02X}{:02X}", Integer(r*255), Integer(g*255), Integer(b*255))
 }
 
 ; ==========================================

@@ -16,3 +16,14 @@ $^l:: {
     ; 비주얼 스튜디오가 아닐 때만 원래의 Ctrl + L 신호를 보냄
     Send("^l")
 }
+
+; Ctrl + Shift + L
+$^+l:: {
+    if WinActive("ahk_exe devenv.exe") {
+        ToolTip("기능 막아놓음")
+        SetTimer(() => ToolTip(), -700)
+        return
+    }
+
+    Send("^+l")
+}

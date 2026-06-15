@@ -310,18 +310,55 @@ ShowDebug(message) {
 
 ; ==============================================================================
 ; 5. Udemy 전용 단축키 (마우스 오버 활성화 로직 추가)
-; ==============================================================================
+
+; --------------------
+; 5-1. Version 1
+; --------------------
+;$+,::
+;{
+;    MouseGetPos ,, &mouseHwnd
+;    try {
+;        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
+;    } catch {
+;        mouseTitle := ""
+;    }
+;
+;    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
+;        EnsureWindowActive(mouseHwnd)
+;        ToolTip "◀ Speed Down"
+;        SetTimer(() => ToolTip(), -700)
+;        SendInput "+{Left}"
+;    } else {
+;        SendInput "+,"
+;    }
+;}
+;
+;
+;$+.::
+;{
+;    MouseGetPos ,, &mouseHwnd
+;    try {
+;        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
+;    } catch {
+;        mouseTitle := ""
+;    }
+;
+;    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
+;        EnsureWindowActive(mouseHwnd)
+;        ToolTip "▶ Speed Up"
+;        SetTimer(() => ToolTip(), -700)
+;        SendInput "+{Right}"
+;    } else {
+;        SendInput "+."
+;    }
+;}
+
+; --------------------
+; 5-2. Version 2 (선호. 왜냐하면 v1은 듀얼모니터에서 마우스가 강의쪽 모니터에 있을 경우, 주모니터의 < 를 쓰면 유데미의 스피드 조절이 되어버림)
+; --------------------
 $+,::
 {
-    MouseGetPos ,, &mouseHwnd
-    try {
-        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-    } catch {
-        mouseTitle := ""
-    }
-
-    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
-        EnsureWindowActive(mouseHwnd)
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
         ToolTip "◀ Speed Down"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Left}"
@@ -332,15 +369,7 @@ $+,::
 
 $+.::
 {
-    MouseGetPos ,, &mouseHwnd
-    try {
-        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-    } catch {
-        mouseTitle := ""
-    }
-
-    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
-        EnsureWindowActive(mouseHwnd)
+    if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
         ToolTip "▶ Speed Up"
         SetTimer(() => ToolTip(), -700)
         SendInput "+{Right}"
@@ -348,3 +377,4 @@ $+.::
         SendInput "+."
     }
 }
+; ==============================================================================

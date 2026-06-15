@@ -326,7 +326,7 @@ HotKeyList := [
 
     "#LButton", "^RButton", "^LButton",
 
-    "!d", "^+Space", "NumpadDot", "^v"
+    "!d", "^+Space", "NumpadDot", "^v", "^+l"
 
 ]
 

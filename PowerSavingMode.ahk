@@ -52,9 +52,9 @@ CheckIdle() {
             dx := Abs(NowX - StartMouseX)
             dy := Abs(NowY - StartMouseY)
 
-            ; 1. 마우스가 200픽셀 이상 움직였거나
+            ; 1. 마우스가 500픽셀 이상 움직였거나
             ; 2. 마우스는 안 움직였는데 idleSec가 줄었다면 (즉, 키보드를 눌렀다면) 취소
-            if (dx > 200 || dy > 200 || (dx == 0 && dy == 0)) {
+            if (dx > 500 || dy > 500 || (dx == 0 && dy == 0)) {
                 ResetAll()
                 return
             }
