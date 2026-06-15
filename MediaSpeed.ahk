@@ -308,21 +308,107 @@ ShowDebug(message) {
             return
         }
     }
+;------------------------------------------------------------
+;
 
-    ; Unreal Engine
-    if IsUnrealActive() {
-        if (elapsed < 250) {
-            ToolTip "컴파일 후 저장"
-            SetTimer(() => ToolTip(), -700)
-            Send "{Enter}"
-            Sleep 100
-            SendInput "{F7}"
-            Sleep 300
-            Send "^+s"
+/*
+; v1-1)
+
+; 이것의 문제점이 있었는데, 컴파일이 제대로 안먹힘. 예를들어 어떤 변수를 true 체크를 했는데 이것을 하면 다시 풀리면서 저장됨.
+; 근데 v2) 는 이 부분에서 문제가 발생하지 않음. 그 이유는 아무래도 MouseGetPos 를 통해 mouseHwnd 를 저장한 후 Activate를 하여 활성화될 창을
+; 확실하게 지정했기 때문인듯. 그리고 어떤 버전이든 F7 -> Enter 순서는 꼭 지켜야함. 안그러면 이것도 동작오류의 원인이 됨
+
+; Unreal Engine
+if IsUnrealActive() {
+    if (elapsed < 250) {
+        ToolTip "컴파일 후 저장. v1-1"
+        SetTimer(() => ToolTip(), -700)
+
+        Sleep 100
+
+        Send "{F7}"
+        Send "{Enter}"
+
+        Sleep 300
+
+        Send "^+s"
+    }
+    return
+}
+
+
+; v1-2)  1-1 에서 MouseGetPos 와 WinActivate를 추가한, 훨씬 안정화된 버전. 다만 v2 이 에러가 활용가치가 더 있을 거라 생각하여 v2를 쓰는 중
+
+; Unreal Engine
+if IsUnrealActive() {
+    if (elapsed < 250) {
+
+        MouseGetPos ,, &mouseHwnd
+
+        WinActivate("ahk_id " mouseHwnd)
+
+        if !WinWaitActive("ahk_id " mouseHwnd, , 1)
+        {
+            ToolTip "❌ 활성화 실패"
+            SetTimer(() => ToolTip(), -1000)
+            return
         }
-        return
+
+        ToolTip "컴파일 후 저장. v1-2"
+        SetTimer(() => ToolTip(), -700)
+
+        Sleep 100
+
+        Send "{F7}"
+        Send "{Enter}"
+
+        Sleep 300
+
+        Send "^+s"
     }
 
+    return
+}
+*/
+
+; v2) 이것은 현재 잘 작동함. 단, 단순히 Activate 만 해선 정상적인 작동이 안됨.
+; 반드시 MouseGetPos 로 mouseHwnd 에 있는 창을 WinActivate 해야함.
+
+; Unreal Engine
+if MouseOverExe("UE4Editor.exe")
+ || MouseOverExe("UnrealEditor.exe")
+ || MouseOverExe("UnrealEditor-Win64-DebugGame.exe")
+{
+    if (elapsed < 250)
+    {
+        MouseGetPos ,, &mouseHwnd
+
+        WinActivate("ahk_id " mouseHwnd)
+
+        if !WinWaitActive("ahk_id " mouseHwnd, , 1)
+        {
+            ToolTip "❌ 활성화 실패"
+            SetTimer(() => ToolTip(), -1000)
+            return
+        }
+
+        ToolTip "컴파일 후 저장. v2"
+        SetTimer(() => ToolTip(), -700)
+
+        Sleep 100
+
+        Send "{F7}"
+        Send "{Enter}"
+
+        Sleep 300
+
+        Send "^+s"
+    }
+
+    return
+}
+
+;------------------------------------------------------------
     ; Visual Studio
     if WinActive("ahk_exe devenv.exe") {
         if (elapsed < 250) {
