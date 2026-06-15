@@ -91,13 +91,38 @@ if (
         }
     }
 
+;------------------------------------------------------------
+; 일단 v1 이 훨씬 잘 켜지고 문제가 없긴 한데, 일단 v2 는 만들어놨으니 한번 써보자. mouseHwnd 로 activate 하니까 그래도 
+; 해결이 되는거같은데 더 두고봐야함. 정 안되면 v1 로 갈아타기.
+
+/*
+; v1)
+
+    ; [5] Unreal Engine 특정 기능
+    if IsUnrealActive() {
+        if (elapsed >= 200 && elapsed < 450) {
+            CoordMode "Mouse", "Screen"
+            ToolTip "Content Drawer"
+            SetTimer(() => ToolTip(), -700)
+            Send "^ "
+            return
+        }
+    }
+*/
+
+
+; v2) 
+
     ; [5] Unreal Engine 특정 기능
     if MouseOverExe("UE4Editor.exe")
      || MouseOverExe("UnrealEditor.exe")
      || MouseOverExe("UnrealEditor-Win64-DebugGame.exe")
     {
         if (elapsed >= 200 && elapsed < 450) {
-            WinActivate("ahk_class UnrealWindow")       
+
+;핵심 두 줄. 이걸로 활성화할 창을 MouseGetPos 를 통해 확실히 인식시켜야 하는듯
+MouseGetPos ,, &mouseHwnd
+WinActivate("ahk_id " mouseHwnd)      
 
             CoordMode "Mouse", "Screen"
             ToolTip "Content Drawer"
@@ -106,7 +131,12 @@ if (
             return
         }
     }
+
 }
+;------------------------------------------------------------
+
+
+
 
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
 ToggleVirtualLock() {
