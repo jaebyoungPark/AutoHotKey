@@ -318,6 +318,8 @@ ShowDebug(message) {
 ; 근데 v2) 는 이 부분에서 문제가 발생하지 않음. 그 이유는 아무래도 MouseGetPos 를 통해 mouseHwnd 를 저장한 후 Activate를 하여 활성화될 창을
 ; 확실하게 지정했기 때문인듯. 그리고 어떤 버전이든 F7 -> Enter 순서는 꼭 지켜야함. 안그러면 이것도 동작오류의 원인이 됨
 
+
+
 ; Unreal Engine
 if IsUnrealActive() {
     if (elapsed < 250) {
@@ -327,9 +329,13 @@ if IsUnrealActive() {
         Sleep 100
 
         Send "{F7}"
+	Sleep 40
+
         Send "{Enter}"
 
-        Sleep 300
+
+
+        Sleep 250
 
         Send "^+s"
     }
@@ -360,9 +366,13 @@ if IsUnrealActive() {
         Sleep 100
 
         Send "{F7}"
+	Sleep 40
+
         Send "{Enter}"
 
-        Sleep 300
+
+
+        Sleep 250
 
         Send "^+s"
     }
@@ -395,12 +405,18 @@ if MouseOverExe("UE4Editor.exe")
         ToolTip "컴파일 후 저장. v2"
         SetTimer(() => ToolTip(), -700)
 
+	Click "Left"
+
         Sleep 100
 
         Send "{F7}"
+	Sleep 40
+/* 
+왜 넣었는지 기억이 안나는데, 일단 언리얼 에디터의 그래프에서 엔터를 입력하면 KEY가 추가가 됨. 그래서 Enter를 일단 뺐음
         Send "{Enter}"
 
-        Sleep 300
+*/
+        Sleep 250
 
         Send "^+s"
     }
