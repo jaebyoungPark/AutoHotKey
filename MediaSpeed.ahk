@@ -4,35 +4,23 @@
 ; 언리얼이나 비주얼스튜디오의 컴파일이나 저장은 절대 Main 의MouseOverExe 같은 커서인식으로 active 여부를 판별하지
 ; 말고, 너가 직접 마우스 클릭해서 활성화 시키고 winactive 로 실행해. 안그러면 저장 안될 가능성이 있어서 진짜 위험하다. 
 
-; ⚠️ [중요] 최상단에 있던 변수 초기화 구문(global 변수 := false)을 모두 삭제했습니다.
-; 이제 이 파일은 main.ahk에 선언된 변수를 '가져와서' 사용합니다.
+; ⚠️ [중요] main.ahk에 선언된 외부 전역 변수 및 배열을 안전하게 참조하기 위해 상단 선언
+global unrealExes
 
-; ==============================
-; Unreal Engine 활성 판별 함수
-; ==============================
-IsUnrealActive() {
-    return (
-           WinActive("ahk_exe UE4Editor.exe")
-        || WinActive("ahk_exe UnrealEditor.exe")
-        || InStr(WinGetTitle("A"), "Unreal Editor")
-        || WinActive("ahk_class UnrealWindow")
-    )
-}
 
 ; ==============================================================================
 ; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
 ; ==============================================================================
 ^!+p::
 {
+global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
     start := A_TickCount
     
     ; ⚡ 반응성 개선: 200ms 동안만 P 키가 떼어지기를 기다립니다 (블로킹 방지)
     isReleased := KeyWait("p", "T0.2")
     elapsed := A_TickCount - start
 
-    ;title := WinGetTitle("A") 아래걸로 대체.
-
-       ; 🔍 마우스 커서 아래에 있는 창의 ID(Hwnd)와 타이틀을 정확히 가져옴
+    ; 🔍 마우스 커서 아래에 있는 창의 ID(Hwnd)와 타이틀을 정확히 가져옴
     MouseGetPos ,, &mouseHwnd
     try {
         title := WinGetTitle("ahk_id " mouseHwnd)
@@ -40,19 +28,16 @@ IsUnrealActive() {
         title := ""
     }
 
-
-
-
-; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
-if (
-    elapsed < 200
-    && isReleased
-    && !InStr(title, "Udemy")
-    && !InStr(title, "YouTube")
-) {
-    ToggleVirtualLock()
-    return
-}
+    ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
+    if (
+        elapsed < 200
+        && isReleased
+        && !InStr(title, "Udemy")
+        && !InStr(title, "YouTube")
+    ) {
+        ToggleVirtualLock()
+        return
+    }
 
     ; [1] GOM64
     if WinActive("ahk_exe GOM64.EXE") {
@@ -82,7 +67,7 @@ if (
     }
 
     ; [4] Visual Studio 특정 기능
-    if WinActive("ahk_exe devenv.exe") {
+    if WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe") {
         if (elapsed >= 200 && elapsed < 550) {
             ToolTip "Header"
             SetTimer(() => ToolTip(), -600)
@@ -90,39 +75,21 @@ if (
             return
         }
     }
+    
 
-;------------------------------------------------------------
-; 일단 v1 이 훨씬 잘 켜지고 문제가 없긴 한데, 일단 v2 는 만들어놨으니 한번 써보자. mouseHwnd 로 activate 하니까 그래도 
-; 해결이 되는거같은데 더 두고봐야함. 정 안되면 v1 로 갈아타기.
-
-/*
-; v1)
-
-    ; [5] Unreal Engine 특정 기능
-    if IsUnrealActive() {
-        if (elapsed >= 200 && elapsed < 450) {
-            CoordMode "Mouse", "Screen"
-            ToolTip "Content Drawer"
-            SetTimer(() => ToolTip(), -700)
-            Send "^ "
-            return
+    ; [5] Unreal Engine 특정 기능 (Content Drawer 열기)
+    isUnrealMouseOver := false
+    for exe in unrealExes {
+        if MouseOverExe(exe) {
+            isUnrealMouseOver := true
+            break
         }
     }
-*/
 
-
-; v2) 
-
-    ; [5] Unreal Engine 특정 기능
-    if MouseOverExe("UE4Editor.exe")
-     || MouseOverExe("UnrealEditor.exe")
-     || MouseOverExe("UnrealEditor-Win64-DebugGame.exe")
-    {
+    if (isUnrealMouseOver) {
         if (elapsed >= 200 && elapsed < 450) {
-
-;핵심 두 줄. 이걸로 활성화할 창을 MouseGetPos 를 통해 확실히 인식시켜야 하는듯
-MouseGetPos ,, &mouseHwnd
-WinActivate("ahk_id " mouseHwnd)      
+            ; 마우스 아래의 창을 확실하게 인식하고 활성화
+            WinActivate("ahk_id " mouseHwnd)      
 
             CoordMode "Mouse", "Screen"
             ToolTip "Content Drawer"
@@ -131,16 +98,11 @@ WinActivate("ahk_id " mouseHwnd)
             return
         }
     }
-
 }
-;------------------------------------------------------------
-
-
 
 
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
 ToggleVirtualLock() {
-    ; main.ahk에 선언된 전역 변수를 함수 내부로 명시적 호출
     global isVirtualDown, isComboTriggered
     
     isVirtualDown := !isVirtualDown 
@@ -182,10 +144,8 @@ $9:: HandleKey("9")
 $0:: HandleKey("0")
 #HotIf
 
-; --- [구역 B] 넘패드 키 구역 (vk15 및 플래그와 무관, 오직 가상 잠금 때만 작동) ---
-
+; --- [구역 B] 넘패드 키 구역 ---
 #HotIf isVirtualDown
-
 $Numpad1::SendInput "{Blind}{Numpad1}"
 $Numpad2::SendInput "{Blind}{Numpad2}"
 $Numpad3::SendInput "{Blind}{Numpad3}"
@@ -201,7 +161,6 @@ $NumpadDiv::SendInput "{Blind}{NumpadDiv}"      ; /
 $NumpadMult::SendInput "{Blind}{NumpadMult}"    ; *
 $NumpadSub::SendInput "{Blind}{NumpadSub}"      ; -
 $NumpadAdd::SendInput "{Blind}{NumpadAdd}"      ; +
-
 #HotIf
 
 HandleKey(num) {
@@ -222,11 +181,12 @@ ShowDebug(message) {
 }
 
 ; ==============================
-; Ctrl+Alt+Shift+O 구역
+; 4. Ctrl+Alt+Shift+O 구역
 ; ==============================
 ^!+o::
 {
-    global magnifierOn1  ; main.ahk의 전역 변수를 가져옴
+global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
+    global magnifierOn1
     start := A_TickCount
     KeyWait "o"
     elapsed := A_TickCount - start
@@ -234,15 +194,15 @@ ShowDebug(message) {
     ; 마우스 커서 아래 창의 HWND 미리 획득
     MouseGetPos ,, &mouseHwnd
 
-
-    ; GOM64
+    ; [1] GOM64
     if WinActive("ahk_exe GOM64.EXE") {
         if (elapsed < 250) {
             Send "x"
             return
         }
     }
-    ; Notepad (메모장)
+    
+    ; [2] Notepad (메모장)
     if (WinActive("ahk_exe notepad.exe") || WinActive("ahk_exe Notepad.exe") || WinActive("ahk_class Notepad")) {
         if (elapsed < 250) {
             Send "^s"
@@ -257,7 +217,7 @@ ShowDebug(message) {
         return
     }
 
-    ; Chrome
+    ; [3] Chrome
     if WinActive("ahk_exe chrome.exe") {
         if (elapsed >= 200 && elapsed < 600) {
             magnifierOn1 := !magnifierOn1
@@ -297,7 +257,7 @@ ShowDebug(message) {
         }
     }
 
-    ; ChatGPT
+    ; [4] ChatGPT
     if WinActive("ahk_exe ChatGPT.exe") {
         if (elapsed >= 200 && elapsed < 600) {
             magnifierOn1 := !magnifierOn1
@@ -308,125 +268,44 @@ ShowDebug(message) {
             return
         }
     }
-;------------------------------------------------------------
-;
 
-/*
-; v1-1)
-
-; 이것의 문제점이 있었는데, 컴파일이 제대로 안먹힘. 예를들어 어떤 변수를 true 체크를 했는데 이것을 하면 다시 풀리면서 저장됨.
-; 근데 v2) 는 이 부분에서 문제가 발생하지 않음. 그 이유는 아무래도 MouseGetPos 를 통해 mouseHwnd 를 저장한 후 Activate를 하여 활성화될 창을
-; 확실하게 지정했기 때문인듯. 그리고 어떤 버전이든 F7 -> Enter 순서는 꼭 지켜야함. 안그러면 이것도 동작오류의 원인이 됨
-
-
-
-; Unreal Engine
-if IsUnrealActive() {
-    if (elapsed < 250) {
-        ToolTip "컴파일 후 저장. v1-1"
-        SetTimer(() => ToolTip(), -700)
-
-        Sleep 100
-
-        Send "{F7}"
-	Sleep 40
-
-        Send "{Enter}"
-
-
-
-        Sleep 250
-
-        Send "^+s"
-    }
-    return
-}
-
-
-; v1-2)  1-1 에서 MouseGetPos 와 WinActivate를 추가한, 훨씬 안정화된 버전. 다만 v2 이 에러가 활용가치가 더 있을 거라 생각하여 v2를 쓰는 중
-
-; Unreal Engine
-if IsUnrealActive() {
-    if (elapsed < 250) {
-
-        MouseGetPos ,, &mouseHwnd
-
-        WinActivate("ahk_id " mouseHwnd)
-
-        if !WinWaitActive("ahk_id " mouseHwnd, , 1)
-        {
-            ToolTip "❌ 활성화 실패"
-            SetTimer(() => ToolTip(), -1000)
-            return
+    ; [5] Unreal Engine 컴파일 및 저장 기능 (v2 기반 괄호 오류 수정본)
+    isUnrealMouseOver := false
+    for exe in unrealExes {
+        if MouseOverExe(exe) {
+            isUnrealMouseOver := true
+            break
         }
-
-        ToolTip "컴파일 후 저장. v1-2"
-        SetTimer(() => ToolTip(), -700)
-
-        Sleep 100
-
-        Send "{F7}"
-	Sleep 40
-
-        Send "{Enter}"
-
-
-
-        Sleep 250
-
-        Send "^+s"
     }
 
-    return
-}
-*/
+    if (isUnrealMouseOver) {
+        if (elapsed < 250) {
+            ; 상단에서 이미 구한 mouseHwnd를 활용해 확실하게 활성화
+            WinActivate("ahk_id " mouseHwnd)
 
-; v2) 이것은 현재 잘 작동함. 단, 단순히 Activate 만 해선 정상적인 작동이 안됨.
-; 반드시 MouseGetPos 로 mouseHwnd 에 있는 창을 WinActivate 해야함.
+            if !WinWaitActive("ahk_id " mouseHwnd, , 1) {
+                ToolTip "❌ 활성화 실패"
+                SetTimer(() => ToolTip(), -1000)
+                return
+            }
 
-; Unreal Engine
-if MouseOverExe("UE4Editor.exe")
- || MouseOverExe("UnrealEditor.exe")
- || MouseOverExe("UnrealEditor-Win64-DebugGame.exe")
-{
-    if (elapsed < 250)
-    {
-        MouseGetPos ,, &mouseHwnd
+            ToolTip "컴파일 후 저장. v2"
+            SetTimer(() => ToolTip(), -700)
 
-        WinActivate("ahk_id " mouseHwnd)
-
-        if !WinWaitActive("ahk_id " mouseHwnd, , 1)
-        {
-            ToolTip "❌ 활성화 실패"
-            SetTimer(() => ToolTip(), -1000)
-            return
+            Click "Left"
+            Sleep 100
+            Send "{F7}"
+            Sleep 40
+            
+            ; 요청 사항: 엔터 제거 상태 유지, 슬립 후 전체 저장
+            Sleep 250
+            Send "^+s"
+            return 
         }
-
-        ToolTip "컴파일 후 저장. v2"
-        SetTimer(() => ToolTip(), -700)
-
-	Click "Left"
-
-        Sleep 100
-
-        Send "{F7}"
-	Sleep 40
-/* 
-왜 넣었는지 기억이 안나는데, 일단 언리얼 에디터의 그래프에서 엔터를 입력하면 KEY가 추가가 됨. 그래서 Enter를 일단 뺐음
-        Send "{Enter}"
-
-*/
-        Sleep 250
-
-        Send "^+s"
     }
 
-    return
-}
-
-;------------------------------------------------------------
-    ; Visual Studio
-    if WinActive("ahk_exe devenv.exe") {
+    ; [6] Visual Studio 저장 및 기능
+    if WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe") {
         if (elapsed < 250) {
             Send "^+s"
             ToolTip "전체 저장 완료 😄"
@@ -437,57 +316,13 @@ if MouseOverExe("UE4Editor.exe")
             SetTimer(() => ToolTip(), -600)
             Send "{F12}"
         }
+        return
     }
 }
 
 ; ==============================================================================
-; 5. Udemy 전용 단축키 (마우스 오버 활성화 로직 추가)
-
-; --------------------
-; 5-1. Version 1
-; --------------------
-;$+,::
-;{
-;    MouseGetPos ,, &mouseHwnd
-;    try {
-;        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-;    } catch {
-;        mouseTitle := ""
-;    }
-;
-;    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
-;        EnsureWindowActive(mouseHwnd)
-;        ToolTip "◀ Speed Down"
-;        SetTimer(() => ToolTip(), -700)
-;        SendInput "+{Left}"
-;    } else {
-;        SendInput "+,"
-;    }
-;}
-;
-;
-;$+.::
-;{
-;    MouseGetPos ,, &mouseHwnd
-;    try {
-;        mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-;    } catch {
-;        mouseTitle := ""
-;    }
-;
-;    if WinExist("ahk_id " mouseHwnd) && InStr(mouseTitle, "Udemy") {
-;        EnsureWindowActive(mouseHwnd)
-;        ToolTip "▶ Speed Up"
-;        SetTimer(() => ToolTip(), -700)
-;        SendInput "+{Right}"
-;    } else {
-;        SendInput "+."
-;    }
-;}
-
-; --------------------
-; 5-2. Version 2 (선호. 왜냐하면 v1은 듀얼모니터에서 마우스가 강의쪽 모니터에 있을 경우, 주모니터의 < 를 쓰면 유데미의 스피드 조절이 되어버림)
-; --------------------
+; 5. Udemy 전용 단축키 (선호 버전 2 적용)
+; ==============================================================================
 $+,::
 {
     if WinActive("ahk_exe chrome.exe") && InStr(WinGetTitle("A"), "Udemy") {
@@ -509,4 +344,3 @@ $+.::
         SendInput "+."
     }
 }
-; ==============================================================================

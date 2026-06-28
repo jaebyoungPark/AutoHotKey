@@ -6,7 +6,7 @@
 ; =========================================================
 
 global MainRunning := false
-MainPath := "E:\GitProject\AutoHotKey\AutoHotKey\0_Main.ahk"
+MainPath := "E:\Programs\MyGits\AutoHotKey\AutoHotKey\0_Main.ahk"
 
 ; ---------------------------------------------------------
 ; ★ [자동 실행 구역] 스크립트 켜지자마자 Main을 바로 실행합니다.

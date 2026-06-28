@@ -50,8 +50,7 @@
 #Include MoveCursor.ahk
 #Include MouseHighlight.ahk
 
-
-
+#Include VC_SelectLine.ahk
 
 
 ;#Include OpenMemory.ahk

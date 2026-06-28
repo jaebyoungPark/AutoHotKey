@@ -13,8 +13,15 @@ ShowCursorTip(msg, t := 400) {
 {
     ; Visual Studio
     if WinActive("ahk_exe devenv.exe") {
-        ShowCursorTip "뒤로"
+        ShowCursorTip "뒤로 (VS)"
         Send "^-"
+        return
+    }
+
+    ; [추가] VS Code
+    if WinActive("ahk_exe code.exe") {
+        ShowCursorTip "뒤로 (VSCode)"
+        Send "!{Left}"  ; Alt + Left (VS Code 기본 뒤로 가기)
         return
     }
 
@@ -37,8 +44,15 @@ ShowCursorTip(msg, t := 400) {
 {
     ; Visual Studio
     if WinActive("ahk_exe devenv.exe") {
-        ShowCursorTip "앞으로"
+        ShowCursorTip "앞으로 (VS)"
         Send "^+-"
+        return
+    }
+
+    ; [추가] VS Code
+    if WinActive("ahk_exe code.exe") {
+        ShowCursorTip "앞으로 (VSCode)"
+        Send "!{Right}" ; Alt + Right (VS Code 기본 앞으로 가기)
         return
     }
 
@@ -61,8 +75,15 @@ ShowCursorTip(msg, t := 400) {
 {
     ; Visual Studio
     if WinActive("ahk_exe devenv.exe") {
-        ShowCursorTip "뒤로"
+        ShowCursorTip "뒤로 (VS)"
         Send "^-"
+        return
+    }
+
+    ; [추가] VS Code
+    if WinActive("ahk_exe code.exe") {
+        ShowCursorTip "뒤로 (VSCode)"
+        Send "!{Left}"
         return
     }
 
@@ -78,8 +99,15 @@ ShowCursorTip(msg, t := 400) {
 {
     ; Visual Studio
     if WinActive("ahk_exe devenv.exe") {
-        ShowCursorTip "앞으로"
+        ShowCursorTip "앞으로 (VS)"
         Send "^+-"
+        return
+    }
+
+    ; [추가] VS Code
+    if WinActive("ahk_exe code.exe") {
+        ShowCursorTip "앞으로 (VSCode)"
+        Send "!{Right}"
         return
     }
 

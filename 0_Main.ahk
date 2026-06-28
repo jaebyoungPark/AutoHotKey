@@ -6,6 +6,19 @@
 ; [공용 함수]  - MediaSpeed.ahk, 1_CompileAndSave.ahk, 안쓰는게 좋음. 활성화 여부를 보장하기 어려워서 마우스클릭으로 명시적 활성화하는게 나음 
 ; ==========================================================================
 
+; Unreal Engine 활성 판별 함수
+
+IsUnrealActive() {
+    return (
+           WinActive("ahk_exe UE4Editor.exe")
+        || WinActive("ahk_exe UnrealEditor.exe")
+        || WinActive("ahk_exe UnrealEditorFortnite-Win64-Shipping.exe") ; UEFN 실행 파일 추가
+        || InStr(WinGetTitle("A"), "Unreal Editor")
+        || InStr(WinGetTitle("A"), "Unreal Editor for Fortnite")       ; UEFN 타이틀 추가
+        || WinActive("ahk_class UnrealWindow")                         ; 요청하신 ahk_class (기존과 동일)
+    )
+}
+
 
  MouseOverExe(exeName)
  {
@@ -36,6 +49,9 @@
      }
  }
 
+; 개발 환경인지 체크하는 범용 함수
+IsDev() => (WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe"))
+
 ; ==========================================================================
 
 ; [전역 변수 선언] - 무조건 #Include 보다 위에 있어야 다른 파일들이 참조할 수 있습니다.
@@ -59,6 +75,15 @@ global isComboTriggered := false
 global isVirtualDown    := false ; vk15 대신 '잠금 상태'를 기억할 전역 플래그
 
 
+
+; [5] Unreal Engine 및 UEFN 특정 기능
+    ; 검사할 언리얼 에디터 프로세스 이름 목록
+    unrealExes := [
+        "UE4Editor.exe", 
+        "UnrealEditor.exe", 
+        "UnrealEditor-Win64-DebugGame.exe",
+        "UnrealEditorFortnite-Win64-Shipping.exe" ; UEFN 조건 추가
+    ]
 
 
 

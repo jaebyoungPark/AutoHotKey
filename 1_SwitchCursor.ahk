@@ -2,100 +2,10 @@
 #SingleInstance Force
 
 ; =============================
-; 전역 변수 초기화
-; =============================
-global monitor1X := 0, monitor1Y := 0
-global monitor2X := 0, monitor2Y := 0
-
-; =============================
-; Win + '  → 모니터 이동 (중앙/복원)
-; =============================
-#':: {
-    global monitor1X, monitor1Y, monitor2X, monitor2Y
-
-    monitorCount := MonitorGetCount()
-    if (monitorCount < 2) {
-        return  ; 🔥 모니터 1개면 아무 동작 안 함 (에러 방지)
-    }
-
-    CoordMode("Mouse", "Screen")
-    MouseGetPos &mouseX, &mouseY
-
-    currentMonitor := 0
-    Loop monitorCount {
-        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
-        if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
-            currentMonitor := A_Index
-            break
-        }
-    }
-    if currentMonitor = 0
-        return
-
-    ; 다음 모니터 결정
-    if currentMonitor = 1 {
-        monitor1X := mouseX
-        monitor1Y := mouseY
-        nextMonitor := 2
-    } else {
-        monitor2X := mouseX
-        monitor2Y := mouseY
-        nextMonitor := 1
-    }
-
-    MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
-
-    ; 마우스 이동
-    if nextMonitor = 2 {
-        MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
-    } else if nextMonitor = 1 {
-        if monitor1X != 0 && monitor1Y != 0
-            MouseMove(monitor1X, monitor1Y, 0)
-        else
-            MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
-    }
-}
-
-; =============================
-; Win + Numpad1 → GUI 표시 + 모니터 이동
-; =============================
-#Numpad1:: {
-    SendInput "#'"  ; 모니터 이동
-
-    Sleep 50
-
-    MouseGetPos &x, &y
-    myGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-    myGui.BackColor := "Yellow"
-    myGui.SetFont("s50 cBlack bold", "Arial")
-    myGui.Add("Text", "", "Here")
-    myGui.Show("x" . (x - 80) . " y" . (y - 30) . " NoActivate") 
-
-    SetTimer () => myGui.Destroy(), -150
-}
-
-
-
-#Requires AutoHotkey v2.0
-#SingleInstance Force
-
-; =============================
-; 모니터2 좌표 보정 설정 (전역)
-; =============================
-global mon2OffsetX := 2560
-global mon2OffsetY := 4
-global mon2ScaleX := 3880.0 / 3660.0
-global mon2ScaleY := 811.0 / 677.0
-
-global monitor1X := 0
-global monitor1Y := 0
-global monitor2X := 0
-global monitor2Y := 0
-
-; =============================
-; GUI 표시 함수
+; GUI 표시 함수 (마우스 커서 정중앙에 배치)
 ; =============================
 ShowHereGUI() {
+    CoordMode("Mouse", "Screen")
     MouseGetPos &x, &y
 
     border := 6
@@ -109,26 +19,83 @@ ShowHereGUI() {
     myGui.BackColor := "Yellow"
     myGui.SetFont("s50 cBlack bold", "Arial")
 
-    myGui.Add("Text"
-        , "x" border " y" border
-        . " w" boxW " h" boxH
-        . " BackgroundRed")
-
-    myGui.Add("Text"
-        , "x" border " y" border
-        . " w" boxW " h" boxH
-        . " Center BackgroundTrans cBlack"
-        , "Here")
+    myGui.Add("Text", "x" border " y" border " w" boxW " h" boxH " BackgroundRed")
+    myGui.Add("Text", "x" border " y" border " w" boxW " h" boxH " Center BackgroundTrans cBlack", "Here")
 
     myGui.Show("x" . (x - guiW/2) . " y" . (y - guiH/2) . " NoActivate")
-    SetTimer () => myGui.Destroy(), -100
+    SetTimer () => myGui.Destroy(), -150
 }
 
 ; =============================
-; RButton 핫키
+; 핵심: 다음 모니터 정중앙 이동 함수 (이것이 #' 의 실제 기능)
+; =============================
+MoveToNextMonitorCenter() {
+    monitorCount := MonitorGetCount()
+    if (monitorCount < 2)
+        return
+
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+
+    currentMonitor := 0
+    Loop monitorCount {
+        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+        if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
+            currentMonitor := A_Index
+            break
+        }
+    }
+    if (currentMonitor = 0)
+        return
+
+    nextMonitor := (currentMonitor = 1) ? 2 : 1
+
+    MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
+    centerX := Round(nLeft + (nRight - nLeft) / 2)
+    centerY := Round(nTop + (nBottom - nTop) / 2)
+
+    CoordMode("Mouse", "Screen")
+    MouseMove(centerX, centerY, 0)
+}
+
+; =============================
+; Win + '  → 단독 모니터 중앙 이동 핫키'''''
+; =============================
+/*
+#':: {
+    MoveToNextMonitorCenter()
+}
+*/
+; =============================
+; Win + Numpad1 → 모니터 중앙 이동 + GUI 표시
+; =============================
+#Numpad1:: {
+    MoveToNextMonitorCenter()
+    Sleep 50 
+    ShowHereGUI()
+}
+
+
+; =============================
+; Win + Page Down → 모니터 중앙 이동 + GUI 표시
+; =============================
+#PgDn:: { 
+    monitorCount := MonitorGetCount()
+    if (monitorCount < 2) {
+        ShowHereGUI()
+        return
+    }
+    MoveToNextMonitorCenter()
+    Sleep 50
+    ShowHereGUI()
+}
+
+; =============================
+; RButton 핫키 (#' 단축키 전송 버전)
 ; =============================
 $RButton:: {
     start := A_TickCount
+    CoordMode("Mouse", "Screen")
     MouseGetPos &sx, &sy
     isDrag := false
 
@@ -144,7 +111,9 @@ $RButton:: {
             break
     }
 
+    ; 우클릭 드래그 시 본래 기능 작동
     if (isDrag) {
+        CoordMode("Mouse", "Screen")
         Click "Right Down"
         KeyWait "RButton"
         Click "Right Up"
@@ -158,71 +127,9 @@ $RButton:: {
         Send "{RButton}"
     }
     else if (elapsed < 0.55) {
-
-        ; 🔥 모니터 개수 체크
-        monitorCount := MonitorGetCount()
-
-        ; 👉 싱글 모니터면 기존 동작 유지
-        if (monitorCount < 2) {
-            Send "{RButton}"
-            return
-        }
-
-        global monitor1X, monitor1Y, monitor2X, monitor2Y
-
-        CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
-
-        currentMonitor := 0
-        Loop monitorCount {
-            MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
-            if (mouseX >= mLeft && mouseX < mRight && mouseY >= mTop && mouseY < mBottom) {
-                currentMonitor := A_Index
-                break
-            }
-        }
-        if currentMonitor = 0
-            return
-
-        ; 다음 모니터 결정
-        if currentMonitor = 1 {
-            monitor1X := mouseX
-            monitor1Y := mouseY
-            nextMonitor := 2
-        } else {
-            monitor2X := mouseX
-            monitor2Y := mouseY
-            nextMonitor := 1
-        }
-
-        MonitorGet(nextMonitor, &nLeft, &nTop, &nRight, &nBottom)
-
-        ; 마우스 이동
-        if nextMonitor = 2 {
-            MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
-        } else if nextMonitor = 1 {
-            if monitor1X != 0 && monitor1Y != 0
-                MouseMove(monitor1X, monitor1Y, 0)
-            else
-                MouseMove(nLeft + (nRight - nLeft)/2, nTop + (nBottom - nTop)/2, 0)
-        }
+        ; 👉 함수를 호출하지 않고, 원래 의도하셨던 #' 단축키 입력을 수행합니다!
+        SendInput "#'"
+        Sleep 50
+       
     }
 }
-
-; =============================
-; Win + Page Down
-; =============================
-#PgDn:: { 
-    monitorCount := MonitorGetCount()
-
-    ; 🔥 싱글 모니터면 이동 없이 GUI만 표시
-    if (monitorCount < 2) {
-        ShowHereGUI()
-        return
-    }
-
-    SendInput "#'" 
-    Sleep 100
-    ShowHereGUI()
-}
-

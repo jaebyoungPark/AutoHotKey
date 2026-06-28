@@ -171,39 +171,42 @@ ShowCursorText(text, duration := 600)
     Send "{RButton}"
 }
 
-#HotIf WinActive("ahk_exe devenv.exe")
+; ==============================================================================
+; 🔴 [환경 추가] Visual Studio 또는 VS Code가 활성화되었을 때 작동
+; ==============================================================================
+#HotIf WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe")
 
+; Ctrl + 좌클릭 → 포커스 잡고 단어 단위 왼쪽 이동 (정의 이동 방지)
 ^LButton::
 {
-    SendEvent "{Blind}{Ctrl Up}"
-
+    SendEvent "{Blind}{Ctrl Up}"  ; Ctrl 일시 해제
     Sleep(10)
 
-    SendEvent "{LButton Down}"
+    SendEvent "{LButton Down}"    ; 포커스 클릭
     Sleep(10)
     SendEvent "{LButton Up}"
-
     Sleep(20)
 
-    SendEvent "^{Left}"
+    SendEvent "^{Left}"           ; 단어 왼쪽 이동
 }
 
+; Ctrl + 우클릭 → 포커스 잡고 단어 단위 오른쪽 이동
 ^RButton::
 {
-    SendEvent "{Blind}{Ctrl Up}"
-
+    SendEvent "{Blind}{Ctrl Up}"  ; Ctrl 일시 해제
     Sleep(10)
 
-    SendEvent "{LButton Down}"
+    SendEvent "{LButton Down}"    ; 포커스 클릭
     Sleep(10)
     SendEvent "{LButton Up}"
-
     Sleep(20)
 
-    SendEvent "{Ctrl Down}"
-    SendEvent "{Right}"
-    SendEvent "{Ctrl Up}"
+    SendEvent "^{Right}"          ; 단어 오른쪽 이동 (더 안정적인 코드로 통일)
 }
+
+#HotIf
+
+; (이하 1_Enter.ahk 중복 처리용 주석 생략)
 
 #HotIf
 ;1_Enter.ahk 에 있어서 주석처리
