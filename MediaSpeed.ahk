@@ -204,15 +204,15 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
     
     ; [2] Notepad (메모장)
     if (WinActive("ahk_exe notepad.exe") || WinActive("ahk_exe Notepad.exe") || WinActive("ahk_class Notepad")) {
-        if (elapsed < 250) {
+        if (elapsed < 200) {
             Send "^s"
             ToolTip "💾 저장 완료"
-            SetTimer(() => ToolTip(), -800)
+            SetTimer(() => ToolTip(), -500)
         }
-        else if (elapsed < 550) {
+        else if (elapsed < 600) {
             Send "^!s"
             ToolTip "📁 전체 저장"
-            SetTimer(() => ToolTip(), -800)
+            SetTimer(() => ToolTip(), -500)
         }
         return
     }
@@ -279,7 +279,7 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
     }
 
     if (isUnrealMouseOver) {
-        if (elapsed < 250) {
+        if (elapsed < 200) {
             ; 상단에서 이미 구한 mouseHwnd를 활용해 확실하게 활성화
             WinActivate("ahk_id " mouseHwnd)
 
@@ -306,12 +306,12 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
 
     ; [6] Visual Studio 저장 및 기능
     if WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe") {
-        if (elapsed < 250) {
+        if (elapsed < 200) {
             Send "^+s"
             ToolTip "전체 저장 완료 😄"
             SetTimer(() => ToolTip(), -1000)
         }
-        else if (elapsed < 550) {
+        else if (elapsed < 600) {
             ToolTip "Def"
             SetTimer(() => ToolTip(), -600)
             Send "{F12}"

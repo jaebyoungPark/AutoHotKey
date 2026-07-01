@@ -51,6 +51,7 @@
 #Include MouseHighlight.ahk
 
 #Include VC_SelectLine.ahk
+#Include ShowCornerFrame.ahk
 
 
 ;#Include OpenMemory.ahk
