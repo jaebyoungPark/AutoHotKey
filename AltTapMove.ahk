@@ -1,4 +1,5 @@
-﻿#Requires AutoHotkey v2.0
+﻿
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; ==============================
@@ -11,13 +12,19 @@ $!i:: Send "{Alt Down}{Up}"
 $!k:: Send "{Alt Down}{Down}"
 
 ; ==============================
-; 파일 탐색기 / 크롬 전용 단축키
+; 파일 탐색기 / 크롬 / VS Code 전용 단축키
 ; ==============================
 
 $!a::
 {
     if WinActive("ahk_class XamlExplorerHostIslandWindow")
         Send("{Alt Down}{Left}")
+    else if WinActive("ahk_exe Code.exe")       ; 💡 VS Code 조건
+    {
+        ToolTip("Left")                        ; 💬 문구 출력
+        Send("{Left}")
+        SetTimer(() => ToolTip(), -1000)       ; ⏱️ 1초 뒤 삭제
+    }
     else if WinActive("ahk_class Chrome_WidgetWin_1")
         Send("{Down 2}")
     else
@@ -31,7 +38,14 @@ $!d::
     {
         Send "{Alt Down}{Right}"
     }
-    ; 2. Visual Studio인 경우
+    ; 2. VS Code인 경우 💡
+    else if WinActive("ahk_exe Code.exe")
+    {
+        ToolTip("Right")                       ; 💬 문구 출력
+        Send "{Right}"
+        SetTimer(() => ToolTip(), -1000)       ; ⏱️ 1초 뒤 삭제
+    }
+    ; 3. Visual Studio인 경우
     else if WinActive("ahk_exe devenv.exe")
     {
         try focusedHwnd := ControlGetFocus("A")
@@ -44,7 +58,7 @@ $!d::
         Sleep(50) ; 단축키가 씹히지 않도록 아주 잠깐의 딜레이
         Send "!" . "d"
     }
-    ; 3. 그 외 기타 프로그램인 경우
+    ; 4. 그 외 기타 프로그램인 경우
     else
     {
         Send "!" . "d"

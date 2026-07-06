@@ -66,7 +66,7 @@ HotKeyList := [
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0",
     "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
     "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
-    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l"
+    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d"
 ]
 
 ~+F1::
