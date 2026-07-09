@@ -2,17 +2,21 @@
 #SingleInstance Force
 
 ; =========================================================
-; [MAIN LAUNCHER] - 수정 및 최적화 버전
+; [MAIN LAUNCHER] - 모든 경로 상대 경로(유연화) 완료 버전
 ; =========================================================
 
 global MainRunning := false
-MainPath := "E:\Programs\MyGits\AutoHotKey\AutoHotKey\0_Main.ahk"
+
+; [경로 유연화] 현재 실행 중인 런처와 동일한 폴더의 0_Main.ahk 지정
+MainPath := A_ScriptDir "\0_Main.ahk"
+; [경로 유연화] 스크립트 실행 폴더 내의 "Sounds" 폴더 지정
+soundDir := A_ScriptDir "\Sounds\"
 
 ; ---------------------------------------------------------
 ; ★ [자동 실행 구역] 스크립트 켜지자마자 Main을 바로 실행합니다.
 ; ---------------------------------------------------------
 if FileExist(MainPath) {
-    SoundPlay "C:\Windows\Media\notify_Amplified.wav"
+    SoundPlay soundDir "notify_Amplified.wav"
     Run MainPath
     global MainRunning := true
     ToolTip "LAUNCHER START: MAIN ON"
@@ -28,6 +32,7 @@ $F12::
 {
     global MainRunning
     global MainPath
+    global soundDir
 
     ; F12 키가 떼어질 때까지 최대 0.4초(400ms) 동안 대기합니다.
     KeyReleased := KeyWait("F12", "T0.4")
@@ -45,7 +50,7 @@ $F12::
         if (!MainRunning)
         {
             ; OFF -> ON
-            SoundPlay "C:\Windows\Media\notify_Amplified.wav"
+            SoundPlay soundDir "notify_Amplified.wav"
             Run MainPath
             MainRunning := true
 
@@ -55,8 +60,7 @@ $F12::
         else
         {
             ; ON -> OFF
-            SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav"
-            
+            SoundPlay soundDir "Windows Critical Stop_Amplified.wav"
             DetectHiddenWindows true
             SetTitleMatchMode 2
             WinClose "0_Main.ahk ahk_class AutoHotkey"

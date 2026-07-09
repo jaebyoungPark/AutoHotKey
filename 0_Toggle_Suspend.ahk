@@ -3,6 +3,7 @@
     global MySuspended, HotkeyList
     global NumSuspended, NumPadSuspended
     global NumKeyList, NumPadKeyList
+    global soundDir  ; [추가] 사운드 상대 경로 변수 전역 참조
 
     start := A_TickCount
     toggled := false
@@ -69,10 +70,11 @@
             ToolTip(MySuspended ? "🔒 Hotkey OFF" : "🔓 Hotkey ON (NumKey Active)")
             SetTimer(() => ToolTip(), -100)
 
+            ; [수정] 상대 경로가 적용된 Sounds 폴더 내부를 조준하도록 변경
             if MySuspended
-                SoundPlay("C:\Windows\Media\Windows Critical Stop_Amplified.wav", 1)
+                SoundPlay(soundDir "Windows Critical Stop_Amplified.wav", 1)
             else
-                SoundPlay("C:\Windows\Media\notify_Amplified.wav", 1)
+                SoundPlay(soundDir "notify_Amplified.wav", 1)
 
             break
         }

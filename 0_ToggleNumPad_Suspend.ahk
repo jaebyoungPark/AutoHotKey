@@ -11,34 +11,27 @@
 ; 1) NumpadDot (. on numpad)
 ; ---------------------------------------------------------
 ; - 250ms 이상 누르고 있으면:
-;     → NumPadSuspended 상태 토글
-;     → NumPadKeyList에 있는 모든 핫키 ON/OFF 전환
-;     → 상태에 따라 사운드 재생
+;      → NumPadSuspended 상태 토글
+;      → NumPadKeyList에 있는 모든 핫키 ON/OFF 전환
+;      → 상태에 따라 사운드 재생
 ;
 ; - 250ms 미만 짧게 누르면:
-;     → 실제 Numpad Dot (.) 입력 그대로 전달
+;      → 실제 Numpad Dot (.) 입력 그대로 전달
 ;
 ; ---------------------------------------------------------
 ; 2) F2
 ; ---------------------------------------------------------
 ; - 230ms 이상 누르고 있으면:
-;     → NumSuspended 상태 토글
-;     → NumKeyList에 있는 모든 핫키 ON/OFF 전환
-;     → 상태에 따라 사운드 재생
+;      → NumSuspended 상태 토글
+;      → NumKeyList에 있는 모든 핫키 ON/OFF 전환
+;      → 상태에 따라 사운드 재생
 ;
 ; - 230ms 미만 짧게 누르면:
-;     → 원래 F2 입력을 그대로 SendEvent로 전달
-;
-; ---------------------------------------------------------
-; [공통 구조]
-; ---------------------------------------------------------
-; - start := A_TickCount 로 누른 시간 측정
-; - while GetKeyState() 로 "길게 누름" 감지
-; - triggered 로 1회 실행 보장
-; - Sleep 10으로 CPU 과부하 방지
+;      → 원래 F2 입력을 그대로 SendEvent로 전달
 ; =========================================================
 
-
+; [경로 유연화] 스크립트 실행 폴더 내의 "Sounds" 폴더 지정
+soundDir := A_ScriptDir "\Sounds\"
 
 
 ; ==========================================
@@ -46,8 +39,8 @@
 ; ==========================================
 $NumpadDot::
 {
-    ; 💡 넘패드 전용 변수(NumPadSuspended)와 리스트(NumPadKeyList) 사용
-    global NumPadSuspended, NumPadKeyList
+    ; 💡 넘패드 전용 변수와 리스트, 그리고 사운드 경로 변수 참조
+    global NumPadSuspended, NumPadKeyList, soundDir
 
     start := A_TickCount
     triggered := false
@@ -71,10 +64,11 @@ $NumpadDot::
                 }
             }
 
+            ; [수정] 상대 경로가 적용된 Sounds 폴더 내부 조준
             if NumPadSuspended
-                SoundPlay "C:\Windows\Media\Windows Critical Stop_Amplified.wav"
+                SoundPlay soundDir "Windows Critical Stop_Amplified.wav"
             else
-                SoundPlay "C:\Windows\Media\notify_Amplified.wav"
+                SoundPlay soundDir "notify_Amplified.wav"
         }
 
         Sleep 10
@@ -85,11 +79,13 @@ $NumpadDot::
         Send "{NumpadDot}"
 }
 
-#Requires AutoHotkey v2.0
 
+; ==========================================
+; $*F2: 일반 숫자 키 전용 토글
+; ==========================================
 $*F2::
 {
-    global NumSuspended, NumKeyList
+    global NumSuspended, NumKeyList, soundDir
 
     start := A_TickCount
     triggered := false
@@ -112,9 +108,10 @@ $*F2::
                 }
             }
 
+            ; [수정] 상대 경로가 적용된 Sounds 폴더 내부 조준
             SoundPlay NumSuspended
-                ? "C:\Windows\Media\Windows Critical Stop_Amplified.wav"
-                : "C:\Windows\Media\notify_Amplified.wav"
+                ? soundDir "Windows Critical Stop_Amplified.wav"
+                : soundDir "notify_Amplified.wav"
         }
 
         Sleep 10

@@ -28,6 +28,12 @@ EnsureWindowActive(hwnd) {
 }
 IsDev() => (WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe"))
 
+WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd) {
+    global isVirtualDown
+    if (isVirtualDown)
+        return 1
+}
+
 ; ==========================================================================
 ; [전역 변수 선언]
 ; ==========================================================================
@@ -54,7 +60,7 @@ for key in NumPadKeyList
 
 HotKeyList := [
     "RButton", "XButton1", "XButton2", "MButton", "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton",
-    "^+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
+    "+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
     "$^1", "$^2", "^3", "^4", "+1", "+2", "+3", "+4", "8", "$^+=", "^!+p", "^!+o", "$^+a",
     "#+-", "#+=:", "#'", "+!'", "+!;", "^``", "^+``", "^SC028", "^+SC028",
     "Left", "Right", "Up", "Down", "!Left", "!Right", "!+Right", "!+Left", "^Left", "^Right", "^+Right", "^+Left",
@@ -197,11 +203,17 @@ SetTimer(UpdateStatusUI, 200)
 SetTimer(UpdateGuiPosition, 80)
 SetTimer(CheckAndSetResolution, 30000)
 SetTimer(RefreshAlwaysOnTop, 30000)
-SetTimer(WatchNumSuspendedForFrame, 300)
+; 만약 WatchNumSuspendedForFrame 함수가 다른 include 파일에 정의되어 있지 않다면 에러를 피하기 위해 주석처리하거나 유지하십시오.
+try SetTimer("WatchNumSuspendedForFrame", 300) 
 
 ; ==========================================================================
 ; [외부 애니메이션 커서(.ani) 주입 + 스크립트 종료 시 자동 복구 레이어]
 ; ==========================================================================
+; [변경점] v2 문법 안정성을 위해 문자열 형태로 등록 및 호출 순서 정돈
+; ==========================================================================
+; [외부 애니메이션 커서(.ani) 주입 + 스크립트 종료 시 자동 복구 레이어]
+; ==========================================================================
+; [수정] "ExitReleaseCursor" 문자열 대신 함수 객체 자체를 넘겨줍니다.
 OnExit(ExitReleaseCursor)
 OnMessage(0x0020, WM_SETCURSOR_INTERCEPT)
 SetTimer(WatchCursorByVirtualLock, 100)
@@ -212,9 +224,12 @@ WatchCursorByVirtualLock() {
     static prevCrossPath := ""
     targetCrossPath := ""
 
+    ; [경로 유연화] 스크립트 실행 폴더 내의 "Icon And Cursor" 폴더를 기본 경로로 지정
+    cursorDir := A_ScriptDir "\Icon And Cursor\"
+
     if MySuspended {
-        targetPath := "C:\Windows\Cursors\Suspended3.cur"
-        targetCrossPath := "C:\Windows\Cursors\Suspended3.cur"
+        targetPath := cursorDir "Suspended3.cur"
+        targetCrossPath := cursorDir "Suspended3.cur"
         if (targetPath != prevPath || targetCrossPath != prevCrossPath) {
             SetCustomCursorFile(targetPath, targetCrossPath)
             prevPath := targetPath
@@ -224,25 +239,25 @@ WatchCursorByVirtualLock() {
     }
 
     if (isVirtualDown) {
-        targetCrossPath := "C:\Windows\Cursors\Grape_cross.cur"
+        targetCrossPath := cursorDir "Grape_cross.cur"
         if (!NumSuspended && NumPadSuspended)
-            targetPath := "C:\Windows\Cursors\Grape_Red.cur"
+            targetPath := cursorDir "Grape_Red.cur"
         else if (NumSuspended && !NumPadSuspended)
-            targetPath := "C:\Windows\Cursors\Grape_Blue.cur"
+            targetPath := cursorDir "Grape_Blue.cur"
         else if (NumSuspended && NumPadSuspended)
-            targetPath := "C:\Windows\Cursors\Grape.cur"
+            targetPath := cursorDir "Grape.cur"
         else
-            targetPath := "C:\Windows\Cursors\Grape_RedAndBlue.cur"
+            targetPath := cursorDir "Grape_RedAndBlue.cur"
     } else {
-        targetCrossPath := "C:\Windows\Cursors\cross_r.cur"
+        targetCrossPath := cursorDir "cross_r.cur"
         if (!NumSuspended && NumPadSuspended)
-            targetPath := "C:\Windows\Cursors\Red.cur"
+            targetPath := cursorDir "Red.cur"
         else if (NumSuspended && !NumPadSuspended)
-            targetPath := "C:\Windows\Cursors\Blue.cur"
+            targetPath := cursorDir "Blue.cur"
         else if (NumSuspended && NumPadSuspended)
-            targetPath := "C:\Windows\Cursors\NotGrape.cur"
+            targetPath := cursorDir "NotGrape.cur"
         else
-            targetPath := "C:\Windows\Cursors\RedAndBlue.cur"
+            targetPath := cursorDir "RedAndBlue.cur"
     }
 
     if (targetPath != prevPath || targetCrossPath != prevCrossPath) {
@@ -250,12 +265,6 @@ WatchCursorByVirtualLock() {
         prevPath := targetPath
         prevCrossPath := targetCrossPath
     }
-}
-
-WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd) {
-    global isVirtualDown
-    if (isVirtualDown)
-        return 1
 }
 
 SetCustomCursorFile(fullPath, crossPath) {
@@ -272,10 +281,12 @@ SetCustomCursorFile(fullPath, crossPath) {
 
 ResetSystemCursor() {
     static regPath := "HKCU\Control Panel\Cursors"
+    cursorDir := A_ScriptDir "\Icon And Cursor\"
+    
     RegWrite("", "REG_EXPAND_SZ", regPath, "Arrow")
     RegWrite("", "REG_EXPAND_SZ", regPath, "AppStarting")
     RegWrite("", "REG_EXPAND_SZ", regPath, "IBeam")        
-    RegWrite("C:\Windows\Cursors\cross_r.cur", "REG_EXPAND_SZ", regPath, "Crosshair")
+    RegWrite(cursorDir "cross_r.cur", "REG_EXPAND_SZ", regPath, "Crosshair")
     DllCall("User32.dll\SystemParametersInfo", "UInt", 0x0057, "UInt", 0, "Ptr", 0, "UInt", 0)
 }
 
