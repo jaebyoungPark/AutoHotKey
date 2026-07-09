@@ -233,6 +233,9 @@ Numpad9:: {
 }
 
 ; Numpad9는 블렌더(Blender) 앱 전용으로 변경 (짧게: 전환 및 활성화 / 길게: 새 창 실행 시도)
+*/
+
+
 Numpad9:: {
     if KeyWait("Numpad9", "T0.27") {
         ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
@@ -244,7 +247,6 @@ Numpad9:: {
         KeyWait("Numpad9")
     }
 }
-*/
 9:: 	   OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
 
 
