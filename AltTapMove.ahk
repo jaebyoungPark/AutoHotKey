@@ -102,9 +102,20 @@ $!s::
 
 $!q::
 {
-    ToolTip("Backspace")
-    Send("{Backspace}")
-    SetTimer(() => ToolTip(), -1000)
+    ; 💡 Blender가 활성화되어 있는 경우
+    if WinActive("ahk_exe blender.exe")
+    {
+        ToolTip("Delete")
+        Send("{Delete}")
+        SetTimer(() => ToolTip(), -1000)
+    }
+    ; 그 외 기본 환경인 경우
+    else
+    {
+        ToolTip("Backspace")
+        Send("{Backspace}")
+        SetTimer(() => ToolTip(), -1000)
+    }
 }
 
 $!e::
