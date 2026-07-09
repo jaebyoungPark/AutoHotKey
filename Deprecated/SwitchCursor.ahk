@@ -33,7 +33,7 @@ RButton:: {
 
     if (elapsed < 0.20) {
         Send "{RButton}"
-    } else if (elapsed < 0.55) {
+    } else if (elapsed < 0.55) {////
         SendInput "#'"
         ; 여기까지 기존 Win+' 실행
     }

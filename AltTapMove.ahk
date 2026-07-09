@@ -3,13 +3,13 @@
 #SingleInstance Force
 
 ; ==============================
-; Alt + IJKL → Alt 유지 + 방향키
+; Alt + IJKL → Alt 유지 + 방향키 (필요하면 주석 풀기)
 ; ==============================
 
-$!j:: Send "{Alt Down}{Left}"
-$!l:: Send "{Alt Down}{Right}"
-$!i:: Send "{Alt Down}{Up}"
-$!k:: Send "{Alt Down}{Down}"
+;$!j:: Send "{Alt Down}{Left}"
+;$!l:: Send "{Alt Down}{Right}"
+;$!i:: Send "{Alt Down}{Up}"
+;$!k:: Send "{Alt Down}{Down}"
 
 ; ==============================
 ; 파일 탐색기 / 크롬 / VS Code 전용 단축키

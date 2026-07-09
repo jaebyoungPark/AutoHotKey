@@ -11,9 +11,12 @@ global unrealExes
 ; ==============================================================================
 ; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
 ; ==============================================================================
+; ==============================================================================
+; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
+; ==============================================================================
 ^!+p::
 {
-global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
+    global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
     start := A_TickCount
     
     ; ⚡ 반응성 개선: 200ms 동안만 P 키가 떼어지기를 기다립니다 (블로킹 방지)
@@ -29,11 +32,13 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
     }
 
     ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
+    ; (Udemy, YouTube와 함께 블렌더 환경도 가상 잠금 토글에서 제외되도록 처리)
     if (
         elapsed < 200
         && isReleased
         && !InStr(title, "Udemy")
         && !InStr(title, "YouTube")
+        && !InStr(title, "블렌더")
     ) {
         ToggleVirtualLock()
         return
@@ -47,7 +52,16 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
         }
     }
 
-    ; [2] YouTube (마우스 위치 창 활성화 로직 반영)
+    ; [2] 블렌더 학습 페이지 추가 (Chrome 등에서 '블렌더' 타이틀 감지 시)
+    if InStr(title, "블렌더") {
+        EnsureWindowActive(mouseHwnd)
+        ToolTip "▶ Speed Up (Blender)"
+        SetTimer(() => ToolTip(), -700)
+        SendInput "+."
+        return
+    }
+
+    ; [3] YouTube (마우스 위치 창 활성화 로직 반영)
     if InStr(title, "YouTube") {
         EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up"
@@ -56,8 +70,7 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
         return
     }
     
-    
-    ; [3] Udemy (마우스 위치 창 활성화 로직 반영)
+    ; [4] Udemy (마우스 위치 창 활성화 로직 반영)
     if InStr(title, "Udemy") {
         EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up"
@@ -66,7 +79,7 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
         return
     }
 
-    ; [4] Visual Studio 특정 기능
+    ; [5] Visual Studio 특정 기능
     if WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe") {
         if (elapsed >= 200 && elapsed < 550) {
             ToolTip "Header"
@@ -77,7 +90,7 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
     }
     
 
-    ; [5] Unreal Engine 특정 기능 (Content Drawer 열기)
+    ; [6] Unreal Engine 특정 기능 (Content Drawer 열기)
     isUnrealMouseOver := false
     for exe in unrealExes {
         if MouseOverExe(exe) {
@@ -99,7 +112,6 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
         }
     }
 }
-
 
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
 ToggleVirtualLock() {
@@ -183,9 +195,12 @@ ShowDebug(message) {
 ; ==============================
 ; 4. Ctrl+Alt+Shift+O 구역
 ; ==============================
+; ==============================
+; 4. Ctrl+Alt+Shift+O 구역
+; ==============================
 ^!+o::
 {
-global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
+    global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
     global magnifierOn1
     start := A_TickCount
     KeyWait "o"
@@ -219,6 +234,7 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
 
     ; [3] Chrome
     if WinActive("ahk_exe chrome.exe") {
+        ; 돋보기 토글 기능 (시간 조건이 맞을 때 최우선 처리)
         if (elapsed >= 200 && elapsed < 600) {
             magnifierOn1 := !magnifierOn1
             if (magnifierOn1) {
@@ -241,7 +257,15 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
             mouseTitle := ""
         }
 
-        if InStr(mouseTitle, "YouTube") {
+        ; 🌟 [블렌더 분기 추가] 마우스 아래 창 타이틀에 '블렌더'가 포함된 경우
+        if InStr(mouseTitle, "블렌더") {
+            EnsureWindowActive(mouseHwnd)
+            ToolTip "◀ Speed Down (Blender)"
+            SetTimer(() => ToolTip(), -700)
+            SendInput "+,"  ; Shift + , 수행
+            return
+        }
+        else if InStr(mouseTitle, "YouTube") {
             EnsureWindowActive(mouseHwnd)
             ToolTip "◀ Speed Down"
             SetTimer(() => ToolTip(), -700)
@@ -319,7 +343,6 @@ global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로
         return
     }
 }
-
 ; ==============================================================================
 ; 5. Udemy 전용 단축키 (선호 버전 2 적용)
 ; ==============================================================================
