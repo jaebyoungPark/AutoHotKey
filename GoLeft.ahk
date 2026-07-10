@@ -45,6 +45,6 @@
     ; [2] 250ms ~ 1000ms 사이로 길게 눌렀을 때
     else if (elapsed <= 1000)
     {
-        SendInput "^#{/}"
+        SendInput "^#{/}" ;디스플레이퓨전 윈도우 이동 최대화
     }
 }

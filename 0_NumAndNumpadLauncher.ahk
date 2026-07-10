@@ -167,12 +167,39 @@ IsDevEnvironment() => (WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe 
 ; ==================================================
 ; 단축키 매핑 (프로그램 및 웹사이트)
 ; ==================================================
+/*
 ;Numpad1:: ActivateOrCycleEx("Unreal Editor ahk_exe i)UnrealEditor", , false)
 ;1::        ActivateOrCycleEx("Unreal Editor ahk_exe i)UnrealEditor", , false)
 
 ; 꺼져 있으면 일반 언리얼 엔진 실행, 켜져 있으면 일반/UEFN 구분 없이 'UnrealWindow' 클래스 창 활성화
 Numpad1:: ActivateOrCycleEx("ahk_exe i)(UnrealEditor\.exe|UnrealEditorFortnite-Win64-Shipping\.exe) ahk_class UnrealWindow", "com.epicgames.launcher://apps/9d2d0eb64d5c44529c1d113066a2cb7b?action=launch&silent=true", false)
 1::       ActivateOrCycleEx("ahk_exe i)(UnrealEditor\.exe|UnrealEditorFortnite-Win64-Shipping\.exe) ahk_class UnrealWindow", "com.epicgames.launcher://apps/9d2d0eb64d5c44529c1d113066a2cb7b?action=launch&silent=true", false)
+*/
+
+Numpad1:: {
+    if KeyWait("Numpad9", "T0.27") {
+        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
+        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
+        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+    } else {
+        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
+        Run("blender.exe")
+        KeyWait("Numpad9")
+    }
+}
+ 1:: 	   {
+    if KeyWait("Numpad9", "T0.27") {
+        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
+        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
+        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+    } else {
+        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
+        Run("blender.exe")
+        KeyWait("Numpad9")
+    }
+}
+
+
 
 ; --- VS Code 중복 실행 완벽 차단 버전 ---
 Numpad2:: VSCodeSmartLauncher()
@@ -233,6 +260,9 @@ Numpad9:: {
 }
 
 ; Numpad9는 블렌더(Blender) 앱 전용으로 변경 (짧게: 전환 및 활성화 / 길게: 새 창 실행 시도)
+
+9:: 	   OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
+
 */
 
 
@@ -247,8 +277,17 @@ Numpad9:: {
         KeyWait("Numpad9")
     }
 }
-9:: 	   OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
-
+ 9:: 	   {
+    if KeyWait("Numpad9", "T0.27") {
+        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
+        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
+        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+    } else {
+        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
+        Run("blender.exe")
+        KeyWait("Numpad9")
+    }
+}
 
 
 
