@@ -2,7 +2,7 @@
 TargetDir := "E:\Programs\MyGits\AutoHotKey\AutoHotKey"
 
 ; 🔍 찾고 싶은 키워드
-kw := "basic" 
+kw := "tab"
 
 ; 파워쉘 문자열 내에서 홑따옴표(')가 충돌하지 않도록 두 개('')로 치환하여 이스케이프 처리합니다. ★핵심
 safeKw := StrReplace(kw, "'", "''")

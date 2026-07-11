@@ -34,6 +34,48 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd) {
         return 1
 }
 
+/**
+ * 마우스를 현재 모니터 중앙으로 이동시킨 후 매크로( Win+' 입력 및 클릭 )를 실행하는 함수
+ */
+CenterMouseAndExecuteMacro() {
+    ; 마우스 좌표 기준을 전체 화면(모니터 기준)으로 설정
+    CoordMode "Mouse", "Screen"
+
+    ; 1. 현재 마우스가 위치한 모니터 번호 가져오기
+    currentMonitor := MonitorGetFromMouse()
+    
+    ; 2. 해당 모니터의 상/하/좌/우 모든 경계 좌표 가져오기
+    MonitorGet(currentMonitor, &left, &top, &right, &bottom)
+    
+    ; 3. 좌우 길이의 절반(X) 및 위아래 길이의 절반(Y) 계산
+    centerX := left + (right - left) / 2
+    centerY := top + (bottom - top) / 2
+    
+    ; 4. Integer() 함수를 사용해 소수점을 버리고 정수로 변환하여 API 호출
+    DllCall("SetCursorPos", "int", Integer(centerX), "int", Integer(centerY))
+    
+    ; 5. 기존 #' 단축키 실행 및 클릭
+    SendInput "#'"
+    Sleep 20
+    Click
+}
+
+/**
+ * 현재 마우스 커서가 위치한 모니터 번호를 반환하는 내부 함수
+ */
+MonitorGetFromMouse() {
+    CoordMode "Mouse", "Screen"
+    MouseGetPos &mx, &my
+    
+    loop MonitorGetCount() {
+        MonitorGet A_Index, &l, &t, &r, &b
+        if (mx >= l && mx <= r && my >= t && my <= b)
+            return A_Index
+    }
+    return 1
+}
+
+
 ; ==========================================================================
 ; [전역 변수 선언]
 ; ==========================================================================
@@ -72,7 +114,8 @@ HotKeyList := [
     "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0",
     "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
     "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
-    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d"
+    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d",
+    "Backspace", "Tab"
 ]
 
 ~+F1::

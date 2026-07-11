@@ -52,6 +52,8 @@
 
 #Include VC_SelectLine.ahk
 #Include ShowCornerFrame.ahk
+#Include Blender_Backspace.ahk
+;#Include Blender_Tap_SwitchCursor.ahk
 
 
 ;#Include OpenMemory.ahk

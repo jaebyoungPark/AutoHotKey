@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\OpenWithNotepad]
+@="메모장으로 열기"
+"Icon"="%SystemRoot%\\System32\\notepad.exe"
+
+[HKEY_CLASSES_ROOT\*\shell\OpenWithNotepad\command]
+@="notepad.exe \"%1\""

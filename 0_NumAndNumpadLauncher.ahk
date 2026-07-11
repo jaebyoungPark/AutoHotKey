@@ -162,75 +162,53 @@ MoveMouseToOtherMonitor() {
     SetTimer () => ToolTip(), -120
 }
 
-; 개발 환경 판별 함수 (VS Code 조건인 code.exe 추가 완료)
+; 개발 환경 판별 함수
 IsDevEnvironment() => (WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe UnrealEditor.exe") || WinActive("ahk_exe UnrealEditorFortnite-Win64-Shipping.exe") || InStr(WinGetTitle("A"), "Unreal Editor") || WinActive("ahk_class UnrealWindow") || WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe code.exe"))
+
 ; ==================================================
 ; 단축키 매핑 (프로그램 및 웹사이트)
 ; ==================================================
-/*
-;Numpad1:: ActivateOrCycleEx("Unreal Editor ahk_exe i)UnrealEditor", , false)
-;1::        ActivateOrCycleEx("Unreal Editor ahk_exe i)UnrealEditor", , false)
 
-; 꺼져 있으면 일반 언리얼 엔진 실행, 켜져 있으면 일반/UEFN 구분 없이 'UnrealWindow' 클래스 창 활성화
-Numpad1:: ActivateOrCycleEx("ahk_exe i)(UnrealEditor\.exe|UnrealEditorFortnite-Win64-Shipping\.exe) ahk_class UnrealWindow", "com.epicgames.launcher://apps/9d2d0eb64d5c44529c1d113066a2cb7b?action=launch&silent=true", false)
-1::       ActivateOrCycleEx("ahk_exe i)(UnrealEditor\.exe|UnrealEditorFortnite-Win64-Shipping\.exe) ahk_class UnrealWindow", "com.epicgames.launcher://apps/9d2d0eb64d5c44529c1d113066a2cb7b?action=launch&silent=true", false)
-*/
-
+; --- 블렌더 단축키 (오타 및 무한대기 버그 수정 완료) ---
 Numpad1:: {
-    if KeyWait("Numpad9", "T0.27") {
-        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
-        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
+    if KeyWait("Numpad1", "T0.27") {  ; Numpad1로 수정
         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
     } else {
-        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
         Run("blender.exe")
-        KeyWait("Numpad9")
-    }
-}
- 1:: 	   {
-    if KeyWait("Numpad9", "T0.27") {
-        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
-        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
-        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
-    } else {
-        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
-        Run("blender.exe")
-        KeyWait("Numpad9")
+        KeyWait("Numpad1")            ; Numpad1로 수정
     }
 }
 
+1:: {
+    if KeyWait("1", "T0.27") {         ; 1로 수정
+        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+    } else {
+        Run("blender.exe")
+        KeyWait("1")                  ; 1로 수정
+    }
+}
 
-
-; --- VS Code 중복 실행 완벽 차단 버전 ---
+; --- VS Code 스마트 러처 ---
 Numpad2:: VSCodeSmartLauncher()
 2::        VSCodeSmartLauncher()
 
 VSCodeSmartLauncher() {
-    ; 1. 대소문자 구분 없이 code.exe 프로세스가 켜져 있는지 확인
     if ProcessExist("Code.exe") || ProcessExist("code.exe") {
-        ; 2. 그 중 '눈에 보이는(투명하거나 숨겨지지 않은) 진짜 창'이 있는지 검사
         if hwnd := WinExist("ahk_exe Code.exe") {
-            ; 창이 최소화되어 있다면 복구
             if (WinGetMinMax("ahk_id " hwnd) = -1)
                 WinRestore("ahk_id " hwnd)
-            
-            ; 창 활성화 후 종료 (새 창 실행 안 함)
             WinActivate("ahk_id " hwnd)
             return
         }
     }
-    
-    ; 3. 프로세스도 없고 눈에 보이는 창도 없다면 그제서야 새로 실행
     Run("cmd.exe /c start /b code", , "Hide")
 }
-; -----------------------------------------
 
-;Numpad3:: OpenSite("Numpad3", "Udemy", "https://www.udemy.com/home/my-courses/learning/")
-;3::        OpenSite("3", "Udemy", "https://www.udemy.com/home/my-courses/learning/")
-
+; --- 인프런 학습 페이지 ---
 Numpad3:: OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
 3::        OpenSite("3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
 
+; --- 웹사이트 모음 ---
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
 4::        OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
 Numpad5:: OpenSite("Numpad5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
@@ -240,7 +218,7 @@ Numpad6:: OpenSite("Numpad6", "YouTube", "https://www.youtube.com/")
 Numpad7:: OpenSite("Numpad7", "GOOGLE|구글", "https://www.google.com/")
 7::        OpenSite("7", "GOOGLE|구글", "https://www.google.com/")
 
-; 사진(짧게) / 메모장(길게) 복합 단축키
+; --- 사진 / 메모장 복합 키 ---
 Numpad8:: {
     if KeyWait("Numpad8", "T0.27") ? ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true) : ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", true)
         KeyWait("Numpad8")
@@ -250,57 +228,38 @@ Numpad8:: {
         KeyWait("8")
 }
 
-
-/*
-Numpad9:: {
-    if KeyWait("Numpad9", "T0.27")
-        Run 'chrome.exe --new-window'
-    else
-        OpenSite("Numpad9", "Daum|다음", "https://www.daum.net/"), KeyWait("Numpad9")
-}
-
-; Numpad9는 블렌더(Blender) 앱 전용으로 변경 (짧게: 전환 및 활성화 / 길게: 새 창 실행 시도)
-
-9:: 	   OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
-
-*/
-
-
+; --- 블렌더 Numpad9 / 9 영역 ---
 Numpad9:: {
     if KeyWait("Numpad9", "T0.27") {
-        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
-        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
     } else {
-        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
         Run("blender.exe")
         KeyWait("Numpad9")
     }
 }
- 9:: 	   {
-    if KeyWait("Numpad9", "T0.27") {
-        ; 켜져 있으면 대소문자 구분 없이 blender.exe 프로세스의 GHOST_WindowClass 창을 활성화/사이클
-        ; 꺼져 있으면 blender.exe 명령어로 프로그램 실행 (환경변수에 blender 등록 기준, 안 켜질 경우 전체 절대경로 입력 필요)
+9:: {
+    if KeyWait("9", "T0.27") {
         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
     } else {
-        ; 꾹 누르고 있으면 무조건 새 블렌더 창 실행 시도
         Run("blender.exe")
-        KeyWait("Numpad9")
+        KeyWait("9")
     }
 }
-
-
-
-
 
 NumLock:: OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
-NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
+;NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
+$NumpadAdd:: 
+{
+    ToolTip("NumpadAdd 단축키가 인식되었습니다! 함수를 실행합니다.")
+    SetTimer(() => ToolTip(), -2000) ; 툴팁이 무한정 떠있지 않게 2초 뒤 삭제 추가
+    CenterMouseAndExecuteMacro()
+}
+
 F3::         OpenSite("F3", "Claude", "https://claude.ai/")
 NumpadSub:: OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
 F4::         OpenSite("F4", "Gemini", "https://gemini.google.com/")
 
-
-; 최소화(짧게) / 전체화면(길게)
+; 최소화 / 전체화면
 Numpad0:: {
     if KeyWait("Numpad0", "T0.27")
         WinMinimize("A")
@@ -308,7 +267,7 @@ Numpad0:: {
         Send("{F11}"), KeyWait("Numpad0")
 }
 
-; NumpadDiv (나누기 키) 복합 기능
+; NumpadDiv 복합 기능
 NumpadDiv:: {
     if WinActive("ahk_exe ChatGPT.exe")
         return Send("{Up 2}")
@@ -324,7 +283,7 @@ NumpadDiv:: {
         MoveMouseToOtherMonitor(), KeyWait("NumpadDiv")
 }
 
-; NumpadMult (곱하기 키) 복합 기능
+; NumpadMult 복합 기능
 NumpadMult:: {
     if WinActive("ahk_exe ChatGPT.exe")
         return Send("{Down 2}")

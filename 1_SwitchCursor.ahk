@@ -128,7 +128,7 @@ $RButton:: {
     }
     else if (elapsed < 0.55) {
         ; 👉 함수를 호출하지 않고, 원래 의도하셨던 #' 단축키 입력을 수행합니다!
-        SendInput "#'"
+        SendInput "#'" ;디스플레이퓨전 마우스 커서 위치 설정
         Sleep 50
        
     }
