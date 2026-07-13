@@ -6,15 +6,13 @@ ShowCtrl2Tip(msg)
     SetTimer () => ToolTip(), -700
 }
 
+; -----------------------------------------------------------------
+; 활성 창이 Visual Studio('devenv.exe')이면서, 동시에 블렌더가 아닐 때만 작동
+; -----------------------------------------------------------------
+#HotIf WinActive("ahk_exe devenv.exe") and !WinActive("ahk_exe blender.exe")
+
 $^2::
 {
-    ; Visual Studio 아닐 때 → 기본 Ctrl+2
-    if !WinActive("ahk_exe devenv.exe")
-    {
-        Send "^2"
-        return
-    }
-
     start := A_TickCount
     KeyWait "2"
     elapsed := (A_TickCount - start) / 1000.0
@@ -37,3 +35,5 @@ $^2::
         return
     }
 }
+
+#HotIf ; HotIf 조건 초기화

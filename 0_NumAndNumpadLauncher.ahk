@@ -255,7 +255,18 @@ $NumpadAdd::
     CenterMouseAndExecuteMacro()
 }
 
-F3::         OpenSite("F3", "Claude", "https://claude.ai/")
+; --- F3 단축키 수정 (중복 에러 해결 버전) ---
+$F3:: {
+    ; 현재 창이 블렌더인 경우
+    if WinActive("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass") {
+        ; $ 접두사 덕분에 이 Send("{F3}")은 이 단축키를 다시 트리거하지 않고 
+        ; 블렌더 프로그램 내부로 순수하게 전달됩니다.
+        Send("{F3}") 
+    } else {
+        ; 블렌더가 아닐 때는 기존처럼 Claude 사이트를 엽니다.
+        OpenSite("F3", "Claude", "https://claude.ai/")
+    }
+}
 NumpadSub:: OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
 F4::         OpenSite("F4", "Gemini", "https://gemini.google.com/")
 

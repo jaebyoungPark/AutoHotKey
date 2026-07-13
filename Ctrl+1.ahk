@@ -1,11 +1,12 @@
 ﻿#Requires AutoHotkey v2
 
+; -----------------------------------------------------------------
+; 활성 창이 Visual Studio('devenv.exe')이면서, 동시에 블렌더가 아닐 때만 작동
+; -----------------------------------------------------------------
+#HotIf WinActive("ahk_exe devenv.exe") and !WinActive("ahk_exe blender.exe")
+
 $^1::
 {
-    ; Visual Studio에서만 동작
-    if !WinActive("ahk_exe devenv.exe")
-        return
-
     StartTime := A_TickCount
     KeyWait "1"
     Elapsed := (A_TickCount - StartTime) / 1000.0
@@ -26,3 +27,5 @@ $^1::
         Send "{Left 4}"
     }
 }
+
+#HotIf ; HotIf 조건 초기화

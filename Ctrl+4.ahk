@@ -1,5 +1,4 @@
-﻿
-#Requires AutoHotkey v2.0
+﻿#Requires AutoHotkey v2.0
 
 ; =========================================================================
 ; [필수] 독립 실행을 위해 스크립트 최상단에 그룹 등록
@@ -7,14 +6,13 @@
 GroupAdd "UnrealEnvironments", "ahk_exe UnrealEditor.exe"
 GroupAdd "UnrealEnvironments", "ahk_class UnrealWindow"
 
-; *Editor 의 Zoom -2여도 되고 -3이어도 되는데 언제 되는지 잘모르겠음  
+; -----------------------------------------------------------------
+; 언리얼 환경 그룹이 활성화되어 있으면서, 동시에 블렌더가 아닐 때만 아래 핫키 활성화
+; -----------------------------------------------------------------
+#HotIf WinActive("ahk_group UnrealEnvironments") and !WinActive("ahk_exe blender.exe")
 
 ^4::  ; Ctrl + 4
 {
-    ; 등록된 언리얼 환경 그룹 중 하나라도 활성화되어 있지 않으면 작동 안 함
-    if !WinActive("ahk_group UnrealEnvironments")
-        return
-
     ; ------------------------------
     ; 1. "print s" 입력 후 Enter
     ; ------------------------------
@@ -81,3 +79,5 @@ GroupAdd "UnrealEnvironments", "ahk_class UnrealWindow"
     Send "{Left 3}"
     Sleep 100
 }
+
+#HotIf ; HotIf 조건 초기화

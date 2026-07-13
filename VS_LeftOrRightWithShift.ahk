@@ -1,4 +1,5 @@
-﻿#Requires AutoHotkey v2.0
+﻿
+#Requires AutoHotkey v2.0
 
 ShowMoveTip(msg) {
     ToolTip msg
@@ -25,6 +26,11 @@ GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
 
     return steps
 }
+
+; ==============================================================================
+; 윈도우 타이틀 조건 설정: 활성화된 창이 비주얼 스튜디오(devenv.exe)일 때만 작동
+; ==============================================================================
+#HotIf WinActive("ahk_exe devenv.exe")
 
 ; ==============================
 ; Shift + Alt + Mouse Left
@@ -133,3 +139,8 @@ GetMoveSteps(elapsed, minElapsed, maxElapsed, minSteps, maxSteps)
     Loop steps
         Send "!+{Right}"
 }
+
+; ==============================================================================
+; 조건 해제 (이 아래에 추가되는 단축키는 모든 창에서 기본 작동)
+; ==============================================================================
+#HotIf

@@ -1,144 +1,32 @@
-﻿
-#Requires AutoHotkey v2.0
-#SingleInstance Force
-
-; ==============================
-; Alt + IJKL → Alt 유지 + 방향키 (필요하면 주석 풀기)
-; ==============================
-
-;$!j:: Send "{Alt Down}{Left}"
-;$!l:: Send "{Alt Down}{Right}"
-;$!i:: Send "{Alt Down}{Up}"
-;$!k:: Send "{Alt Down}{Down}"
-
-; ==============================
-; 파일 탐색기 / 크롬 / VS Code 전용 단축키
-; ==============================
-
-$!a::
+﻿$!a::
 {
-    if WinActive("ahk_class XamlExplorerHostIslandWindow")
-        Send("{Alt Down}{Left}")
-    else if WinActive("ahk_exe Code.exe")       ; 💡 VS Code 조건
-    {
-        ToolTip("Left")                        ; 💬 문구 출력
-        Send("{Left}")
-        SetTimer(() => ToolTip(), -1000)       ; ⏱️ 1초 뒤 삭제
-    }
-    else if WinActive("ahk_class Chrome_WidgetWin_1")
-        Send("{Down 2}")
-    else
-        Send("{Enter}")
-}
-
-$!d::
-{
-    ; 1. 파일 탐색기인 경우
-    if WinActive("ahk_class XamlExplorerHostIslandWindow")
-    {
-        Send "{Alt Down}{Right}"
-    }
-    ; 2. VS Code인 경우 💡
-    else if WinActive("ahk_exe Code.exe")
-    {
-        ToolTip("Right")                       ; 💬 문구 출력
-        Send "{Right}"
-        SetTimer(() => ToolTip(), -1000)       ; ⏱️ 1초 뒤 삭제
-    }
-    ; 3. Visual Studio인 경우
-    else if WinActive("ahk_exe devenv.exe")
-    {
-        try focusedHwnd := ControlGetFocus("A")
-        if !focusedHwnd
-            focusedHwnd := WinGetID("A")
-        
-        ; 💡 한/영 키를 누르는 게 아니라 시스템 레벨에서 영문 모드로 '강제 고정'합니다.
-        SetEnglishMode(focusedHwnd)
-        
-        Sleep(50) ; 단축키가 씹히지 않도록 아주 잠깐의 딜레이
-        Send "!" . "d"
-    }
-    ; 4. 그 외 기타 프로그램인 경우
-    else
-    {
-        Send "!" . "d"
-    }
-}
-
-; ==========================================================
-; 💡 IME(한영) 상태를 분석하지 않고 '무조건 영어'로 전환하는 함수
-; ==========================================================
-SetEnglishMode(hwnd) {
-    ; IME 기본 윈도우 핸들 구하기
-    hIME := DllCall("imm32\ImmGetDefaultIMEWnd", "Ptr", hwnd, "Ptr")
-    if (!hIME)
-        return
-        
-    ; 0x0283 = WM_IME_CONTROL
-    ; WParam을 0x0006 (IMC_SETCONVERSIONMODE)으로 지정하고
-    ; LParam을 0 (IME_CMODE_ALPHANUMERIC, 즉 영문)으로 던져서 강제 고정합니다.
-    DllCall("user32\SendMessage", "Ptr", hIME, "UInt", 0x0283, "UPtr", 0x0006, "Ptr", 0, "Ptr")
-}
-
-$!w::
-{
-    if WinActive("ahk_class XamlExplorerHostIslandWindow")
-        Send "{Alt Down}{Up}"
-    else if WinActive("ahk_class Chrome_WidgetWin_1")
-        Send "{Up}"
-    else
-        Send "!" . "w"
-}
-
-$!s::
-{
-    if WinActive("ahk_class XamlExplorerHostIslandWindow")
-        Send "{Alt Down}{Down}"
-    else if WinActive("ahk_class Chrome_WidgetWin_1")
-        Send "{Down}"
-    else
-        Send "!" . "s"
-}
-
-$!q::
-{
-    ; 💡 Blender가 활성화되어 있는 경우
+    ; 1. 블렌더인 경우 💡 (툴팁 띄우고 기존 동작 수행)
     if WinActive("ahk_exe blender.exe")
     {
-        ToolTip("Delete")
-        Send("{Delete}")
+        ToolTip("Blender: Alt+A")              ; 💬 블렌더 작동 안내 문구 출력
+        Send("!a")                             ; 🎬 블렌더 고유의 Alt + A 기능 실행
+        SetTimer(() => ToolTip(), -1000)       ; ⏱️ 1초 뒤 툴팁 삭제
+    }
+    ; 2. 파일 탐색기인 경우
+    else if WinActive("ahk_class XamlExplorerHostIslandWindow")
+    {
+        Send("{Alt Down}{Left}")
+    }
+    ; 3. VS Code인 경우
+    else if WinActive("ahk_exe Code.exe")
+    {
+        ToolTip("Left")
+        Send("{Left}")
         SetTimer(() => ToolTip(), -1000)
     }
-    ; 그 외 기본 환경인 경우
+    ; 4. 구글 크롬인 경우
+    else if WinActive("ahk_class Chrome_WidgetWin_1")
+    {
+        Send("{Down 2}")
+    }
+    ; 5. 그 외 기타 프로그램
     else
     {
-        ToolTip("Backspace")
-        Send("{Backspace}")
-        SetTimer(() => ToolTip(), -1000)
+        Send("{Enter}")
     }
-}
-
-$!e::
-{
-    if WinActive("ahk_class Chrome_WidgetWin_1")
-        Send "{Enter}"
-    else
-        Send "!" . "e"
-}
-
-; ==========================================
-; 💡 한글 모드 체크 함수 (v2 올바른 DllCall 타입 적용)
-; ==========================================
-IsKoreanMode(hwnd) {
-    ; IME 기본 윈도우 핸들 구하기
-    hIME := DllCall("imm32\ImmGetDefaultIMEWnd", "Ptr", hwnd, "Ptr")
-    if (!hIME)
-        return false
-        
-    ; 💡 WParam, LParam 대신 v2 규격에 맞게 "UPtr", "Ptr"로 수정했습니다.
-    ; 0x0283 = WM_IME_CONTROL, 0x0005 = IMC_GETCONVERSIONMODE
-    conversionMode := DllCall("user32\SendMessage", "Ptr", hIME, "UInt", 0x0283, "UPtr", 0x0005, "Ptr", 0, "Ptr")
-    
-    ; 결과값의 1번째 비트가 1이면 한글, 0이면 영어 모드입니다.
-    return (conversionMode & 1)
 }

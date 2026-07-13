@@ -53,8 +53,7 @@
 #Include VC_SelectLine.ahk
 #Include ShowCornerFrame.ahk
 #Include Blender_Backspace.ahk
-;#Include Blender_Tap_SwitchCursor.ahk
-
+#Include Blender_Shift+Num.ahk
 
 ;#Include OpenMemory.ahk
 
@@ -120,6 +119,7 @@
 #Include Ctrl+4.ahk
 #Include Ctrl+8.ahk
 
+
 ;#Include Ctrl+C.ahk
 
 #Include Ctrl+T.ahk
@@ -136,7 +136,7 @@
 ;======================================
 ;alt
 ;======================================
-
+#Include Alt+Q.ahk
 
 ;======================================
 ;win + 숫자

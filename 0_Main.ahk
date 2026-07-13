@@ -38,23 +38,12 @@ WM_SETCURSOR_INTERCEPT(wParam, lParam, msg, hwnd) {
  * 마우스를 현재 모니터 중앙으로 이동시킨 후 매크로( Win+' 입력 및 클릭 )를 실행하는 함수
  */
 CenterMouseAndExecuteMacro() {
-    ; 마우스 좌표 기준을 전체 화면(모니터 기준)으로 설정
     CoordMode "Mouse", "Screen"
-
-    ; 1. 현재 마우스가 위치한 모니터 번호 가져오기
     currentMonitor := MonitorGetFromMouse()
-    
-    ; 2. 해당 모니터의 상/하/좌/우 모든 경계 좌표 가져오기
     MonitorGet(currentMonitor, &left, &top, &right, &bottom)
-    
-    ; 3. 좌우 길이의 절반(X) 및 위아래 길이의 절반(Y) 계산
     centerX := left + (right - left) / 2
     centerY := top + (bottom - top) / 2
-    
-    ; 4. Integer() 함수를 사용해 소수점을 버리고 정수로 변환하여 API 호출
     DllCall("SetCursorPos", "int", Integer(centerX), "int", Integer(centerY))
-    
-    ; 5. 기존 #' 단축키 실행 및 클릭
     SendInput "#'"
     Sleep 20
     Click
@@ -66,7 +55,6 @@ CenterMouseAndExecuteMacro() {
 MonitorGetFromMouse() {
     CoordMode "Mouse", "Screen"
     MouseGetPos &mx, &my
-    
     loop MonitorGetCount() {
         MonitorGet A_Index, &l, &t, &r, &b
         if (mx >= l && mx <= r && my >= t && my <= b)
@@ -74,7 +62,6 @@ MonitorGetFromMouse() {
     }
     return 1
 }
-
 
 ; ==========================================================================
 ; [전역 변수 선언]
@@ -86,6 +73,20 @@ global magnifierOn1     := false
 global isComboTriggered := false
 global isVirtualDown    := false
 unrealExes := ["UE4Editor.exe", "UnrealEditor.exe", "UnrealEditor-Win64-DebugGame.exe", "UnrealEditorFortnite-Win64-Shipping.exe"]
+
+; ==========================================================================
+; [보라색 가상 잠금 화면 오버레이 레이어 - DPI 배율 무시 설정]
+; ==========================================================================
+; -DPIScale 옵션을 추가하여 윈도우의 125%, 150% 배율 설정을 완전히 무시하도록 합니다.
+VirtualLockGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20 +Disabled -DPIScale")
+VirtualLockGui.BackColor := "660088" 
+WinSetTransColor("FFFFFF 25", VirtualLockGui) 
+
+; 시스템 API를 직접 호출하여 배율이 적용되지 않은 "진짜 물리적 주모니터 해상도"를 강제로 획득
+global pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int") ; SM_CXSCREEN (진짜 가로 픽셀)
+global pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int") ; SM_CYSCREEN (진짜 세로 픽셀)
+global pX := 0
+global pY := 0
 
 ; ==========================================================================
 ; [인클루드 영역]
@@ -115,7 +116,7 @@ HotKeyList := [
     "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
     "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
     "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d",
-    "Backspace", "Tab"
+    "Backspace", "Tab", "!q"
 ]
 
 ~+F1::
@@ -155,12 +156,18 @@ WinSetTransColor("00FF00 120", StatusGui)
 
 CheckAndSetResolution() {
     global defaultX, defaultY, dodgeX, dodgeY, sensorX, sensorY, sensorW, sensorH
-    global guiW, guiH, pad, StatusGui, isDodged
+    global guiW, guiH, pad, StatusGui, isDodged, VirtualLockGui, isVirtualDown
+    global pW, pH, pX, pY
+    
     sw := A_ScreenWidth
     sh := A_ScreenHeight
     static prevW := 0, prevH := 0
 
     if (sw != prevW || sh != prevH) {
+        ; 해상도 변경 시에도 무스케일링 진짜 물리 픽셀 재취득
+        pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int")
+        pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int")
+
         if (sw = 2560 && sh = 1440) {
             defaultX := Floor((sw - guiW) / 1.25)
             defaultY := 80
@@ -188,6 +195,11 @@ CheckAndSetResolution() {
         isDodged := false
         if WinExist(StatusGui)
             StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+        
+        if (isVirtualDown) {
+            VirtualLockGui.Show("X" pX " Y" pY " W" pW " H" pH " NoActivate")
+        }
+        
         prevW := sw
         prevH := sh
     }
@@ -230,12 +242,17 @@ UpdateStatusUI() {
 }
 
 RefreshAlwaysOnTop() {
-    global StatusGui, MySuspended
+    global StatusGui, MySuspended, VirtualLockGui, isVirtualDown
+    global pW, pH, pX, pY
     if (MySuspended)
         return
     if WinExist(StatusGui) {
         WinSetAlwaysOnTop(False, StatusGui)
         WinSetAlwaysOnTop(True, StatusGui)
+    }
+    if (isVirtualDown && WinExist(VirtualLockGui)) {
+        WinSetAlwaysOnTop(False, VirtualLockGui)
+        WinSetAlwaysOnTop(True, VirtualLockGui)
     }
 }
 
@@ -246,31 +263,36 @@ SetTimer(UpdateStatusUI, 200)
 SetTimer(UpdateGuiPosition, 80)
 SetTimer(CheckAndSetResolution, 30000)
 SetTimer(RefreshAlwaysOnTop, 30000)
-; 만약 WatchNumSuspendedForFrame 함수가 다른 include 파일에 정의되어 있지 않다면 에러를 피하기 위해 주석처리하거나 유지하십시오.
 try SetTimer("WatchNumSuspendedForFrame", 300) 
 
 ; ==========================================================================
-; [외부 애니메이션 커서(.ani) 주입 + 스크립트 종료 시 자동 복구 레이어]
+; [외부 애니메이션 커서 주입 + 스크립트 종료 시 복구 레이어 + 보라화면 토글]
 ; ==========================================================================
-; [변경점] v2 문법 안정성을 위해 문자열 형태로 등록 및 호출 순서 정돈
-; ==========================================================================`
-; [외부 애니메이션 커서(.ani) 주입 + 스크립트 종료 시 자동 복구 레이어]
-; ==========================================================================
-; [수정] "ExitReleaseCursor" 문자열 대신 함수 객체 자체를 넘겨줍니다.
 OnExit(ExitReleaseCursor)
 OnMessage(0x0020, WM_SETCURSOR_INTERCEPT)
 SetTimer(WatchCursorByVirtualLock, 100)
 
 WatchCursorByVirtualLock() {
-    global isVirtualDown, NumSuspended, NumPadSuspended, MySuspended
+    global isVirtualDown, NumSuspended, NumPadSuspended, MySuspended, VirtualLockGui
+    global pW, pH, pX, pY
     static prevPath := ""
     static prevCrossPath := ""
+    static prevVirtualState := false 
     targetCrossPath := ""
 
-    ; [경로 유연화] 스크립트 실행 폴더 내의 "Icon And Cursor" 폴더를 기본 경로로 지정
     cursorDir := A_ScriptDir "\Icon And Cursor\"
 
+    if (isVirtualDown != prevVirtualState) {
+        if (isVirtualDown && !MySuspended) {
+            VirtualLockGui.Show("X" pX " Y" pY " W" pW " H" pH " NoActivate")
+        } else {
+            VirtualLockGui.Hide()
+        }
+        prevVirtualState := isVirtualDown
+    }
+    
     if MySuspended {
+        VirtualLockGui.Hide()
         targetPath := cursorDir "Suspended3.cur"
         targetCrossPath := cursorDir "Suspended3.cur"
         if (targetPath != prevPath || targetCrossPath != prevCrossPath) {
@@ -325,7 +347,6 @@ SetCustomCursorFile(fullPath, crossPath) {
 ResetSystemCursor() {
     static regPath := "HKCU\Control Panel\Cursors"
     cursorDir := A_ScriptDir "\Icon And Cursor\"
-    
     RegWrite("", "REG_EXPAND_SZ", regPath, "Arrow")
     RegWrite("", "REG_EXPAND_SZ", regPath, "AppStarting")
     RegWrite("", "REG_EXPAND_SZ", regPath, "IBeam")        
@@ -334,6 +355,8 @@ ResetSystemCursor() {
 }
 
 ExitReleaseCursor(ExitReason, ExitCode) {
+    global VirtualLockGui
+    VirtualLockGui.Destroy() 
     ResetSystemCursor()
     return 0 
 }

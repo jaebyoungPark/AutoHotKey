@@ -1,9 +1,9 @@
 ﻿#Requires AutoHotkey v2
 
 ; -----------------------------------------------------------------
-; 블렌더가 활성화되어 있을 때는 아래 핫키를 무시하고 '원래 가운데 클릭'으로 작동
+; 마우스 커서 아래에 있는 창이 블렌더가 아닐 때만 아래 핫키 활성화
 ; -----------------------------------------------------------------
-#HotIf !WinActive("ahk_exe blender.exe")
+#HotIf !MouseIsOver("ahk_exe blender.exe")
 
 $MButton:: {
     start := A_TickCount
@@ -45,4 +45,10 @@ $MButton:: {
     Click("M")
 }
 
-#HotIf ;HotIf 조건 초기화 (이하 다른 핫키에 영향 주지 않도록)
+#HotIf ; HotIf 조건 초기화
+
+; --- 마우스 커서 아래의 창을 감지하는 함수 ---
+MouseIsOver(WinTitle) {
+    MouseGetPos ,, &Win
+    return WinExist(WinTitle " ahk_id " Win)
+}
