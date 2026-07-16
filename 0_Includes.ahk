@@ -49,11 +49,13 @@
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
 #Include MouseHighlight.ahk
+#Include OpenHotkeyWithNotepad.ahk
 
 #Include VC_SelectLine.ahk
 #Include ShowCornerFrame.ahk
 #Include Blender_Backspace.ahk
 #Include Blender_Shift+Num.ahk
+
 
 ;#Include OpenMemory.ahk
 
