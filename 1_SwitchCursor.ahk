@@ -1,9 +1,17 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; =============================
+; ============================================================
+; [ 설정 영역 ] - 이 영역의 값만 수정하여 동작을 조절하세요!
+; ============================================================
+global CFG_DRAG_THRESHOLD := 20   ; 드래그 판정 임계값 (픽셀 단위, 손떨림 방지용. 기본: 10)
+global CFG_HOLD_MIN       := 0.20 ; 모니터 이동 인정 최소 누름 시간 (초)
+global CFG_HOLD_MAX       := 0.55 ; 모니터 이동 인정 최대 누름 시간 (초)
+global CFG_USE_DISPLAYFUSION := true ; true: DisplayFusion 단축키(Win+') 전송 / false: 순수 AHK 함수 사용
+
+; ============================================================
 ; GUI 표시 함수 (마우스 커서 정중앙에 배치)
-; =============================
+; ============================================================
 ShowHereGUI() {
     CoordMode("Mouse", "Screen")
     MouseGetPos &x, &y
@@ -26,9 +34,9 @@ ShowHereGUI() {
     SetTimer () => myGui.Destroy(), -150
 }
 
-; =============================
-; 핵심: 다음 모니터 정중앙 이동 함수 (이것이 #' 의 실제 기능)
-; =============================
+; ============================================================
+; 다음 모니터 정중앙 이동 함수
+; ============================================================
 MoveToNextMonitorCenter() {
     monitorCount := MonitorGetCount()
     if (monitorCount < 2)
@@ -58,60 +66,46 @@ MoveToNextMonitorCenter() {
     MouseMove(centerX, centerY, 0)
 }
 
-; =============================
-; Win + '  → 단독 모니터 중앙 이동 핫키'''''
-; =============================
-/*
-#':: {
-    MoveToNextMonitorCenter()
-}
-*/
-; =============================
-; Win + Numpad1 → 모니터 중앙 이동 + GUI 표시
-; =============================
-#Numpad1:: {
-    MoveToNextMonitorCenter()
-    Sleep 50 
-    ShowHereGUI()
-}
-
-
-; =============================
-; Win + Page Down → 모니터 중앙 이동 + GUI 표시
-; =============================
-#PgDn:: { 
-    monitorCount := MonitorGetCount()
-    if (monitorCount < 2) {
+; ============================================================
+; 모니터 이동 실행 함수
+; ============================================================
+ExecuteMonitorSwitch() {
+    if (CFG_USE_DISPLAYFUSION) {
+        SendInput "#'" ; DisplayFusion 단축키 전송
+        Sleep 50
+    } else {
+        MoveToNextMonitorCenter()
+        Sleep 50
         ShowHereGUI()
-        return
     }
-    MoveToNextMonitorCenter()
-    Sleep 50
-    ShowHereGUI()
 }
 
-; =============================
-; RButton 핫키 (#' 단축키 전송 버전)
-; =============================
-$RButton:: {
+; ============================================================
+; 우클릭 드래그 감지 처리 함수
+; ============================================================
+ProcessRightClick() {
     start := A_TickCount
     CoordMode("Mouse", "Screen")
     MouseGetPos &sx, &sy
     isDrag := false
 
-    ; 드래그 감지
+    ; 드래그 감지 루프
     while GetKeyState("RButton", "P") {
         Sleep 10
         MouseGetPos &cx, &cy
-        if (Abs(cx - sx) > 4 || Abs(cy - sy) > 4) {
+        
+        ; 설정된 임계값(CFG_DRAG_THRESHOLD)보다 많이 움직였는지 검사
+        if (Abs(cx - sx) > CFG_DRAG_THRESHOLD || Abs(cy - sy) > CFG_DRAG_THRESHOLD) {
             isDrag := true
             break
         }
+        
+        ; 드래그 판단 시간(200ms) 초과 시 감지 종료
         if ((A_TickCount - start) > 200)
             break
     }
 
-    ; 우클릭 드래그 시 본래 기능 작동
+    ; 1. 실제 드래그 발생 시 -> 일반 우클릭 드래그 수행
     if (isDrag) {
         CoordMode("Mouse", "Screen")
         Click "Right Down"
@@ -120,16 +114,37 @@ $RButton:: {
         return
     }
 
+    ; 버튼을 뗄 때까지 대기 및 누른 시간 측정
     KeyWait "RButton"
     elapsed := (A_TickCount - start) / 1000.0
 
-    if (elapsed < 0.20) {
+    ; 2. 짧게 클릭 시 -> 일반 우클릭
+    if (elapsed < CFG_HOLD_MIN) {
         Send "{RButton}"
     }
-    else if (elapsed < 0.55) {
-        ; 👉 함수를 호출하지 않고, 원래 의도하셨던 #' 단축키 입력을 수행합니다!
-        SendInput "#'" ;디스플레이퓨전 마우스 커서 위치 설정
-        Sleep 50
-       
+    ; 3. 지정한 시간 동안 누르고 있다가 뗀 경우 -> 모니터 이동
+    else if (elapsed >= CFG_HOLD_MIN && elapsed <= CFG_HOLD_MAX) {
+        ExecuteMonitorSwitch()
     }
+}
+
+; ============================================================
+; 핫키 설정
+; ============================================================
+$RButton::ProcessRightClick()
+
+#Numpad1:: {
+    MoveToNextMonitorCenter()
+    Sleep 50 
+    ShowHereGUI()
+}
+
+#PgDn:: { 
+    if (MonitorGetCount() < 2) {
+        ShowHereGUI()
+        return
+    }
+    MoveToNextMonitorCenter()
+    Sleep 50
+    ShowHereGUI()
 }
