@@ -205,8 +205,11 @@ VSCodeSmartLauncher() {
 }
 
 ; --- 인프런 학습 페이지 ---
-Numpad3:: OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
-3::        OpenSite("3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
+;Numpad3:: OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
+;3::        OpenSite("3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
+
+Numpad3:: OpenSite("Numpad3", "Udemy|유데미", "https://www.udemy.com/")
+3::        OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
 
 ; --- 웹사이트 모음 ---
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
@@ -228,32 +231,57 @@ Numpad8:: {
         KeyWait("8")
 }
 
+; --- 블렌더 Numpad9 / 9 영역 (주석 처리됨) ---
+; Numpad9:: {
+;     if KeyWait("Numpad9", "T0.27") {
+;         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+;     } else {
+;         Run("blender.exe")
+;         KeyWait("Numpad9")
+;     }
+; }
+; 9:: {
+;     if KeyWait("9", "T0.27") {
+;         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+;     } else {
+;         Run("blender.exe")
+;         KeyWait("9")
+;     }
+; }
+
 ; --- 블렌더 Numpad9 / 9 영역 ---
-Numpad9:: {
-    if KeyWait("Numpad9", "T0.27") {
-        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
-    } else {
-        Run("blender.exe")
-        KeyWait("Numpad9")
-    }
-}
-9:: {
-    if KeyWait("9", "T0.27") {
-        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
-    } else {
-        Run("blender.exe")
-        KeyWait("9")
-    }
-}
+Numpad9:: CenterMouseAndExecuteMacro()
+9::        CenterMouseAndExecuteMacro()
+
 
 NumLock:: OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
 ;NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
-$NumpadAdd:: 
+$NumpadAdd::
 {
-    ToolTip("NumpadAdd 단축키가 인식되었습니다! 함수를 실행합니다.")
-    SetTimer(() => ToolTip(), -2000) ; 툴팁이 무한정 떠있지 않게 2초 뒤 삭제 추가
-    CenterMouseAndExecuteMacro()
+    ; 0.2초 동안 다른 키가 눌리지 않으면 단독 입력으로 간주
+    if KeyWait("NumpadAdd", "T0.2") {
+        ;ToolTip("NumpadAdd 단축키가 인식되었습니다! 함수를 실행합니다.")
+        ;SetTimer(() => ToolTip(), -2000)
+        ;CenterMouseAndExecuteMacro()
+    } else {
+        ; 다른 키와 조합 중이면 NumpadAdd가 떼질 때까지 대기
+        KeyWait("NumpadAdd")
+    }
 }
+#HotIf GetKeyState("NumpadAdd", "P")
+Numpad0::Send "{Numpad0}"
+Numpad1::Send "{Numpad1}"
+Numpad2::Send "{Numpad2}"
+Numpad3::Send "{Numpad3}"
+Numpad4::Send "{Numpad4}"
+Numpad5::Send "{Numpad5}"
+Numpad6::Send "{Numpad6}"
+Numpad7::Send "{Numpad7}"
+Numpad8::Send "{Numpad8}"
+Numpad9::Send "{Numpad9}"
+
+#HotIf
+
 
 ; --- F3 단축키 수정 (중복 에러 해결 버전) ---
 $F3:: {

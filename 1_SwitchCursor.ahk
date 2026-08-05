@@ -4,7 +4,7 @@
 ; ============================================================
 ; [ 설정 영역 ] - 이 영역의 값만 수정하여 동작을 조절하세요!
 ; ============================================================
-global CFG_DRAG_THRESHOLD := 20   ; 드래그 판정 임계값 (픽셀 단위, 손떨림 방지용. 기본: 10)
+global CFG_DRAG_THRESHOLD := 25   ; 드래그 판정 임계값 (픽셀 단위, 손떨림 방지용. 기본: 10)
 global CFG_HOLD_MIN       := 0.20 ; 모니터 이동 인정 최소 누름 시간 (초)
 global CFG_HOLD_MAX       := 0.55 ; 모니터 이동 인정 최대 누름 시간 (초)
 global CFG_USE_DISPLAYFUSION := true ; true: DisplayFusion 단축키(Win+') 전송 / false: 순수 AHK 함수 사용

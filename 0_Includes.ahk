@@ -45,7 +45,7 @@
 #Include GoLeft.ahk
 #Include AltTapMove.ahk
 #Include SelectLine.ahk
-#Include Win+F.ahk
+
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
 #Include MouseHighlight.ahk
@@ -134,11 +134,12 @@
 #Include Ctrl+`.ahk
 #Include Ctrl+L.ahk
 
+#Include ^+W.ahk
 
 ;======================================
 ;alt
 ;======================================
-#Include Alt+Q.ahk
+;#Include Alt+Q.ahk
 
 ;======================================
 ;win + 숫자
@@ -146,4 +147,5 @@
 
 
 #Include Win+1.ahk
+#Include Win+F.ahk
 
