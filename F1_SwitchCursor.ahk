@@ -1,11 +1,6 @@
 ﻿#Requires AutoHotkey v2.0
 
-; ==================================================
-; 핫키 설정 (예: F1을 눌렀을 때 실행)
-; ==================================================
-
 $F1::
 {
-    ; 함수를 호출하여 실행합니다.
-    CenterMouseAndExecuteMacro()
+  CenterMouseAndExecuteMacro()
 }

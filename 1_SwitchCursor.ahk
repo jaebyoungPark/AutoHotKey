@@ -133,6 +133,12 @@ ProcessRightClick() {
 ; ============================================================
 $RButton::ProcessRightClick()
 
+!F1::
+{
+  ExecuteMonitorSwitch()
+
+}
+
 #Numpad1:: {
     MoveToNextMonitorCenter()
     Sleep 50 
