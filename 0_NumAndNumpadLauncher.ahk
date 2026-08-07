@@ -332,3 +332,124 @@ NumpadMult:: {
         return MoveMouseToOtherMonitor()
     Send "^{Tab}"
 }
+
+
+; ==================================================
+; [CapsLock + 알파벳 (선 토글링 후 입력) 단축키 설정]
+; ==================================================
+
+global capsComboUsed := false
+
+; 1. CapsLock 단독 입력 처리
+*CapsLock::
+{
+    global capsComboUsed := false
+    KeyWait("CapsLock") ; CapsLock 키를 뗄 때까지 대기
+    
+    ; 조합키를 사용하지 않고 단독으로 눌렀다 뗀 경우에만 대소문자 토글
+    if (!capsComboUsed) {
+        SetCapsLockState(!GetKeyState("CapsLock", "T"))
+    }
+}
+
+; 2. CapsLock 키를 누르고 있는 동안 알파벳 및 숫자 조합
+#HotIf GetKeyState("CapsLock", "P")
+
+; --- 알파벳 입력 시: CapsLock 토글을 먼저 실행 후 알파벳 입력 ---
+a::
+b::
+c::
+d::
+e::
+f::
+g::
+h::
+i::
+j::
+k::
+l::
+m::
+n::
+o::
+p::
+q::
+r::
+s::
+t::
+u::
+v::
+w::
+x::
+y::
+z:: {
+    global capsComboUsed := true
+    
+    ; 1) 실제로 CapsLock 상태를 먼저 토글링
+    SetCapsLockState(!GetKeyState("CapsLock", "T"))
+    
+    ; 2) 누른 알파벳 키 보냄 (A_ThisHotkey 사용)
+    SendInput("{Blind}" . A_ThisHotkey)
+}
+
+; --- 기존 숫자 및 넘패드 단축키 연결 ---
+1::
+Numpad1:: {
+    global capsComboUsed := true
+    ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+}
+
+2::
+Numpad2:: {
+    global capsComboUsed := true
+    VSCodeSmartLauncher()
+}
+
+3::
+Numpad3:: {
+    global capsComboUsed := true
+    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+}
+
+4::
+Numpad4:: {
+    global capsComboUsed := true
+    OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
+}
+
+5::
+Numpad5:: {
+    global capsComboUsed := true
+    OpenSite("5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
+}
+
+6::
+Numpad6:: {
+    global capsComboUsed := true
+    OpenSite("6", "YouTube", "https://www.youtube.com/")
+}
+
+7::
+Numpad7:: {
+    global capsComboUsed := true
+    OpenSite("7", "GOOGLE|구글", "https://www.google.com/")
+}
+
+8::
+Numpad8:: {
+    global capsComboUsed := true
+    OpenSite("8", "Photos", "ms-photos:")
+}
+
+9::
+Numpad9:: {
+    global capsComboUsed := true
+    CenterMouseAndExecuteMacro()
+}
+
+0::
+Numpad0:: {
+    global capsComboUsed := true
+    WinMinimize("A")
+}
+
+#HotIf

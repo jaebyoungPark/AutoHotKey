@@ -64,10 +64,11 @@ MonitorGetFromMouse() {
 }
 
 ; ==========================================================================
-; [전역 변수 선언]
+; [전역 변수 선언] 실행 시 초기 기본값 설정(suspended 가 true 이면 시작 시 활성화 안된 상태). 현재 CapsLock
+; NumSupended 는 F2, MySuspended 는 `, NumPadSuspended 는 키패드 dot 이며, 각각을 약간 누르고 있으면 자동으로 발동함.
 ; ==========================================================================
 global MySuspended      := false
-global NumSuspended      := false
+global NumSuspended      := true
 global NumPadSuspended  := true
 global magnifierOn1     := false
 global isComboTriggered := false
