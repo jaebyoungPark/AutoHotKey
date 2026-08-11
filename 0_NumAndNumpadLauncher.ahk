@@ -204,14 +204,17 @@ VSCodeSmartLauncher() {
     Run("cmd.exe /c start /b code", , "Hide")
 }
 
+;======[3, Numpad3] 하고 싶은걸로 주석 제거=========
 ; --- 인프런 학습 페이지 ---
-;Numpad3:: OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
-;3::        OpenSite("3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
+Numpad3:: OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
+3::        OpenSite("3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
 
-Numpad3:: OpenSite("Numpad3", "Udemy|유데미", "https://www.udemy.com/")
-3::        OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+;Numpad3:: OpenSite("Numpad3", "Udemy|유데미", "https://www.udemy.com/")
+;3::        OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+;==========================================
 
-; --- 웹사이트 모음 ---
+
+
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
 4::        OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
 Numpad5:: OpenSite("Numpad5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
@@ -404,11 +407,20 @@ Numpad2:: {
     VSCodeSmartLauncher()
 }
 
+/*
 3::
 Numpad3:: {
     global capsComboUsed := true
     OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
 }
+*/
+
+3::
+Numpad3:: {
+    global capsComboUsed := true
+    OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
+}
+
 
 4::
 Numpad4:: {
