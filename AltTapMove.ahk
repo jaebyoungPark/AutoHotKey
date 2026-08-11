@@ -135,27 +135,6 @@ $!s::
 }
 
 
-; ==============================
-; Alt + Q
-; ==============================
-
-$!q::
-{
-    ; 1. Blender
-    if WinActive("ahk_exe blender.exe")
-    {
-        ToolTip("Delete")
-        Send("{Delete}")
-        SetTimer(() => ToolTip(), -1000)
-    }
-    ; 2. 그 외
-    else
-    {
-        ToolTip("Backspace")
-        Send("{Backspace}")
-        SetTimer(() => ToolTip(), -1000)
-    }
-}
 
 
 ; ==============================
