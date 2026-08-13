@@ -70,6 +70,7 @@
 #Include RShift_Delete.ahk
 #Include RShift_NumPad.ahk
 ;#Include RAlt+Num.ahk
+#Include  RShift_Arrow.ahk
 
 ;======================================
 ;Visual Studio
