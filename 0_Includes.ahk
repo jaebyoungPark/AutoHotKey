@@ -69,6 +69,8 @@
 
 #Include RShift_Delete.ahk
 #Include RShift_NumPad.ahk
+#Include RShift_Arrow.ahk
+
 ;#Include RAlt+Num.ahk
 
 ;======================================

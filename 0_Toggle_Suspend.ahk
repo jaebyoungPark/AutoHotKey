@@ -15,7 +15,7 @@
         ; ==================================================
         ; 230ms 넘는 순간 즉시 토글
         ; ==================================================
-        if (!toggled && elapsed >= 230)
+        if (!toggled && elapsed >= 300)
         {
             toggled := true
 
@@ -27,7 +27,9 @@
             ; 숫자키는 전체 상태와 동기화
             ; 넘패드는 항상 비활성화
             ; ==================================================
-            NumSuspended := MySuspended
+            ;NumSuspended := MySuspended (원래코드임. 당분간 f2 토글키 안쓸거니까 다시 켜도 자동실행되지 않도록 true 바꿈)
+
+            NumSuspended := true
             NumPadSuspended := true
 
             ; UI 즉시 갱신
