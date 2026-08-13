@@ -80,49 +80,14 @@ unrealExes := ["UE4Editor.exe", "UnrealEditor.exe", "UnrealEditor-Win64-DebugGam
 ; ==========================================================================
 ; -DPIScale 옵션을 추가하여 윈도우의 125%, 150% 배율 설정을 완전히 무시하도록 합니다.
 VirtualLockGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20 +Disabled -DPIScale")
-VirtualLockGui.BackColor := "660088"
-WinSetTransColor("FFFFFF 25", VirtualLockGui)
+VirtualLockGui.BackColor := "660088" 
+WinSetTransColor("FFFFFF 25", VirtualLockGui) 
 
-global VirtualColorPhase := 0.0
-
-
-; 모든 모니터를 포함하는 가상 화면 영역
-global pX := DllCall("User32.dll\GetSystemMetrics", "Int", 76, "Int") ; SM_XVIRTUALSCREEN
-global pY := DllCall("User32.dll\GetSystemMetrics", "Int", 77, "Int") ; SM_YVIRTUALSCREEN
-global pW := DllCall("User32.dll\GetSystemMetrics", "Int", 78, "Int") ; SM_CXVIRTUALSCREEN
-global pH := DllCall("User32.dll\GetSystemMetrics", "Int", 79, "Int") ; SM_CYVIRTUALSCREEN
-
-UpdateVirtualColor() {
-    global VirtualLockGui, VirtualColorPhase, isVirtualDown, MySuspended
-
-    if (!isVirtualDown || MySuspended)
-        return
-
-    ; 속도
-    VirtualColorPhase += 0.05
-
-    ; 0~1 사이를 부드럽게 왕복
-    t := (Sin(VirtualColorPhase) + 1) / 2
-
-    ; 보라색: 66 00 88
-    r1 := 0x66
-    g1 := 0x00
-    b1 := 0x88
-
-    ; 파란색: 00 44 FF
-    r2 := 0x00
-    g2 := 0x44
-    b2 := 0xFF
-
-    r := Round(r1 + (r2 - r1) * t)
-    g := Round(g1 + (g2 - g1) * t)
-    b := Round(b1 + (b2 - b1) * t)
-
-    color := Format("{:02X}{:02X}{:02X}", r, g, b)
-
-    VirtualLockGui.BackColor := color
-}
-
+; 시스템 API를 직접 호출하여 배율이 적용되지 않은 "진짜 물리적 주모니터 해상도"를 강제로 획득
+global pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int") ; SM_CXSCREEN (진짜 가로 픽셀)
+global pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int") ; SM_CYSCREEN (진짜 세로 픽셀)
+global pX := 0
+global pY := 0
 
 ; ==========================================================================
 ; [인클루드 영역]
@@ -201,10 +166,8 @@ CheckAndSetResolution() {
 
     if (sw != prevW || sh != prevH) {
         ; 해상도 변경 시에도 무스케일링 진짜 물리 픽셀 재취득
-        pX := DllCall("User32.dll\GetSystemMetrics", "Int", 76, "Int")
-        pY := DllCall("User32.dll\GetSystemMetrics", "Int", 77, "Int")
-        pW := DllCall("User32.dll\GetSystemMetrics", "Int", 78, "Int")
-        pH := DllCall("User32.dll\GetSystemMetrics", "Int", 79, "Int")
+        pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int")
+        pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int")
 
         if (sw = 2560 && sh = 1440) {
             defaultX := Floor((sw - guiW) / 1.25)
@@ -231,8 +194,8 @@ CheckAndSetResolution() {
         sensorW := guiW + (pad * 5)
         sensorH := guiH + (pad * 1.5)
         isDodged := false
-        ;if WinExist(StatusGui)
-        ;   StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+        if WinExist(StatusGui)
+            StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
         
         if (isVirtualDown) {
             VirtualLockGui.Show("X" pX " Y" pY " W" pW " H" pH " NoActivate")
@@ -255,10 +218,10 @@ UpdateGuiPosition() {
     inZone := (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)
     if (!isDodged && inZone) {
         isDodged := true
-        ;StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
+        StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
     } else if (isDodged && !inZone) {
         isDodged := false
-        ;StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+        StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
     }
 }
 
@@ -268,13 +231,13 @@ UpdateStatusUI() {
         StatusGui.Hide()
         return
     }
-    ;StatusGui.Show("NoActivate")
+    StatusGui.Show("NoActivate")
     static prevText := ""
     strNum := NumSuspended ? "❌" : "⌨️"
     strPad := NumPadSuspended ? "❌" : "🔢"
     currentText := "[숫자]: " strNum . "    |    [넘패드]: " . strPad
     if (currentText != prevText) {
-        StatusText.Text := currentText`
+        StatusText.Text := currentText
         prevText := currentText
     }
 }
@@ -294,22 +257,13 @@ RefreshAlwaysOnTop() {
     }
 }
 
-;CheckAndSetResolution() 
-;WinSetAlwaysOnTop(True, StatusGui)
-;UpdateStatusUI()
-
-StatusGui.Hide()
-
-;=================================
-;현재 UI를 그릴 필요 없어서, 아래의 4개를 주석처리한 후 StatusGui.Hide() 를 추가하여 안보이게 해놓음. 사용하려면 역순으로 수행
-;SetTimer(UpdateStatusUI, 200)
-;SetTimer(UpdateGuiPosition, 80)
-;SetTimer(CheckAndSetResolution, 30000)
-;SetTimer(RefreshAlwaysOnTop, 30000)
-
-StatusGui.Hide()
-;=================================
-
+CheckAndSetResolution() 
+WinSetAlwaysOnTop(True, StatusGui)
+UpdateStatusUI()
+SetTimer(UpdateStatusUI, 200)
+SetTimer(UpdateGuiPosition, 80)
+SetTimer(CheckAndSetResolution, 30000)
+SetTimer(RefreshAlwaysOnTop, 30000)
 try SetTimer("WatchNumSuspendedForFrame", 300) 
 
 ; ==========================================================================
@@ -318,7 +272,6 @@ try SetTimer("WatchNumSuspendedForFrame", 300)
 OnExit(ExitReleaseCursor)
 OnMessage(0x0020, WM_SETCURSOR_INTERCEPT)
 SetTimer(WatchCursorByVirtualLock, 100)
-SetTimer(UpdateVirtualColor, 30)
 
 WatchCursorByVirtualLock() {
     global isVirtualDown, NumSuspended, NumPadSuspended, MySuspended, VirtualLockGui
