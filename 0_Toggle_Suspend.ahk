@@ -30,11 +30,11 @@
             ;NumSuspended := MySuspended (원래코드임. 당분간 f2 토글키 안쓸거니까 다시 켜도 자동실행되지 않도록 true 바꿈)
 
             NumSuspended := true
-            NumPadSuspended := true
+            NumPadSuspended := true`
 
-            ; UI 즉시 갱신 (지금 숫자, 넘패드 UI를 안쓰고 있으므로 주석처리 해놓음)
-            ;UpdateStatusUI()
-`
+            ; UI 즉시 갱신. main에 함수정의 있음
+            UpdateStatusUI() 
+
             ; ON / OFF 상태 문자열 지정
             state := MySuspended ? "Off" : "On"
             numState := NumSuspended ? "Off" : "On"

@@ -231,8 +231,8 @@ CheckAndSetResolution() {
         sensorW := guiW + (pad * 5)
         sensorH := guiH + (pad * 1.5)
         isDodged := false
-        if WinExist(StatusGui)
-            StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+        ;if WinExist(StatusGui)
+        ;   StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
         
         if (isVirtualDown) {
             VirtualLockGui.Show("X" pX " Y" pY " W" pW " H" pH " NoActivate")
@@ -255,10 +255,10 @@ UpdateGuiPosition() {
     inZone := (mouseX >= xMin && mouseX <= xMax && mouseY >= yMin && mouseY <= yMax)
     if (!isDodged && inZone) {
         isDodged := true
-        StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
+        ;StatusGui.Show("X" . dodgeX . " Y" . dodgeY . " NoActivate")
     } else if (isDodged && !inZone) {
         isDodged := false
-        StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
+        ;StatusGui.Show("X" . defaultX . " Y" . defaultY . " NoActivate")
     }
 }
 
@@ -268,13 +268,13 @@ UpdateStatusUI() {
         StatusGui.Hide()
         return
     }
-    StatusGui.Show("NoActivate")
+    ;StatusGui.Show("NoActivate")
     static prevText := ""
     strNum := NumSuspended ? "❌" : "⌨️"
     strPad := NumPadSuspended ? "❌" : "🔢"
     currentText := "[숫자]: " strNum . "    |    [넘패드]: " . strPad
     if (currentText != prevText) {
-        StatusText.Text := currentText
+        StatusText.Text := currentText`
         prevText := currentText
     }
 }
@@ -294,9 +294,11 @@ RefreshAlwaysOnTop() {
     }
 }
 
-CheckAndSetResolution() 
-WinSetAlwaysOnTop(True, StatusGui)
-UpdateStatusUI()
+;CheckAndSetResolution() 
+;WinSetAlwaysOnTop(True, StatusGui)
+;UpdateStatusUI()
+
+StatusGui.Hide()
 
 ;=================================
 ;현재 UI를 그릴 필요 없어서, 아래의 4개를 주석처리한 후 StatusGui.Hide() 를 추가하여 안보이게 해놓음. 사용하려면 역순으로 수행
