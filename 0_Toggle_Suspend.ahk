@@ -32,9 +32,9 @@
             NumSuspended := true
             NumPadSuspended := true
 
-            ; UI 즉시 갱신
-            UpdateStatusUI()
-
+            ; UI 즉시 갱신 (지금 숫자, 넘패드 UI를 안쓰고 있으므로 주석처리 해놓음)
+            ;UpdateStatusUI()
+`
             ; ON / OFF 상태 문자열 지정
             state := MySuspended ? "Off" : "On"
             numState := NumSuspended ? "Off" : "On"
