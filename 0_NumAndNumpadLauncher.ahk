@@ -39,28 +39,29 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     currentIndex := WinIndexes[searchTitle]
     activeHwnd := WinActive("A")
 
-    ; ----------------------------------------------------
-    ; CASE 2: 이미 해당 창이 활성화되어 있는 경우 (순환 또는 최소화)
+; ----------------------------------------------------
+    ; CASE 2: 이미 해당 창이 활성화되어 있는 경우
     ; ----------------------------------------------------
     if (activeHwnd = windows[currentIndex]) {
-        if (cycleTabIfSingle) {
-            if (count > 1) {
-                currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
-            } else {
-                currentTitle := WinGetTitle("A")
-                Send "^{Tab}"
-                Sleep 30
-                if (WinGetTitle("A") = currentTitle || !WinActive(searchTitle)) {
-                    if !WinActive(searchTitle) {
-                        Send "^+{Tab}"
-                        Sleep 20
-                    }
-                    WinMinimize(windows[currentIndex])
-                    return
+        if (count > 1) {
+            ; 창이 여러 개일 경우: 다음 창으로 인덱스 이동
+            currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
+        } else if (cycleTabIfSingle) {
+            ; 창이 1개이고 크롬 등 웹브라우저 탭 순환 모드일 때
+            currentTitle := WinGetTitle("A")
+            Send "^{Tab}"
+            Sleep 30
+            if (WinGetTitle("A") = currentTitle || !WinActive(searchTitle)) {
+                if !WinActive(searchTitle) {
+                    Send "^+{Tab}"
+                    Sleep 20
                 }
+                WinMinimize(windows[currentIndex])
                 return
             }
+            return
         } else {
+            ; 창이 1개이고 일반 프로그램일 때: 최소화
             WinMinimize(windows[currentIndex])
             return
         }
@@ -169,10 +170,10 @@ IsDevEnvironment() => (WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe 
 ; 단축키 매핑 (프로그램 및 웹사이트)
 ; ==================================================
 
-; --- 블렌더 단축키 (오타 및 무한대기 버그 수정 완료) ---
+; --- 블렌더 단축키 (세 번째 인자를 true로 변경) ---
 Numpad1:: {
     if KeyWait("Numpad1", "T0.27") {  ; Numpad1로 수정
-        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", true)
     } else {
         Run("blender.exe")
         KeyWait("Numpad1")            ; Numpad1로 수정
@@ -181,7 +182,7 @@ Numpad1:: {
 
 1:: {
     if KeyWait("1", "T0.27") {         ; 1로 수정
-        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+        ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", true)
     } else {
         Run("blender.exe")
         KeyWait("1")                  ; 1로 수정
@@ -344,14 +345,27 @@ NumpadMult:: {
 global capsComboUsed := false
 
 ; 1. CapsLock 단독 입력 처리
+; *CapsLock::
+; {
+;     global capsComboUsed := true
+;     KeyWait("CapsLock") ; CapsLock 키를 뗄 때까지 대기
+;     
+;     ; 조합키를 사용하지 않고 단독으로 눌렀다 뗀 경우에만 대소문자 토글
+;     if (!capsComboUsed) {
+;         SetCapsLockState(!GetKeyState("CapsLock", "T"))
+;     }
+; }
+
+
+; 1. CapsLock 단독 입력 처리 (롤/메모장 등 모든 환경 호환 버전)
 *CapsLock::
 {
-    global capsComboUsed := false
-    KeyWait("CapsLock") ; CapsLock 키를 뗄 때까지 대기
+    global capsComboUsed := false  ; ⚠️ 중요: 누를 때 false로 초기화해야 합니다!
+    KeyWait("CapsLock")           ; CapsLock 키를 뗄 때까지 대기
     
-    ; 조합키를 사용하지 않고 단독으로 눌렀다 뗀 경우에만 대소문자 토글
+    ; 조합키(알파벳/숫자 등)를 사용하지 않고 단독으로 눌렀다 뗀 경우
     if (!capsComboUsed) {
-        SetCapsLockState(!GetKeyState("CapsLock", "T"))
+        Send("{Blind}{CapsLock}")  ; 가상 상태 변경 대신 실제 CapsLock 키 신호를 송신
     }
 }
 

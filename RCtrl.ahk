@@ -28,6 +28,10 @@ DebugRightCtrlMsg(msg)
     Send "{LCtrl Down}{NumpadAdd}{LCtrl Up}"
 }
 
+\::
+{
+    DebugRightCtrlMsg("Home 입력됨")
+    Send "{Home}"
+}
 
-
-#HotIf
+#HotIf ; 조건부 핫키 영역 종료
