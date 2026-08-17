@@ -1,6 +1,9 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+; 멀티 모니터 DPI 차이로 인한 좌표 오차 방지 (Per-Monitor DPI Aware 선언)
+DllCall("SetProcessDpiAwarenessContext", "ptr", -4)
+
 CoordMode("Mouse", "Screen")
 
 applicationname := "ShowOff"
@@ -16,11 +19,15 @@ global statusOffTimer := () => StatusOff()
 InitScript()
 
 InitScript() {
+    global mainGui, textCtrl
+    global backcolor, fontcolor, fontsize, boldness, fontName
+    global statusheight, statuswidth, statusx, statusy, relative, transparency, timetoshow
+
     TRAYMENU()
     READINI()
 
-    ; GUI 생성
-    global mainGui := Gui("+Owner +AlwaysOnTop -Resize -SysMenu -MinimizeBox -MaximizeBox -Disabled -Caption -Border +ToolWindow")
+    ; -DPIScale을 추가하여 Windows 배율(150% 등)에 관계없이 절대 픽셀 좌표 사용
+    mainGui := Gui("+Owner +AlwaysOnTop -Resize -SysMenu -MinimizeBox -MaximizeBox -Disabled -Caption -Border +ToolWindow -DPIScale")
     mainGui.MarginX := 0
     mainGui.MarginY := 0
     mainGui.BackColor := backcolor
@@ -28,20 +35,30 @@ InitScript() {
     boldOpt := (boldness >= 700) ? " Bold" : ""
     mainGui.SetFont("c" . fontcolor . " s" . fontsize . boldOpt, fontName)
 
-    global textCtrl := mainGui.Add("Text", "vtext", "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
+    textCtrl := mainGui.Add("Text", "vtext", "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
 
-MonitorGetWorkArea(, &workLeft, &workTop, &workRight, &workBottom)
+    ; 현재 마우스 위치 모니터의 작업영역(픽셀) 가져오기
+    monitorIndex := GetMonitorIndexFromPoint()
+    MonitorGetWorkArea(monitorIndex, &workLeft, &workTop, &workRight, &workBottom)
 
-statusx_calc := workRight - statuswidth - 10
-statusy_calc := workBottom - statusheight - 10
+    ; Right/Bottom 기준으로 좌표 산출
+    statusx_calc := workRight - statuswidth - 10
+    statusy_calc := workBottom - statusheight - 10
 
-mainGui.Show(
-    "x" . statusx_calc
-    . " y" . statusy_calc
-    . " w" . statuswidth
-    . " h" . statusheight
-    . " NoActivate"
-)
+    ; 화면 왼쪽/위쪽 경계를 넘지 않도록 안전 제한
+    if (statusx_calc < workLeft + 10)
+        statusx_calc := workLeft + 10
+
+    if (statusy_calc < workTop + 10)
+        statusy_calc := workTop + 10
+
+    mainGui.Show(
+        "x" . statusx_calc
+        . " y" . statusy_calc
+        . " w" . statuswidth
+        . " h" . statusheight
+        . " NoActivate"
+    )
     textCtrl.Value := ""
 
     if (transparency != "Off" && IsNumber(transparency)) {
@@ -49,6 +66,19 @@ mainGui.Show(
     }
 
     SetTimer(MainLoop, 20)
+}
+
+; 현재 마우스가 위치한 모니터 번호를 반환
+GetMonitorIndexFromPoint() {
+    CoordMode("Mouse", "Screen")
+    MouseGetPos(&mx, &my)
+    monCount := MonitorGetCount()
+    Loop monCount {
+        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
+        if (mx >= mLeft && mx < mRight && my >= mTop && my < mBottom)
+            return A_Index
+    }
+    return MonitorGetPrimary()
 }
 
 MainLoop() {
@@ -60,19 +90,19 @@ MainLoop() {
         cleanKey := StrReplace(key, "`r", "")
         if (cleanKey == "")
             continue
-if (cleanKey == "AltGr"
-    || cleanKey == "Break"
-    || cleanKey == "CtrlBreak"
-    || cleanKey == "Help")
-    continue
+        if (cleanKey == "AltGr"
+            || cleanKey == "Break"
+            || cleanKey == "CtrlBreak"
+            || cleanKey == "Help")
+            continue
 
-try {
-    if GetKeyState(cleanKey, "P")
-        keys .= " " . cleanKey
-}
-catch {
-    continue
-}
+        try {
+            if GetKeyState(cleanKey, "P")
+                keys .= " " . cleanKey
+        }
+        catch {
+            continue
+        }
     }
     keys := Trim(keys)
 
@@ -128,11 +158,11 @@ READINI() {
             . "[Settings]`n"
             . "backcolor=FFFFFF`n"
             . "fontcolor=000000`n"
-            . "fontsize=20`n"
+            . "fontsize=14`n"
             . "boldness=400`n"
             . "font=Arial`n"
             . "statusheight=30`n"
-            . "statuswidth=200`n"
+            . "statuswidth=320`n"
             . "statusx=10`n"
             . "statusy=10`n"
             . "relative=1`n"
@@ -149,8 +179,8 @@ READINI() {
             "Browser_Stop", "Browser_Search", "Browser_Favorites",
             "Browser_Home", "Volume_Mute", "Volume_Down", "Volume_Up",
             "Media_Next", "Media_Prev", "Media_Stop",
-            "Media_Play_Pause", "Launch_Mail", "Launch_Media",
-            "Launch_App1", "Launch_App2"
+            "Media_Play_Pause", "Launch_Mail", "Launch_App1", "Launch_App2",
+            "Launch_Media"
         ]
 
         Loop 24
@@ -197,12 +227,12 @@ READINI() {
 
     backcolor := IniRead(inifile_path, "Settings", "backcolor", "FFFFFF")
     fontcolor := IniRead(inifile_path, "Settings", "fontcolor", "000000")
-    fontsize := Number(IniRead(inifile_path, "Settings", "fontsize", "20"))
+    fontsize := Number(IniRead(inifile_path, "Settings", "fontsize", "14"))
     boldness := Number(IniRead(inifile_path, "Settings", "boldness", "400"))
     fontName := IniRead(inifile_path, "Settings", "font", "Arial")
 
     statusheight := Number(IniRead(inifile_path, "Settings", "statusheight", "30"))
-    statuswidth := Number(IniRead(inifile_path, "Settings", "statuswidth", "200"))
+    statuswidth := Number(IniRead(inifile_path, "Settings", "statuswidth", "320"))
     statusx := Number(IniRead(inifile_path, "Settings", "statusx", "10"))
     statusy := Number(IniRead(inifile_path, "Settings", "statusy", "10"))
 
