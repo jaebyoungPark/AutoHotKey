@@ -10,7 +10,7 @@ DebugRightCtrlMsg(msg)
 ; Right Control(SC11D) 키가 눌려있는 동안 적용
 #HotIf GetKeyState("SC11D", "P")
 
-.::
+.:: 
 {
     DebugRightCtrlMsg("NumpadDel 입력됨")
     Send "{NumpadDel}"
@@ -34,4 +34,10 @@ DebugRightCtrlMsg(msg)
     Send "{Home}"
 }
 
-#HotIf ; 조건부 핫키 영역 종료
+0::
+{
+    DebugRightCtrlMsg("Numpad0 입력됨")
+    Send "{Numpad0}"
+}
+
+#HotIf

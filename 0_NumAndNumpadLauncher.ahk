@@ -39,7 +39,7 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     currentIndex := WinIndexes[searchTitle]
     activeHwnd := WinActive("A")
 
-; ----------------------------------------------------
+    ; ----------------------------------------------------
     ; CASE 2: 이미 해당 창이 활성화되어 있는 경우
     ; ----------------------------------------------------
     if (activeHwnd = windows[currentIndex]) {
@@ -170,22 +170,22 @@ IsDevEnvironment() => (WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe 
 ; 단축키 매핑 (프로그램 및 웹사이트)
 ; ==================================================
 
-; --- 블렌더 단축키 (세 번째 인자를 true로 변경) ---
+; --- 블렌더 단축키 ---
 Numpad1:: {
-    if KeyWait("Numpad1", "T0.27") {  ; Numpad1로 수정
+    if KeyWait("Numpad1", "T0.27") {
         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", true)
     } else {
         Run("blender.exe")
-        KeyWait("Numpad1")            ; Numpad1로 수정
+        KeyWait("Numpad1")
     }
 }
 
 1:: {
-    if KeyWait("1", "T0.27") {         ; 1로 수정
+    if KeyWait("1", "T0.27") {
         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", true)
     } else {
         Run("blender.exe")
-        KeyWait("1")                  ; 1로 수정
+        KeyWait("1")
     }
 }
 
@@ -205,16 +205,10 @@ VSCodeSmartLauncher() {
     Run("cmd.exe /c start /b code", , "Hide")
 }
 
-;======[3, Numpad3] 하고 싶은걸로 주석 제거=========
-; --- 인프런 학습 페이지 ---
-Numpad3:: OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
-3::        OpenSite("3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
-
-;Numpad3:: OpenSite("Numpad3", "Udemy|유데미", "https://www.udemy.com/")
-;3::        OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+;======[3, Numpad3] 인프런 사이트=========
+Numpad3:: OpenSite("Numpad3", "Inflearn|인프런", "https://www.inflearn.com/?srsltid=AfmBOor_NQzhHrhhBLbbRitXyQbb_xxZcKF16V-5bD9RLUKl0hvDbPo_")
+3::        OpenSite("3", "Inflearn|인프런", "https://www.inflearn.com/?srsltid=AfmBOor_NQzhHrhhBLbbRitXyQbb_xxZcKF16V-5bD9RLUKl0hvDbPo_")
 ;==========================================
-
-
 
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
 4::        OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
@@ -235,40 +229,16 @@ Numpad8:: {
         KeyWait("8")
 }
 
-; --- 블렌더 Numpad9 / 9 영역 (주석 처리됨) ---
-; Numpad9:: {
-;     if KeyWait("Numpad9", "T0.27") {
-;         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
-;     } else {
-;         Run("blender.exe")
-;         KeyWait("Numpad9")
-;     }
-; }
-; 9:: {
-;     if KeyWait("9", "T0.27") {
-;         ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
-;     } else {
-;         Run("blender.exe")
-;         KeyWait("9")
-;     }
-; }
-
-; --- 블렌더 Numpad9 / 9 영역 ---
 Numpad9:: CenterMouseAndExecuteMacro()
 9::        CenterMouseAndExecuteMacro()
 
-
 NumLock:: OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
-;NumpadAdd:: OpenSite("NumpadAdd", "Claude", "https://claude.ai/")
+
 $NumpadAdd::
 {
-    ; 0.2초 동안 다른 키가 눌리지 않으면 단독 입력으로 간주
     if KeyWait("NumpadAdd", "T0.2") {
-        ;ToolTip("NumpadAdd 단축키가 인식되었습니다! 함수를 실행합니다.")
-        ;SetTimer(() => ToolTip(), -2000)
-        ;CenterMouseAndExecuteMacro()
+        ; 단독 입력 시 동작
     } else {
-        ; 다른 키와 조합 중이면 NumpadAdd가 떼질 때까지 대기
         KeyWait("NumpadAdd")
     }
 }
@@ -283,19 +253,13 @@ Numpad6::Send "{Numpad6}"
 Numpad7::Send "{Numpad7}"
 Numpad8::Send "{Numpad8}"
 Numpad9::Send "{Numpad9}"
-
 #HotIf
 
-
-; --- F3 단축키 수정 (중복 에러 해결 버전) ---
+; --- F3 단축키 ---
 $F3:: {
-    ; 현재 창이 블렌더인 경우
     if WinActive("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass") {
-        ; $ 접두사 덕분에 이 Send("{F3}")은 이 단축키를 다시 트리거하지 않고 
-        ; 블렌더 프로그램 내부로 순수하게 전달됩니다.
         Send("{F3}") 
     } else {
-        ; 블렌더가 아닐 때는 기존처럼 Claude 사이트를 엽니다.
         OpenSite("F3", "Claude", "https://claude.ai/")
     }
 }
@@ -337,42 +301,24 @@ NumpadMult:: {
     Send "^{Tab}"
 }
 
-
 ; ==================================================
-; [CapsLock + 알파벳 (선 토글링 후 입력) 단축키 설정]
+; [CapsLock + 알파벳/숫자 단축키 설정]
 ; ==================================================
 
 global capsComboUsed := false
 
-; 1. CapsLock 단독 입력 처리
-; *CapsLock::
-; {
-;     global capsComboUsed := true
-;     KeyWait("CapsLock") ; CapsLock 키를 뗄 때까지 대기
-;     
-;     ; 조합키를 사용하지 않고 단독으로 눌렀다 뗀 경우에만 대소문자 토글
-;     if (!capsComboUsed) {
-;         SetCapsLockState(!GetKeyState("CapsLock", "T"))
-;     }
-; }
-
-
-; 1. CapsLock 단독 입력 처리 (롤/메모장 등 모든 환경 호환 버전)
 *CapsLock::
 {
-    global capsComboUsed := false  ; ⚠️ 중요: 누를 때 false로 초기화해야 합니다!
-    KeyWait("CapsLock")           ; CapsLock 키를 뗄 때까지 대기
+    global capsComboUsed := false
+    KeyWait("CapsLock")
     
-    ; 조합키(알파벳/숫자 등)를 사용하지 않고 단독으로 눌렀다 뗀 경우
     if (!capsComboUsed) {
-        Send("{Blind}{CapsLock}")  ; 가상 상태 변경 대신 실제 CapsLock 키 신호를 송신
+        Send("{Blind}{CapsLock}")
     }
 }
 
-; 2. CapsLock 키를 누르고 있는 동안 알파벳 및 숫자 조합
 #HotIf GetKeyState("CapsLock", "P")
 
-; --- 알파벳 입력 시: CapsLock 토글을 먼저 실행 후 알파벳 입력 ---
 a::
 b::
 c::
@@ -400,15 +346,10 @@ x::
 y::
 z:: {
     global capsComboUsed := true
-    
-    ; 1) 실제로 CapsLock 상태를 먼저 토글링
     SetCapsLockState(!GetKeyState("CapsLock", "T"))
-    
-    ; 2) 누른 알파벳 키 보냄 (A_ThisHotkey 사용)
     SendInput("{Blind}" . A_ThisHotkey)
 }
 
-; --- 기존 숫자 및 넘패드 단축키 연결 ---
 1::
 Numpad1:: {
     global capsComboUsed := true
@@ -421,20 +362,11 @@ Numpad2:: {
     VSCodeSmartLauncher()
 }
 
-/*
 3::
 Numpad3:: {
     global capsComboUsed := true
-    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+    OpenSite("3", "친절한 블렌더", "https://www.inflearn.com/...")
 }
-*/
-
-3::
-Numpad3:: {
-    global capsComboUsed := true
-    OpenSite("Numpad3", "학습 페이지 - Chrome", "https://www.inflearn.com/courses/lecture?courseId=331390&type=LECTURE&unitId=167943&tab=none&subtitleLanguage=ko")
-}
-
 
 4::
 Numpad4:: {

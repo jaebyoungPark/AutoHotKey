@@ -55,6 +55,7 @@
 #Include ShowCornerFrame.ahk
 #Include Blender_Backspace.ahk
 #Include Blender_Shift+Num.ahk
+#Include Blender_CameraFix.ahk
 #Include RCtrl.ahk
 
 ;#Include OpenMemory.ahk
