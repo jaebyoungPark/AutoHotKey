@@ -11,9 +11,6 @@ global unrealExes
 ; ==============================================================================
 ; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
 ; ==============================================================================
-; ==============================================================================
-; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
-; ==============================================================================
 ^!+p::
 {
     global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
@@ -32,13 +29,14 @@ global unrealExes
     }
 
     ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
-    ; (Udemy, YouTube와 함께 블렌더 환경도 가상 잠금 토글에서 제외되도록 처리)
+    ; (Udemy, YouTube, 블렌더, 콜로소 환경 제외)
     if (
         elapsed < 200
         && isReleased
         && !InStr(title, "Udemy")
         && !InStr(title, "YouTube")
         && !InStr(title, "블렌더")
+        && !InStr(title, "콜로소")
     ) {
         ToggleVirtualLock()
         return
@@ -61,7 +59,16 @@ global unrealExes
         return
     }
 
-    ; [3] YouTube (마우스 위치 창 활성화 로직 반영)
+; [3] 콜로소 학습 페이지 (마우스 위치 창 활성화 -> 스피드업 c)
+    if InStr(title, "콜로소") {
+        EnsureWindowActive(mouseHwnd)
+        ToolTip "▶ Speed Up (Colosso)"
+        SetTimer(() => ToolTip(), -700)
+        SendInput "c"
+        return
+    }
+
+    ; [4] YouTube (마우스 위치 창 활성화 로직 반영)
     if InStr(title, "YouTube") {
         EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up"
@@ -70,7 +77,7 @@ global unrealExes
         return
     }
     
-    ; [4] Udemy (마우스 위치 창 활성화 로직 반영)
+    ; [5] Udemy (마우스 위치 창 활성화 로직 반영)
     if InStr(title, "Udemy") {
         EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up"
@@ -79,7 +86,7 @@ global unrealExes
         return
     }
 
-    ; [5] Visual Studio 특정 기능
+    ; [6] Visual Studio 특정 기능
     if WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe") {
         if (elapsed >= 200 && elapsed < 550) {
             ToolTip "Header"
@@ -90,7 +97,7 @@ global unrealExes
     }
     
 
-    ; [6] Unreal Engine 특정 기능 (Content Drawer 열기)
+    ; [7] Unreal Engine 특정 기능 (Content Drawer 열기)
     isUnrealMouseOver := false
     for exe in unrealExes {
         if MouseOverExe(exe) {
@@ -112,7 +119,6 @@ global unrealExes
         }
     }
 }
-
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
 ToggleVirtualLock() {
     global isVirtualDown, isComboTriggered
@@ -192,6 +198,7 @@ ShowDebug(message) {
     SetTimer(() => ToolTip(), -1000)
 }
 
+
 ; ==============================
 ; 4. Ctrl+Alt+Shift+O 구역
 ; ==============================
@@ -257,8 +264,15 @@ ShowDebug(message) {
             mouseTitle := ""
         }
 
-        ; 🌟 [블렌더 분기 추가] 마우스 아래 창 타이틀에 '블렌더'가 포함된 경우
-        if InStr(mouseTitle, "블렌더") {
+; 🌟 [콜로소 / 학습 사이트 분기]
+        if InStr(mouseTitle, "콜로소") {
+            EnsureWindowActive(mouseHwnd)
+            ToolTip "◀ Speed Down (Colosso)"
+            SetTimer(() => ToolTip(), -700)
+            SendInput "x"
+            return
+        }
+        else if InStr(mouseTitle, "블렌더") {
             EnsureWindowActive(mouseHwnd)
             ToolTip "◀ Speed Down (Blender)"
             SetTimer(() => ToolTip(), -700)
@@ -343,7 +357,7 @@ ShowDebug(message) {
         return
     }
 }
-; ==============================================================================
+;==============================================================================
 ; 5. Udemy 전용 단축키 (선호 버전 2 적용)
 ; ==============================================================================
 $+,::

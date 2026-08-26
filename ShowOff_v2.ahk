@@ -9,9 +9,10 @@ CoordMode("Mouse", "Screen")
 applicationname := "ShowOff"
 inifile_path := applicationname . ".ini"
 
-; 전역 변수 선언
+; 전역 변수 선언 (GUI와 Text 컨트롤을 배열로 관리)
 global keyarray := []
-global mainGui, textCtrl
+global guiList := []
+global textList := []
 global backcolor, fontcolor, fontsize, boldness, fontName
 global statusheight, statuswidth, statusx, statusy, relative, transparency, timetoshow
 global statusOffTimer := () => StatusOff()
@@ -19,66 +20,61 @@ global statusOffTimer := () => StatusOff()
 InitScript()
 
 InitScript() {
-    global mainGui, textCtrl
+    global guiList, textList
     global backcolor, fontcolor, fontsize, boldness, fontName
     global statusheight, statuswidth, statusx, statusy, relative, transparency, timetoshow
 
     TRAYMENU()
     READINI()
 
-    ; -DPIScale을 추가하여 Windows 배율(150% 등)에 관계없이 절대 픽셀 좌표 사용
-    mainGui := Gui("+Owner +AlwaysOnTop -Resize -SysMenu -MinimizeBox -MaximizeBox -Disabled -Caption -Border +ToolWindow -DPIScale")
-    mainGui.MarginX := 0
-    mainGui.MarginY := 0
-    mainGui.BackColor := backcolor
-
     boldOpt := (boldness >= 700) ? " Bold" : ""
-    mainGui.SetFont("c" . fontcolor . " s" . fontsize . boldOpt, fontName)
+    monCount := MonitorGetCount()
 
-    textCtrl := mainGui.Add("Text", "vtext", "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
+    ; 연결된 모든 모니터마다 GUI 생성
+    Loop monCount {
+        i := A_Index
 
-    ; 현재 마우스 위치 모니터의 작업영역(픽셀) 가져오기
-    monitorIndex := GetMonitorIndexFromPoint()
-    MonitorGetWorkArea(monitorIndex, &workLeft, &workTop, &workRight, &workBottom)
+        ; -DPIScale을 추가하여 배율에 관계없이 절대 픽셀 좌표 사용
+        mGui := Gui("+Owner +AlwaysOnTop -Resize -SysMenu -MinimizeBox -MaximizeBox -Disabled -Caption -Border +ToolWindow -DPIScale")
+        mGui.MarginX := 0
+        mGui.MarginY := 0
+        mGui.BackColor := backcolor
+        mGui.SetFont("c" . fontcolor . " s" . fontsize . boldOpt, fontName)
 
-    ; Right/Bottom 기준으로 좌표 산출
-    statusx_calc := workRight - statuswidth - 10
-    statusy_calc := workBottom - statusheight - 10
+        tCtrl := mGui.Add("Text", "vtext", "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
 
-    ; 화면 왼쪽/위쪽 경계를 넘지 않도록 안전 제한
-    if (statusx_calc < workLeft + 10)
-        statusx_calc := workLeft + 10
+        ; 각 모니터의 작업영역(픽셀) 가져오기
+        MonitorGetWorkArea(i, &workLeft, &workTop, &workRight, &workBottom)
 
-    if (statusy_calc < workTop + 10)
-        statusy_calc := workTop + 10
+        ; 각 모니터의 Right/Bottom 기준으로 좌표 산출
+        statusx_calc := workRight - statuswidth - 10
+        statusy_calc := workBottom - statusheight - 10
 
-    mainGui.Show(
-        "x" . statusx_calc
-        . " y" . statusy_calc
-        . " w" . statuswidth
-        . " h" . statusheight
-        . " NoActivate"
-    )
-    textCtrl.Value := ""
+        ; 화면 왼쪽/위쪽 경계를 넘지 않도록 안전 제한
+        if (statusx_calc < workLeft + 10)
+            statusx_calc := workLeft + 10
 
-    if (transparency != "Off" && IsNumber(transparency)) {
-        WinSetTransparent(Number(transparency), applicationname)
+        if (statusy_calc < workTop + 10)
+            statusy_calc := workTop + 10
+
+        mGui.Show(
+            "x" . statusx_calc
+            . " y" . statusy_calc
+            . " w" . statuswidth
+            . " h" . statusheight
+            . " NoActivate"
+        )
+        tCtrl.Value := ""
+
+        if (transparency != "Off" && IsNumber(transparency)) {
+            WinSetTransparent(Number(transparency), mGui.Hwnd)
+        }
+
+        guiList.Push(mGui)
+        textList.Push(tCtrl)
     }
 
     SetTimer(MainLoop, 20)
-}
-
-; 현재 마우스가 위치한 모니터 번호를 반환
-GetMonitorIndexFromPoint() {
-    CoordMode("Mouse", "Screen")
-    MouseGetPos(&mx, &my)
-    monCount := MonitorGetCount()
-    Loop monCount {
-        MonitorGet(A_Index, &mLeft, &mTop, &mRight, &mBottom)
-        if (mx >= mLeft && mx < mRight && my >= mTop && my < mBottom)
-            return A_Index
-    }
-    return MonitorGetPrimary()
 }
 
 MainLoop() {
@@ -124,31 +120,41 @@ MainLoop() {
     oldshiftkeys := shiftkeys
 
     if (keys != "") {
-        textCtrl.Value := keys
+        ; 모든 모니터의 Text 컨트롤 업데이트
+        for tCtrl in textList {
+            tCtrl.Value := keys
+        }
         SetTimer(statusOffTimer, -timetoshow)
     }
 
-    ; GUI 드래그 이동 처리
+    ; GUI 드래그 이동 처리 (어느 모니터의 GUI를 잡고 드래그하든 동작)
     if GetKeyState("LButton", "P") {
         MouseGetPos(&mx1, &my1, &mid)
-        if (mid == mainGui.Hwnd) {
-            while GetKeyState("LButton", "P") {
-                MouseGetPos(&mx2, &my2)
-                WinGetPos(&sx, &sy, , , mainGui.Hwnd)
-                sx := sx - mx1 + mx2
-                sy := sy - my1 + my2
-                WinMove(sx, sy, , , mainGui.Hwnd)
-                mx1 := mx2
-                my1 := my2
-                Sleep(10)
+        for mGui in guiList {
+            if (mid == mGui.Hwnd) {
+                while GetKeyState("LButton", "P") {
+                    MouseGetPos(&mx2, &my2)
+                    WinGetPos(&sx, &sy, , , mGui.Hwnd)
+                    sx := sx - mx1 + mx2
+                    sy := sy - my1 + my2
+                    WinMove(sx, sy, , , mGui.Hwnd)
+                    mx1 := mx2
+                    my1 := my2
+                    Sleep(10)
+                }
+                break
             }
         }
     }
 }
 
 StatusOff() {
-    textCtrl.Value := ""
+    ; 모든 모니터의 Text 컨트롤 지우기
+    for tCtrl in textList {
+        tCtrl.Value := ""
+    }
 }
+
 READINI() {
     global
 
@@ -275,7 +281,9 @@ SETTINGS() {
 }
 
 ABOUT() {
-    aboutGui := Gui("+Owner" . mainGui.Hwnd, applicationname . " About")
+    ; 첫 번째 모니터 GUI를 Owner로 지정 (없을 경우 0)
+    ownerHwnd := (guiList.Length > 0) ? guiList[1].Hwnd : 0
+    aboutGui := Gui("+Owner" . ownerHwnd, applicationname . " About")
     aboutGui.MarginX := 20
     aboutGui.MarginY := 20
 

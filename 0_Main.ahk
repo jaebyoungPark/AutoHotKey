@@ -117,7 +117,7 @@ HotKeyList := [
     "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
     "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
     "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d",
-    "Backspace", "Tab", "!q", "#LButton", "^+F10", "^+w"
+    "Backspace", "Tab", "!q", "#LButton", "^+F10", "^+w", "^[", "^]"
 ]
 
 ~+F1::
@@ -231,7 +231,10 @@ UpdateStatusUI() {
         StatusGui.Hide()
         return
     }
-    StatusGui.Show("NoActivate")
+    ;;장기 미사용으로 인해 주석처리 후 hide 추가
+    ;StatusGui.Show("NoActivate")
+     StatusGui.Hide()
+
     static prevText := ""
     strNum := NumSuspended ? "❌" : "⌨️"
     strPad := NumPadSuspended ? "❌" : "🔢"
@@ -247,10 +250,14 @@ RefreshAlwaysOnTop() {
     global pW, pH, pX, pY
     if (MySuspended)
         return
-    if WinExist(StatusGui) {
-        WinSetAlwaysOnTop(False, StatusGui)
-        WinSetAlwaysOnTop(True, StatusGui)
-    }
+
+    ;장기 미사용으로 인해 주석처리
+    ;if WinExist(StatusGui) {
+    ;    WinSetAlwaysOnTop(False, StatusGui)
+    ;    WinSetAlwaysOnTop(True, StatusGui)
+    ;}
+
+
     if (isVirtualDown && WinExist(VirtualLockGui)) {
         WinSetAlwaysOnTop(False, VirtualLockGui)
         WinSetAlwaysOnTop(True, VirtualLockGui)
@@ -260,8 +267,11 @@ RefreshAlwaysOnTop() {
 CheckAndSetResolution() 
 WinSetAlwaysOnTop(True, StatusGui)
 UpdateStatusUI()
-SetTimer(UpdateStatusUI, 200)
-SetTimer(UpdateGuiPosition, 80)
+
+;장기 미사용으로 인해 주석처리
+;SetTimer(UpdateStatusUI, 200)
+;SetTimer(UpdateGuiPosition, 80)
+
 SetTimer(CheckAndSetResolution, 30000)
 SetTimer(RefreshAlwaysOnTop, 30000)
 try SetTimer("WatchNumSuspendedForFrame", 300) 

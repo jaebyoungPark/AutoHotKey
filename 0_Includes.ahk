@@ -56,6 +56,7 @@
 #Include Blender_Backspace.ahk
 #Include Blender_Shift+Num.ahk
 #Include Blender_CameraFix.ahk
+#Include Blender_Animation.ahk
 #Include RCtrl.ahk
 
 ;#Include OpenMemory.ahk
