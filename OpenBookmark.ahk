@@ -1,4 +1,5 @@
-﻿#Requires AutoHotkey v2.0
+﻿
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 $^+a::
@@ -12,13 +13,13 @@ $^+a::
         return
     }
 
-; VS Code (Code.exe)
+    ; VS Code (Code.exe)
     if WinActive("ahk_exe Code.exe")
     {
         ; {Ctrl up}을 명시하여 물리적으로 눌려있는 Ctrl을 무시하고 Shift + Left만 입력
         SendInput "{Ctrl up}+{Left}"
-        
-        ; 툴팁 표시 및 0.5초(500ms) 뒤 꺼지도록 설정
+
+        ; 툴팁 표시
         ToolTip "선택"
         SetTimer () => ToolTip(), -200
         return
@@ -39,10 +40,20 @@ $^+a::
         return
     }
 
+    ; Blender
+    if WinActive("ahk_exe blender.exe")
+    {
+        SendInput "^p"
+
+        ; 디버깅 툴팁
+        ToolTip "Blender → Ctrl + P"
+        SetTimer () => ToolTip(), -500
+        return
+    }
+
     ; 기타 프로그램
     SendInput "{Blind}^+a"
 }
-
 
 
 $^+d::

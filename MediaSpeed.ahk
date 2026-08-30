@@ -62,9 +62,9 @@ global unrealExes
 ; [3] 콜로소 학습 페이지 (마우스 위치 창 활성화 -> 스피드업 c)
     if InStr(title, "콜로소") {
         EnsureWindowActive(mouseHwnd)
-        ToolTip "▶ Speed Up (Colosso)"
+        ToolTip "▶ Speed Up 4(Colosso)"
         SetTimer(() => ToolTip(), -700)
-        SendInput "c"
+        SendInput "cccc"
         return
     }
 
@@ -202,9 +202,6 @@ ShowDebug(message) {
 ; ==============================
 ; 4. Ctrl+Alt+Shift+O 구역
 ; ==============================
-; ==============================
-; 4. Ctrl+Alt+Shift+O 구역
-; ==============================
 ^!+o::
 {
     global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
@@ -269,7 +266,7 @@ ShowDebug(message) {
             EnsureWindowActive(mouseHwnd)
             ToolTip "◀ Speed Down (Colosso)"
             SetTimer(() => ToolTip(), -700)
-            SendInput "x"
+            SendInput "xx"
             return
         }
         else if InStr(mouseTitle, "블렌더") {
@@ -356,7 +353,26 @@ ShowDebug(message) {
         }
         return
     }
+; [7] Blender (블렌더) - 확실한 3D 프로그램용 입력 방식
+    if WinActive("ahk_exe blender.exe") {
+        if (elapsed < 400) {
+            ; 1. 현재 눌려있을 수 있는 모든 특수키를 강제로 초기화 (떼기)
+            Send "{Ctrl up}{Shift up}{Alt up}"
+            
+            ; 2. 블렌더 내부 엔진이 키보드가 떼졌음을 인식할 수 있는 찰나의 시간 부여
+            Sleep 50 
+            
+            ; 3. SendInput 대신 SendEvent 사용 (입력 속도를 살짝 늦춰 3D 프로그램 인식률 극대화)
+            SendEvent "{Alt down}p{Alt up}"
+            
+            ToolTip "🟧 Blender: Alt + P (Event 방식)"
+            SetTimer(() => ToolTip(), -1000)
+            return
+        }
+    }
 }
+
+
 ;==============================================================================
 ; 5. Udemy 전용 단축키 (선호 버전 2 적용)
 ; ==============================================================================
