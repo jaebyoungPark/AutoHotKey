@@ -148,10 +148,11 @@
 #Include Alt+Q.ahk
 
 ;======================================
-;win + 숫자
+;win + 
 ;======================================
 
 
 #Include Win+1.ahk
 #Include Win+F.ahk
+#Include Win+Q.ahk
 

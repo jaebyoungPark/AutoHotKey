@@ -210,10 +210,13 @@ VSCodeSmartLauncher() {
 ;3::        OpenSite("3", "Inflearn|인프런", "https://www.inflearn.com/?srsltid=AfmBOor_NQzhHrhhBLbbRitXyQbb_xxZcKF16V-5bD9RLUKl0hvDbPo_")
 ;==========================================
 ;======[3, Numpad3] 콜로소 사이트=========
-Numpad3:: OpenSite("Numpad3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
-3::        OpenSite("3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
+;Numpad3:: OpenSite("Numpad3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
+;3::        OpenSite("3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
 ;==========================================
-
+;======[3, Numpad3] 유데미 사이트=========
+Numpad3:: OpenSite("Numpad4", "Udemy|유데미", "https://www.udemy.com/")
+3::        OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+;==========================================
 
 Numpad4:: OpenSite("Numpad4", "치지직|CHZZK", "https://chzzk.naver.com/")
 4::        OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
@@ -373,12 +376,17 @@ Numpad2:: {
 ;    OpenSite("3", "친절한 블렌더", "https://www.inflearn.com/...")
 ;}
 
+;3::
+;Numpad3:: {
+;    global capsComboUsed := true
+;    OpenSite("3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
+;}
+
 3::
 Numpad3:: {
     global capsComboUsed := true
-    OpenSite("3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
+    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
 }
-
 
 4::
 Numpad4:: {

@@ -16,6 +16,8 @@ global textList := []
 global backcolor, fontcolor, fontsize, boldness, fontName
 global statusheight, statuswidth, statusx, statusy, relative, transparency, timetoshow
 global statusOffTimer := () => StatusOff()
+global currentRed := 255 
+global currentAlpha := 255 ; 빠른 페이드아웃을 위한 투명도 변수 추가
 
 InitScript()
 
@@ -39,6 +41,8 @@ InitScript() {
         mGui.MarginX := 0
         mGui.MarginY := 0
         mGui.BackColor := backcolor
+        
+        ; 초기 생성 시 폰트 설정
         mGui.SetFont("c" . fontcolor . " s" . fontsize . boldOpt, fontName)
 
         tCtrl := mGui.Add("Text", "vtext", "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
@@ -119,14 +123,24 @@ MainLoop() {
     oldkeys := keys
     oldshiftkeys := shiftkeys
 
-    if (keys != "") {
-        ; 모든 모니터의 Text 컨트롤 업데이트
+if (keys != "") {
+        global currentRed := 255
+        global currentAlpha := 255 ; 키를 누르면 투명도 다시 100%로 초기화
+        
         for tCtrl in textList {
+            tCtrl.Opt("cFF0000")
             tCtrl.Value := keys
+            tCtrl.Redraw()
         }
+        
+        ; 모든 모니터의 GUI를 다시 보이게 만듦 (완전 불투명: 255)
+        for mGui in guiList {
+            WinSetTransparent(255, mGui.Hwnd)
+        }
+        
+        SetTimer(FadeColor, 30) 
         SetTimer(statusOffTimer, -timetoshow)
     }
-
     ; GUI 드래그 이동 처리 (어느 모니터의 GUI를 잡고 드래그하든 동작)
     if GetKeyState("LButton", "P") {
         MouseGetPos(&mx1, &my1, &mid)
@@ -145,6 +159,37 @@ MainLoop() {
                 break
             }
         }
+    }
+}
+
+; 텍스트 색상을 점차 검은색으로 변경하는 함수
+FadeColor() {
+    global currentRed, currentAlpha, textList, guiList, timetoshow
+    
+    ; 30ms마다 감소할 기본 수치 계산
+    step := 255 / (timetoshow / 30)
+    
+    currentRed -= step
+    currentAlpha -= (step * 1.5)  ; 1.5를 곱해서 색상이 변하는 것보다 "더 빠르게" 페이드아웃 되게 함
+    
+    ; 투명도가 0 이하로 떨어지면 타이머 종료 및 텍스트 숨김
+    if (currentAlpha <= 0) {
+        currentAlpha := 0
+        currentRed := 0
+        SetTimer(FadeColor, 0)
+        StatusOff() 
+    }
+    
+    ; 1) 글자색 변경 (빨강 -> 검정)
+    hexColor := Format("{:02X}0000", Max(0, Floor(currentRed)))
+    for tCtrl in textList {
+        tCtrl.Opt("c" hexColor)
+        tCtrl.Redraw()
+    }
+    
+    ; 2) 창 전체 투명도 변경 (빠르게 스르륵 사라짐)
+    for mGui in guiList {
+        WinSetTransparent(Max(0, Floor(currentAlpha)), mGui.Hwnd)
     }
 }
 

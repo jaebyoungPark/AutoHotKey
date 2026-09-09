@@ -51,20 +51,20 @@ global unrealExes
     }
 
     ; [2] 블렌더 학습 페이지 추가 (Chrome 등에서 '블렌더' 타이틀 감지 시)
-    if InStr(title, "블렌더") {
-        EnsureWindowActive(mouseHwnd)
-        ToolTip "▶ Speed Up (Blender)"
-        SetTimer(() => ToolTip(), -700)
-        SendInput "+."
-        return
-    }
+; if InStr(title, "블렌더") {
+;     EnsureWindowActive(mouseHwnd)
+;     ToolTip "▶ Speed Up (Blender)"
+;     SetTimer(() => ToolTip(), -700)
+;     SendInput "+."
+;     return
+; }
 
 ; [3] 콜로소 학습 페이지 (마우스 위치 창 활성화 -> 스피드업 c)
     if InStr(title, "콜로소") {
         EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up 4(Colosso)"
         SetTimer(() => ToolTip(), -700)
-        SendInput "cccc"
+        SendInput "ccc"
         return
     }
 
@@ -266,16 +266,16 @@ ShowDebug(message) {
             EnsureWindowActive(mouseHwnd)
             ToolTip "◀ Speed Down (Colosso)"
             SetTimer(() => ToolTip(), -700)
-            SendInput "xx"
+            SendInput "xxx"
             return
         }
-        else if InStr(mouseTitle, "블렌더") {
-            EnsureWindowActive(mouseHwnd)
-            ToolTip "◀ Speed Down (Blender)"
-            SetTimer(() => ToolTip(), -700)
-            SendInput "+,"  ; Shift + , 수행
-            return
-        }
+        ;else if InStr(mouseTitle, "블렌더") {
+        ;    EnsureWindowActive(mouseHwnd)
+        ;    ToolTip "◀ Speed Down (Blender)"
+        ;    SetTimer(() => ToolTip(), -700)
+        ;    SendInput "+,"  ; Shift + , 수행
+        ;     return
+        ;}
         else if InStr(mouseTitle, "YouTube") {
             EnsureWindowActive(mouseHwnd)
             ToolTip "◀ Speed Down"
