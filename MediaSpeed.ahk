@@ -119,84 +119,7 @@ ToggleVirtualLock() {
     }
 }
 
-
-
-
-
-; ==============================================================================
-; 1. Ctrl+Alt+Shift+P 단축키 구역 (함수형 구조로 리팩토링)
-; ==============================================================================
-^!+p:: HandleCtrlAltShiftP()
-#Space:: HandleCtrlAltShiftP() ;마우스말고 키보드로만 하고 싶을 때(스컬핑할때 펜으로 못하는 경우)
-
-; ==============================================================================
-; 2. 한/영 키(vk15) 자체를 물리적으로 제어하는 구역
-; ==============================================================================
-~vk15:: {
-    global isComboTriggered := false
-}
-
-~vk15 up:: {
-    global isComboTriggered, isVirtualDown
-}
-
-; ==============================================================================
-; 3. 조합 키 작동 구역
-; ==============================================================================
-#HotIf GetKeyState("vk15", "P") || isVirtualDown
-$1:: HandleKey("1")
-$2:: HandleKey("2")
-$3:: HandleKey("3")
-$4:: HandleKey("4")
-$5:: HandleKey("5")
-$6:: HandleKey("6")
-$7:: HandleKey("7")
-$8:: HandleKey("8")
-$9:: HandleKey("9")
-$0:: HandleKey("0")
-#HotIf
-
-; --- [구역 B] 넘패드 키 구역 ---
-#HotIf isVirtualDown
-$Numpad1::SendInput "{Blind}{Numpad1}"
-$Numpad2::SendInput "{Blind}{Numpad2}"
-$Numpad3::SendInput "{Blind}{Numpad3}"
-$Numpad4::SendInput "{Blind}{Numpad4}"
-$Numpad5::SendInput "{Blind}{Numpad5}"
-$Numpad6::SendInput "{Blind}{Numpad6}"
-$Numpad7::SendInput "{Blind}{Numpad7}"
-$Numpad8::SendInput "{Blind}{Numpad8}"
-$Numpad9::SendInput "{Blind}{Numpad9}"
-$Numpad0::SendInput "{Blind}{Numpad0}"
-
-$NumpadDiv::SendInput "{Blind}{NumpadDiv}"      ; /
-$NumpadMult::SendInput "{Blind}{NumpadMult}"    ; *
-$NumpadSub::SendInput "{Blind}{NumpadSub}"      ; -
-$NumpadAdd::SendInput "{Blind}{NumpadAdd}"      ; +
-#HotIf
-
-HandleKey(num) {
-    global isComboTriggered, isVirtualDown
-    
-    if (!isVirtualDown && !isComboTriggered) {
-        Send("{vk15}") 
-        ShowDebug("숫자 입력 감지: 한/영 즉시 원상복구!")
-    }
-    
-    isComboTriggered := true
-    SendInput(num)
-}
-
-ShowDebug(message) {
-    ToolTip("[디버깅] " message)
-    SetTimer(() => ToolTip(), -1000)
-}
-
-
-; ==============================
-; 4. Ctrl+Alt+Shift+O 구역
-; ==============================
-^!+o::
+HandleCtrlAltShiftO()
 {
     global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
     global magnifierOn1
@@ -365,6 +288,88 @@ ShowDebug(message) {
         }
     }
 }
+
+
+; ==============================================================================
+; 1. Ctrl+Alt+Shift+P 단축키 구역 (함수형 구조로 리팩토링)
+; ==============================================================================
+^!+p:: HandleCtrlAltShiftP()
+#Space:: HandleCtrlAltShiftP() ;마우스말고 키보드로만 하고 싶을 때(스컬핑할때 펜으로 못하는 경우)
+#s:: HandleCtrlAltShiftP()
+
+; ==============================================================================
+; 2. 한/영 키(vk15) 자체를 물리적으로 제어하는 구역
+; ==============================================================================
+~vk15:: {
+    global isComboTriggered := false
+}
+
+~vk15 up:: {
+    global isComboTriggered, isVirtualDown
+}
+
+; ==============================================================================
+; 3. 조합 키 작동 구역
+; ==============================================================================
+#HotIf GetKeyState("vk15", "P") || isVirtualDown
+$1:: HandleKey("1")
+$2:: HandleKey("2")
+$3:: HandleKey("3")
+$4:: HandleKey("4")
+$5:: HandleKey("5")
+$6:: HandleKey("6")
+$7:: HandleKey("7")
+$8:: HandleKey("8")
+$9:: HandleKey("9")
+$0:: HandleKey("0")
+#HotIf
+
+; --- [구역 B] 넘패드 키 구역 ---
+#HotIf isVirtualDown
+$Numpad1::SendInput "{Blind}{Numpad1}"
+$Numpad2::SendInput "{Blind}{Numpad2}"
+$Numpad3::SendInput "{Blind}{Numpad3}"
+$Numpad4::SendInput "{Blind}{Numpad4}"
+$Numpad5::SendInput "{Blind}{Numpad5}"
+$Numpad6::SendInput "{Blind}{Numpad6}"
+$Numpad7::SendInput "{Blind}{Numpad7}"
+$Numpad8::SendInput "{Blind}{Numpad8}"
+$Numpad9::SendInput "{Blind}{Numpad9}"
+$Numpad0::SendInput "{Blind}{Numpad0}"
+
+$NumpadDiv::SendInput "{Blind}{NumpadDiv}"      ; /
+$NumpadMult::SendInput "{Blind}{NumpadMult}"    ; *
+$NumpadSub::SendInput "{Blind}{NumpadSub}"      ; -
+$NumpadAdd::SendInput "{Blind}{NumpadAdd}"      ; +
+#HotIf
+
+HandleKey(num) {
+    global isComboTriggered, isVirtualDown
+    
+    if (!isVirtualDown && !isComboTriggered) {
+        Send("{vk15}") 
+        ShowDebug("숫자 입력 감지: 한/영 즉시 원상복구!")
+    }
+    
+    isComboTriggered := true
+    SendInput(num)
+}
+
+ShowDebug(message) {
+    ToolTip("[디버깅] " message)
+    SetTimer(() => ToolTip(), -1000)
+}
+
+
+; ==============================
+; 4. Ctrl+Alt+Shift+O 구역
+; ==============================
+
+^!+o::
+{
+ HandleCtrlAltShiftO()
+}
+#a:: HandleCtrlAltShiftO()
 
 
 ;==============================================================================
