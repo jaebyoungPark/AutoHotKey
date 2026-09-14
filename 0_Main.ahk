@@ -1,5 +1,24 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
+
+HotKeyList := [
+    "RButton", "XButton1", "XButton2", "MButton", "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton",
+    "+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
+    "$^1", "$^2", "^3", "^4", "+1", "+2", "+3", "+4", "8", "$^+=", "^!+p", "^!+o", "$^+a",
+    "#+-", "#+=:", "#'", "+!'", "+!;", "^``", "^+``", "^SC028", "^+SC028",
+    "Left", "Right", "Up", "Down", "!Left", "!Right", "!+Right", "!+Left", "^Left", "^Right", "^+Right", "^+Left",
+    "#Left", "#Right", "#Up", "#Down", "#^Left", "#^Right", "#^Up", "#^Down", "+^Up", "^+Down", "!Up", "!Down",
+    "!a", "!d", "!w", "!s", "!q", "!e", "PgUp", "PgDn", "^PgDown", "#NumpadEnter", "^NumpadEnter", "^!NumpadEnter", "!NumpadEnter",
+    "#Numpad5", "#Numpad4", "#Numpad1", "!Numpad1", "!Numpad2", "#,", "#.", "#[", "#]", "#End", "#Delete", "#1", "#f",
+    "+Delete", "+End", "+,", "+.", "+Enter", "!n", "!m", "!j", "!i", "!k", "!l", "!,", "!.",
+    "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o", "+A", "^l", "RShift", "F2", "F12", "Esc", "RShift & Tab",
+    "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0",
+    "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
+    "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
+    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d",
+    "Backspace", "Tab", "!q", "#LButton", "^+F10", "^+w", "^[", "^]", "#q", "#Space"
+]
+
 ; ==========================================================================
 ; [공용 함수]  - MediaSpeed.ahk, 1_CompileAndSave.ahk
 ; ==========================================================================
@@ -102,23 +121,7 @@ for key in NumKeyList
 for key in NumPadKeyList
     try Hotkey(key, NumPadSuspended ? "Off" : "On")
 
-HotKeyList := [
-    "RButton", "XButton1", "XButton2", "MButton", "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton",
-    "+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
-    "$^1", "$^2", "^3", "^4", "+1", "+2", "+3", "+4", "8", "$^+=", "^!+p", "^!+o", "$^+a",
-    "#+-", "#+=:", "#'", "+!'", "+!;", "^``", "^+``", "^SC028", "^+SC028",
-    "Left", "Right", "Up", "Down", "!Left", "!Right", "!+Right", "!+Left", "^Left", "^Right", "^+Right", "^+Left",
-    "#Left", "#Right", "#Up", "#Down", "#^Left", "#^Right", "#^Up", "#^Down", "+^Up", "^+Down", "!Up", "!Down",
-    "!a", "!d", "!w", "!s", "!q", "!e", "PgUp", "PgDn", "^PgDown", "#NumpadEnter", "^NumpadEnter", "^!NumpadEnter", "!NumpadEnter",
-    "#Numpad5", "#Numpad4", "#Numpad1", "!Numpad1", "!Numpad2", "#,", "#.", "#[", "#]", "#End", "#Delete", "#1", "#f",
-    "+Delete", "+End", "+,", "+.", "+Enter", "!n", "!m", "!j", "!i", "!k", "!l", "!,", "!.",
-    "^c", "^t", "^m", "^f", "^i", "^u", "^p", "^o", "+A", "^l", "RShift", "F2", "F12", "Esc", "RShift & Tab",
-    "RShift & 1", "RShift & 2", "RShift & 3", "RShift & 4", "RShift & 5", "RShift & 6", "RShift & 7", "RShift & 8", "RShift & 9", "RShift & 0",
-    "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
-    "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
-    "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d",
-    "Backspace", "Tab", "!q", "#LButton", "^+F10", "^+w", "^[", "^]", "#q"
-]
+
 
 ~+F1::
 {

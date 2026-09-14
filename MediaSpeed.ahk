@@ -7,13 +7,9 @@
 ; ⚠️ [중요] main.ahk에 선언된 외부 전역 변수 및 배열을 안전하게 참조하기 위해 상단 선언
 global unrealExes
 
-
-; ==============================================================================
-; 1. Ctrl+Alt+Shift+P 단축키 구역 (Udemy 제외 전역 토글 연동)
-; ==============================================================================
-^!+p::
+HandleCtrlAltShiftP()
 {
-    global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
+    global unrealExes ; ◀ main.ahk에 있는 전역 변수를 함수 안으로 가져옴
     start := A_TickCount
     
     ; ⚡ 반응성 개선: 200ms 동안만 P 키가 떼어지기를 기다립니다 (블로킹 방지)
@@ -29,7 +25,6 @@ global unrealExes
     }
 
     ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
-    ; (Udemy, YouTube, 블렌더, 콜로소 환경 제외)
     if (
         elapsed < 200
         && isReleased
@@ -50,16 +45,7 @@ global unrealExes
         }
     }
 
-    ; [2] 블렌더 학습 페이지 추가 (Chrome 등에서 '블렌더' 타이틀 감지 시)
-; if InStr(title, "블렌더") {
-;     EnsureWindowActive(mouseHwnd)
-;     ToolTip "▶ Speed Up (Blender)"
-;     SetTimer(() => ToolTip(), -700)
-;     SendInput "+."
-;     return
-; }
-
-; [3] 콜로소 학습 페이지 (마우스 위치 창 활성화 -> 스피드업 c)
+    ; [3] 콜로소 학습 페이지 (마우스 위치 창 활성화 -> 스피드업 ccc)
     if InStr(title, "콜로소") {
         EnsureWindowActive(mouseHwnd)
         ToolTip "▶ Speed Up 4(Colosso)"
@@ -96,7 +82,6 @@ global unrealExes
         }
     }
     
-
     ; [7] Unreal Engine 특정 기능 (Content Drawer 열기)
     isUnrealMouseOver := false
     for exe in unrealExes {
@@ -108,9 +93,7 @@ global unrealExes
 
     if (isUnrealMouseOver) {
         if (elapsed >= 200 && elapsed < 450) {
-            ; 마우스 아래의 창을 확실하게 인식하고 활성화
             WinActivate("ahk_id " mouseHwnd)      
-
             CoordMode "Mouse", "Screen"
             ToolTip "Content Drawer"
             SetTimer(() => ToolTip(), -700)
@@ -119,6 +102,7 @@ global unrealExes
         }
     }
 }
+
 ; 윈도우에 키를 보내지 않고, 오직 스크립트 내부 상태만 토글하는 함수
 ToggleVirtualLock() {
     global isVirtualDown, isComboTriggered
@@ -134,6 +118,16 @@ ToggleVirtualLock() {
         ShowDebug("가상 잠금 OFF (플랫폼 스위칭)")
     }
 }
+
+
+
+
+
+; ==============================================================================
+; 1. Ctrl+Alt+Shift+P 단축키 구역 (함수형 구조로 리팩토링)
+; ==============================================================================
+^!+p:: HandleCtrlAltShiftP()
+#Space:: HandleCtrlAltShiftP() ;마우스말고 키보드로만 하고 싶을 때(스컬핑할때 펜으로 못하는 경우)
 
 ; ==============================================================================
 ; 2. 한/영 키(vk15) 자체를 물리적으로 제어하는 구역
