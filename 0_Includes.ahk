@@ -153,7 +153,6 @@
 ;======================================
 
 
-#Include Win+1.ahk
 #Include Win+F.ahk
 #Include Win+Q.ahk
 
