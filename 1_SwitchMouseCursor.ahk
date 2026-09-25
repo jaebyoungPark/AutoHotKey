@@ -154,3 +154,15 @@ $RButton::ProcessRightClick()
     Sleep 50
     ShowHereGUI()
 }
+
+$F1::
+{
+  CenterMouseAndExecuteMacro()
+}
+
+; WIN + C -> C 키를 뗄 때 CenterMouseAndExecuteMacro 함수 실행
+#c:: {
+    KeyWait "c"                  ; C 키를 뗄 때까지 대기
+    ExecuteMonitorSwitch()
+
+}

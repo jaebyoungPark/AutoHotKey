@@ -347,7 +347,7 @@ HandleKey(num) {
     global isComboTriggered, isVirtualDown
     
     if (!isVirtualDown && !isComboTriggered) {
-        Send("{vk15}") 
+        Send("{vk15}") HandleCtrlAltShiftO()
         ShowDebug("숫자 입력 감지: 한/영 즉시 원상복구!")
     }
     

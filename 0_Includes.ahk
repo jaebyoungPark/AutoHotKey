@@ -87,13 +87,6 @@
 
 
 ;=======================================
-;F
-;=======================================
-#Include F1_SwitchCursor.ahk
-
-
-
-;=======================================
 ;Keyboard
 ;=======================================
 
@@ -106,7 +99,7 @@
 #Include 1_CompileAndSave.ahk
 #Include 1_MouseRightPressed.ahk
 #Include 1_SwitchTap.ahk
-#Include 1_SwitchCursor.ahk
+#Include 1_SwitchMouseCursor.ahk
 
 #Include 1_HeaderAndCpp.ahk
 
@@ -153,5 +146,5 @@
 
 
 #Include Win+F.ahk
-#Include Win+Q.ahk
-
+#Include Win+QW.ahk
+#Include Win+V.ahk
