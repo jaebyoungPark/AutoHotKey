@@ -430,4 +430,52 @@ Numpad0:: {
     WinMinimize("A")
 }
 
+
+;웹으로 연 챗지피티는 크롬에서 식별 불가능해서, 그냥 엣지로 챗지피티만 열고 엣지를 토글하는 방식으로 챗지피티를 여는 로직임.
+; CapsLock + ` → ChatGPT Edge 열기 / 기존 ChatGPT 창 활성화
+SC029:: {
+    global capsComboUsed := true
+
+    ToolTip("🤖 ChatGPT (Edge)")
+    SetTimer(() => ToolTip(), -300)
+
+    ; --------------------------------------------------
+    ; 현재 열려 있는 Edge 창들을 전부 검사
+    ; --------------------------------------------------
+    edgeWindows := WinGetList("ahk_exe msedge.exe")
+
+    for hwnd in edgeWindows {
+        title := WinGetTitle("ahk_id " hwnd)
+
+        ; 창 제목에 ChatGPT가 들어 있으면 기존 창 사용
+        if InStr(title, "ChatGPT") {
+            ; 최소화되어 있다면 복원
+            if (WinGetMinMax("ahk_id " hwnd) = -1)
+                WinRestore("ahk_id " hwnd)
+
+            ; 기존 ChatGPT 창 활성화
+            WinActivate("ahk_id " hwnd)
+            WinWaitActive("ahk_id " hwnd, , 0.5)
+
+            ; 혹시 Windows가 활성화를 막으면 강제로 위로
+            if !WinActive("ahk_id " hwnd) {
+                WinSetAlwaysOnTop(1, "ahk_id " hwnd)
+                Sleep 50
+                WinSetAlwaysOnTop(0, "ahk_id " hwnd)
+                WinActivate("ahk_id " hwnd)
+            }
+
+            return
+        }
+    }
+
+    ; --------------------------------------------------
+    ; ChatGPT Edge 창이 하나도 없을 때만 새로 실행
+    ; --------------------------------------------------
+    Run('msedge.exe --new-window "https://chatgpt.com/"')
+
+    ; 새 창이 뜰 때까지 기다림
+    Sleep 500
+}
+
 #HotIf
