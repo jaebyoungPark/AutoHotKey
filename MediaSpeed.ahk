@@ -121,174 +121,142 @@ ToggleVirtualLock() {
 
 HandleCtrlAltShiftO()
 {
-    global unrealExes ; ◀ main.ahk에 있는 전역 변수를 이 블록 안으로 가져옴
-    global magnifierOn1
-    start := A_TickCount
-    KeyWait "o"
-    elapsed := A_TickCount - start
+global unrealExes
+global magnifierOn1
 
-    ; 마우스 커서 아래 창의 HWND 미리 획득
-    MouseGetPos ,, &mouseHwnd
+start := A_TickCount
+KeyWait "o"
+elapsed := A_TickCount - start
 
-    ; [1] GOM64
-    if WinActive("ahk_exe GOM64.EXE") {
-        if (elapsed < 250) {
-            Send "x"
-            return
-        }
-    }
-    
-    ; [2] Notepad (메모장)
-    if (WinActive("ahk_exe notepad.exe") || WinActive("ahk_exe Notepad.exe") || WinActive("ahk_class Notepad")) {
-        if (elapsed < 200) {
-            Send "^s"
-            ToolTip "💾 저장 완료"
-            SetTimer(() => ToolTip(), -500)
-        }
-        else if (elapsed < 600) {
-            Send "^!s"
-            ToolTip "📁 전체 저장"
-            SetTimer(() => ToolTip(), -500)
-        }
+; 마우스 커서 아래 창의 HWND 획득
+MouseGetPos ,, &mouseHwnd
+
+; [1] GOM64
+if WinActive("ahk_exe GOM64.EXE") {
+    if (elapsed < 250) {
+        Send "x"
         return
-    }
-
-    ; [3] Chrome
-    if WinActive("ahk_exe chrome.exe") {
-        ; 돋보기 토글 기능 (시간 조건이 맞을 때 최우선 처리)
-        if (elapsed >= 200 && elapsed < 600) {
-            magnifierOn1 := !magnifierOn1
-            if (magnifierOn1) {
-                SendInput "{LWin down}{NumpadAdd}{LWin up}"
-                ToolTip "🔍 돋보기 켜짐"
-            } else {
-                SendInput "{LWin down}{Esc}{LWin up}"
-                Sleep 100
-                SendInput "{f}"
-                ToolTip "🔍 돋보기 꺼짐"
-            }
-            Sleep 500
-            ToolTip
-            return
-        }
-
-        try {
-            mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
-        } catch {
-            mouseTitle := ""
-        }
-
-; 🌟 [콜로소 / 학습 사이트 분기]
-        if InStr(mouseTitle, "콜로소") {
-            EnsureWindowActive(mouseHwnd)
-            ToolTip "◀ Speed Down (Colosso)"
-            SetTimer(() => ToolTip(), -700)
-            SendInput "xxx"
-            return
-        }
-        ;else if InStr(mouseTitle, "블렌더") {
-        ;    EnsureWindowActive(mouseHwnd)
-        ;    ToolTip "◀ Speed Down (Blender)"
-        ;    SetTimer(() => ToolTip(), -700)
-        ;    SendInput "+,"  ; Shift + , 수행
-        ;     return
-        ;}
-        else if InStr(mouseTitle, "YouTube") {
-            EnsureWindowActive(mouseHwnd)
-            ToolTip "◀ Speed Down"
-            SetTimer(() => ToolTip(), -700)
-            SendInput "+,"
-            return
-        }
-        else if InStr(mouseTitle, "Udemy") {
-            EnsureWindowActive(mouseHwnd)
-            ToolTip "◀ Speed Down"
-            SetTimer(() => ToolTip(), -700)
-            SendInput "+{Left}"
-            return
-        }
-    }
-
-    ; [4] ChatGPT
-    if WinActive("ahk_exe ChatGPT.exe") {
-        if (elapsed >= 200 && elapsed < 600) {
-            magnifierOn1 := !magnifierOn1
-            if (magnifierOn1)
-                SendInput "{LWin down}{NumpadAdd}{LWin up}"
-            else
-                SendInput "{LWin down}{Esc}{LWin up}"
-            return
-        }
-    }
-
-    ; [5] Unreal Engine 컴파일 및 저장 기능 (v2 기반 괄호 오류 수정본)
-    isUnrealMouseOver := false
-    for exe in unrealExes {
-        if MouseOverExe(exe) {
-            isUnrealMouseOver := true
-            break
-        }
-    }
-
-    if (isUnrealMouseOver) {
-        if (elapsed < 200) {
-            ; 상단에서 이미 구한 mouseHwnd를 활용해 확실하게 활성화
-            WinActivate("ahk_id " mouseHwnd)
-
-            if !WinWaitActive("ahk_id " mouseHwnd, , 1) {
-                ToolTip "❌ 활성화 실패"
-                SetTimer(() => ToolTip(), -1000)
-                return
-            }
-
-            ToolTip "컴파일 후 저장. v2"
-            SetTimer(() => ToolTip(), -700)
-
-            Click "Left"
-            Sleep 100
-            Send "{F7}"
-            Sleep 40
-            
-            ; 요청 사항: 엔터 제거 상태 유지, 슬립 후 전체 저장
-            Sleep 250
-            Send "^+s"
-            return 
-        }
-    }
-
-    ; [6] Visual Studio 저장 및 기능
-    if WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe Code.exe") {
-        if (elapsed < 200) {
-            Send "^+s"
-            ToolTip "전체 저장 완료 😄"
-            SetTimer(() => ToolTip(), -1000)
-        }
-        else if (elapsed < 600) {
-            ToolTip "Def"
-            SetTimer(() => ToolTip(), -600)
-            Send "{F12}"
-        }
-        return
-    }
-; [7] Blender (블렌더) - 확실한 3D 프로그램용 입력 방식
-    if WinActive("ahk_exe blender.exe") {
-        if (elapsed < 400) {
-            ; 1. 현재 눌려있을 수 있는 모든 특수키를 강제로 초기화 (떼기)
-            Send "{Ctrl up}{Shift up}{Alt up}"
-            
-            ; 2. 블렌더 내부 엔진이 키보드가 떼졌음을 인식할 수 있는 찰나의 시간 부여
-            Sleep 50 
-            
-            ; 3. SendInput 대신 SendEvent 사용 (입력 속도를 살짝 늦춰 3D 프로그램 인식률 극대화)
-            SendEvent "{Alt down}p{Alt up}"
-            
-            ToolTip "🟧 Blender: Alt + P (Event 방식)"
-            SetTimer(() => ToolTip(), -1000)
-            return
-        }
     }
 }
 
+; [2] Notepad
+if (WinActive("ahk_exe notepad.exe")
+    || WinActive("ahk_exe Notepad.exe")
+    || WinActive("ahk_class Notepad")) {
+    if (elapsed < 200) {
+        Send "^s"
+        ToolTip "💾 저장 완료"
+        SetTimer(() => ToolTip(), -500)
+    }
+    return
+}
+
+; [3] Chrome
+if WinActive("ahk_exe chrome.exe") {
+    SendInput "^#/"
+    return
+}
+
+; 마우스 아래 창의 제목 획득
+try {
+    mouseTitle := WinGetTitle("ahk_id " mouseHwnd)
+} catch {
+    mouseTitle := ""
+}
+
+; [4] 콜로소
+if InStr(mouseTitle, "콜로소") {
+    EnsureWindowActive(mouseHwnd)
+    ToolTip "◀ Speed Down (Colosso)"
+    SetTimer(() => ToolTip(), -700)
+    SendInput "xxx"
+    return
+}
+
+; [5] YouTube
+if InStr(mouseTitle, "YouTube") {
+    EnsureWindowActive(mouseHwnd)
+    ToolTip "◀ Speed Down"
+    SetTimer(() => ToolTip(), -700)
+    SendInput "+,"
+    return
+}
+
+; [6] Udemy
+if InStr(mouseTitle, "Udemy") {
+    EnsureWindowActive(mouseHwnd)
+    ToolTip "◀ Speed Down"
+    SetTimer(() => ToolTip(), -700)
+    SendInput "+{Left}"
+    return
+}
+
+; [7] Unreal Engine
+isUnrealMouseOver := false
+
+for exe in unrealExes {
+    if MouseOverExe(exe) {
+        isUnrealMouseOver := true
+        break
+    }
+}
+
+if (isUnrealMouseOver) {
+    if (elapsed < 200) {
+        WinActivate("ahk_id " mouseHwnd)
+
+        if !WinWaitActive("ahk_id " mouseHwnd, , 1) {
+            ToolTip "❌ 활성화 실패"
+            SetTimer(() => ToolTip(), -1000)
+            return
+        }
+
+        ToolTip "컴파일 후 저장. v2"
+        SetTimer(() => ToolTip(), -700)
+
+        Click "Left"
+        Sleep 100
+        Send "{F7}"
+        Sleep 40
+        Sleep 250
+        Send "^+s"
+        return
+    }
+}
+
+; [8] Visual Studio / VS Code
+if WinActive("ahk_exe devenv.exe")
+    || WinActive("ahk_exe Code.exe") {
+    if (elapsed < 200) {
+        Send "^+s"
+        ToolTip "전체 저장 완료 😄"
+        SetTimer(() => ToolTip(), -1000)
+    }
+    else if (elapsed < 600) {
+        ToolTip "Def"
+        SetTimer(() => ToolTip(), -600)
+        Send "{F12}"
+    }
+    return
+}
+
+; [9] Blender
+if WinActive("ahk_exe blender.exe") {
+    if (elapsed < 400) {
+        Send "{Ctrl up}{Shift up}{Alt up}"
+        Sleep 50
+        SendEvent "{Alt down}p{Alt up}"
+
+        ToolTip "🟧 Blender: Alt + P (Event 방식)"
+        SetTimer(() => ToolTip(), -1000)
+        return
+    }
+}
+
+; [10] 위의 어떤 조건에도 해당하지 않으면 기본 동작
+SendInput "^#/"
+
+}
 
 ; ==============================================================================
 ; 1. Ctrl+Alt+Shift+P 단축키 구역 (함수형 구조로 리팩토링)
