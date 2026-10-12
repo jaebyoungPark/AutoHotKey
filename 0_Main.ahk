@@ -16,7 +16,7 @@ HotKeyList := [
     "VK15 & w", "VK15 & a", "VK15 & s", "VK15 & d", "VK15 & 1", "VK15 & 2", "VK15 & 3", "VK15 & 4", "VK15 & 5", "VK15 & 6", "VK15 & 7", "VK15 & 8", "VK15 & 9", "VK15 & 0",
     "vk19 + Q", "vk19 + W", "vk19 + E", "vk19 + A", "vk19 + S", "vk19 + D", "vk19 + Z", "vk19 + X", "vk19 + C",
     "LWin & Up", "LWin & Left", "LWin & Down", "LWin & Right", "^+RButton", "^+LButton", "#LButton", "^RButton", "^LButton", "!d", "^+Space", "NumpadDot", "^v", "^+l", "^+d",
-    "Backspace", "Tab", "!q", "#LButton", "^+F10", "^+w", "^[", "^]", "#q", "#Space", "#a", "#z", "#x"
+    "Backspace", "Tab", "!q", "#LButton", "^+F10", "^+w", "^[", "^]", "#q", "#Space", "#a", "#z", "#x", "^s", "^+s"
 ]
 
 ; ==========================================================================
@@ -103,11 +103,17 @@ VirtualLockGui.BackColor := "660088"
 WinSetTransColor("FFFFFF 25", VirtualLockGui) 
 
 ; 시스템 API를 직접 호출하여 배율이 적용되지 않은 "진짜 물리적 주모니터 해상도"를 강제로 획득
-global pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int") ; SM_CXSCREEN (진짜 가로 픽셀)
-global pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int") ; SM_CYSCREEN (진짜 세로 픽셀)
-global pX := 0
-global pY := 0
+; [기존 코드]
+; global pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int") ; SM_CXSCREEN
+; global pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int") ; SM_CYSCREEN
+; global pX := 0
+; global pY := 0
 
+; [수정 코드] 모든 모니터를 포함하는 가상 스크린 전체 영역 획득
+global pX := DllCall("User32.dll\GetSystemMetrics", "Int", 76, "Int") ; SM_XVIRTUALSCREEN (가장 왼쪽 X좌표, 음수일 수 있음)
+global pY := DllCall("User32.dll\GetSystemMetrics", "Int", 77, "Int") ; SM_YVIRTUALSCREEN (가장 위쪽 Y좌표, 음수일 수 있음)
+global pW := DllCall("User32.dll\GetSystemMetrics", "Int", 78, "Int") ; SM_CXVIRTUALSCREEN (전체 가로 폭)
+global pH := DllCall("User32.dll\GetSystemMetrics", "Int", 79, "Int") ; SM_CYVIRTUALSCREEN (전체 세로 높이)
 ; ==========================================================================
 ; [인클루드 영역]
 ; ==========================================================================
@@ -167,10 +173,18 @@ CheckAndSetResolution() {
     sh := A_ScreenHeight
     static prevW := 0, prevH := 0
 
-    if (sw != prevW || sh != prevH) {
+    ;if (sw != prevW || sh != prevH) {
         ; 해상도 변경 시에도 무스케일링 진짜 물리 픽셀 재취득
-        pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int")
-        pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int")
+    ;    pW := DllCall("User32.dll\GetSystemMetrics", "Int", 0, "Int")
+    ;    pH := DllCall("User32.dll\GetSystemMetrics", "Int", 1, "Int")
+
+;위를 변경한 코드
+if (sw != prevW || sh != prevH) {
+        ; 해상도 변경 시 가상 스크린 전체 좌표/크기 재취득
+        pX := DllCall("User32.dll\GetSystemMetrics", "Int", 76, "Int")
+        pY := DllCall("User32.dll\GetSystemMetrics", "Int", 77, "Int")
+        pW := DllCall("User32.dll\GetSystemMetrics", "Int", 78, "Int")
+        pH := DllCall("User32.dll\GetSystemMetrics", "Int", 79, "Int")
 
         if (sw = 2560 && sh = 1440) {
             defaultX := Floor((sw - guiW) / 1.25)

@@ -364,11 +364,19 @@ Numpad1:: {
     ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
 }
 
+;블렌더 사용중이라 일단 주석처리하고, 유튜브로 사용함.
+;2::
+;Numpad2:: {
+;    global capsComboUsed := true
+;    VSCodeSmartLauncher()
+;}
+
 2::
 Numpad2:: {
     global capsComboUsed := true
-    VSCodeSmartLauncher()
+    OpenSite("2", "YouTube", "https://www.youtube.com/")
 }
+
 
 ;3::
 ;Numpad3:: {
@@ -430,52 +438,51 @@ Numpad0:: {
     WinMinimize("A")
 }
 
+F1:: {
+    global capsComboUsed := true
+
+    ToolTip("🦴 RigPractice.blend")
+    SetTimer(() => ToolTip(), -1000)
+
+    Run('"E:\Programs\blender.exe" "G:\AllBlender\RigPractice.blend"')
+}
+
 
 ;웹으로 연 챗지피티는 크롬에서 식별 불가능해서, 그냥 엣지로 챗지피티만 열고 엣지를 토글하는 방식으로 챗지피티를 여는 로직임.
-; CapsLock + ` → ChatGPT Edge 열기 / 기존 ChatGPT 창 활성화
+; CapsLock + ` → Edge가 있으면 기존 Edge 활성화 / 없으면 새 Edge 실행
 SC029:: {
     global capsComboUsed := true
 
     ToolTip("🤖 ChatGPT (Edge)")
     SetTimer(() => ToolTip(), -300)
 
-    ; --------------------------------------------------
-    ; 현재 열려 있는 Edge 창들을 전부 검사
-    ; --------------------------------------------------
+    ; 현재 실행 중인 Edge 창 찾기
     edgeWindows := WinGetList("ahk_exe msedge.exe")
 
-    for hwnd in edgeWindows {
-        title := WinGetTitle("ahk_id " hwnd)
+    ; Edge가 이미 하나라도 있으면 새 창을 만들지 않고 기존 창 활성화
+    if (edgeWindows.Length > 0) {
+        hwnd := edgeWindows[1]
 
-        ; 창 제목에 ChatGPT가 들어 있으면 기존 창 사용
-        if InStr(title, "ChatGPT") {
-            ; 최소화되어 있다면 복원
-            if (WinGetMinMax("ahk_id " hwnd) = -1)
-                WinRestore("ahk_id " hwnd)
+        ; 최소화되어 있으면 복원
+        if (WinGetMinMax("ahk_id " hwnd) = -1)
+            WinRestore("ahk_id " hwnd)
 
-            ; 기존 ChatGPT 창 활성화
+        ; 기존 Edge 활성화
+        WinActivate("ahk_id " hwnd)
+        WinWaitActive("ahk_id " hwnd, , 0.5)
+
+        ; 활성화가 안 되면 강제로 앞으로 가져오기
+        if !WinActive("ahk_id " hwnd) {
+            WinSetAlwaysOnTop(1, "ahk_id " hwnd)
+            Sleep 50
+            WinSetAlwaysOnTop(0, "ahk_id " hwnd)
             WinActivate("ahk_id " hwnd)
-            WinWaitActive("ahk_id " hwnd, , 0.5)
-
-            ; 혹시 Windows가 활성화를 막으면 강제로 위로
-            if !WinActive("ahk_id " hwnd) {
-                WinSetAlwaysOnTop(1, "ahk_id " hwnd)
-                Sleep 50
-                WinSetAlwaysOnTop(0, "ahk_id " hwnd)
-                WinActivate("ahk_id " hwnd)
-            }
-
-            return
         }
+
+        return
     }
 
-    ; --------------------------------------------------
-    ; ChatGPT Edge 창이 하나도 없을 때만 새로 실행
-    ; --------------------------------------------------
+    ; Edge가 하나도 없을 때만 ChatGPT Edge 새로 실행
     Run('msedge.exe --new-window "https://chatgpt.com/"')
-
-    ; 새 창이 뜰 때까지 기다림
-    Sleep 500
 }
-
 #HotIf
