@@ -151,11 +151,7 @@ if (WinActive("ahk_exe notepad.exe")
     return
 }
 
-; [3] Chrome
-if WinActive("ahk_exe chrome.exe") {
-    SendInput "^#/"
-    return
-}
+
 
 ; 마우스 아래 창의 제목 획득
 try {
@@ -173,13 +169,16 @@ if InStr(mouseTitle, "콜로소") {
     return
 }
 
-; [5] YouTube
+; YouTube
 if InStr(mouseTitle, "YouTube") {
-    EnsureWindowActive(mouseHwnd)
-    ToolTip "◀ Speed Down"
-    SetTimer(() => ToolTip(), -700)
-    SendInput "+,"
-    return
+    if (elapsed < 250) {
+        SendInput "+,"
+        return
+    }
+    else {
+        SendInput "^#/"
+        return
+    }
 }
 
 ; [6] Udemy
