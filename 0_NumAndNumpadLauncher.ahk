@@ -260,8 +260,24 @@ Numpad5:: OpenSite("Numpad5", "SOOP|아프리카|Afreeca", "https://www.sooplive
 5::        OpenSite("5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
 Numpad6:: OpenSite("Numpad6", "YouTube", "https://www.youtube.com/")
 6::        OpenSite("6", "YouTube", "https://www.youtube.com/")
+/*
 Numpad7:: OpenSite("Numpad7", "GOOGLE|구글", "https://www.google.com/")
 7::        OpenSite("7", "GOOGLE|구글", "https://www.google.com/")
+*/
+
+; --- [새로운 Numpad7 동작: 왼쪽 방향키] ---
+Numpad7:: {
+    Send("{Left}")
+ToolTip("◀")
+    SetTimer(() => ToolTip(), -200)
+}
+7:: {
+    Send("{Left}")
+ToolTip("◀")
+    SetTimer(() => ToolTip(), -200)
+}
+
+
 
 ; --- 사진 / 메모장 복합 키 ---
 ;Numpad8:: {
@@ -280,9 +296,22 @@ Numpad8:: {
     ; 원하시는 URL과 이름을 여기에 넣어주세요 (예: ChatGPT)
     OpenEdgeApp("ChatGPT (Edge)", "https://chatgpt.com/")
 }
-
+/*
 Numpad9:: CenterMouseAndExecuteMacro()
 9::        CenterMouseAndExecuteMacro()
+*/
+; --- [새로운 Numpad9 동작: 오른쪽 방향키] ---
+Numpad9:: {
+    Send("{Right}")
+ToolTip("▶")
+    SetTimer(() => ToolTip(), -200)
+}
+9:: {
+    Send("{Right}")
+ToolTip("▶")
+    SetTimer(() => ToolTip(), -200)
+}
+
 
 NumLock:: OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
 
