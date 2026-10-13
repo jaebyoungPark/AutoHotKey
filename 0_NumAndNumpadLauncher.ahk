@@ -163,6 +163,42 @@ MoveMouseToOtherMonitor() {
     SetTimer () => ToolTip(), -120
 }
 
+; [함수] Edge 브라우저(특정 사이트) 토글 실행 함수
+OpenEdgeApp(searchTitle, url) {
+    global capsComboUsed := true
+
+    ToolTip("🤖 " . searchTitle)
+    SetTimer(() => ToolTip(), -300)
+
+    edgeWindows := WinGetList("ahk_exe msedge.exe")
+
+    if (edgeWindows.Length > 0) {
+        hwnd := edgeWindows[1]
+
+        if WinActive("ahk_id " . hwnd) {
+            WinMinimize("ahk_id " . hwnd)
+            return
+        }
+
+        if (WinGetMinMax("ahk_id " hwnd) = -1)
+            WinRestore("ahk_id " hwnd)
+
+        WinActivate("ahk_id " hwnd)
+        WinWaitActive("ahk_id " hwnd, , 0.5)
+
+        if !WinActive("ahk_id " hwnd) {
+            WinSetAlwaysOnTop(1, "ahk_id " hwnd)
+            Sleep 50
+            WinSetAlwaysOnTop(0, "ahk_id " hwnd)
+            WinActivate("ahk_id " hwnd)
+        }
+        return
+    }
+
+    Run('msedge.exe --new-window "' . url . '"')
+}
+
+
 ; 개발 환경 판별 함수
 IsDevEnvironment() => (WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe UnrealEditor.exe") || WinActive("ahk_exe UnrealEditorFortnite-Win64-Shipping.exe") || InStr(WinGetTitle("A"), "Unreal Editor") || WinActive("ahk_class UnrealWindow") || WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe code.exe"))
 
@@ -228,13 +264,21 @@ Numpad7:: OpenSite("Numpad7", "GOOGLE|구글", "https://www.google.com/")
 7::        OpenSite("7", "GOOGLE|구글", "https://www.google.com/")
 
 ; --- 사진 / 메모장 복합 키 ---
+;Numpad8:: {
+;    if KeyWait("Numpad8", "T0.27") ? ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true) : ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", true)
+;        KeyWait("Numpad8")
+;}
+;8:: {
+;    if KeyWait("8", "T0.27") ? ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true) : ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", true)
+;        KeyWait("8")
+;}
+
+8::
 Numpad8:: {
-    if KeyWait("Numpad8", "T0.27") ? ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true) : ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", true)
-        KeyWait("Numpad8")
-}
-8:: {
-    if KeyWait("8", "T0.27") ? ActivateOrCycleEx("ahk_exe Photos.exe", "ms-photos:", true) : ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", true)
-        KeyWait("8")
+    global capsComboUsed := true
+    
+    ; 원하시는 URL과 이름을 여기에 넣어주세요 (예: ChatGPT)
+    OpenEdgeApp("ChatGPT (Edge)", "https://chatgpt.com/")
 }
 
 Numpad9:: CenterMouseAndExecuteMacro()
@@ -282,7 +326,12 @@ Numpad0:: {
         Send("{F11}"), KeyWait("Numpad0")
 }
 
-; NumpadDiv 복합 기능
+; ==================================================
+; NumpadDiv (/) 키 복합 기능 로직
+; ==================================================
+
+/*
+; [요청하신 기존 로직 주석 처리]
 NumpadDiv:: {
     if WinActive("ahk_exe ChatGPT.exe")
         return Send("{Up 2}")
@@ -297,6 +346,12 @@ NumpadDiv:: {
     else
         MoveMouseToOtherMonitor(), KeyWait("NumpadDiv")
 }
+*/
+
+; [복제 및 HandleCtrlShiftA 호출로 대체된 NumpadDiv]
+$NumpadDiv:: HandleCtrlShiftA() ;OpenBookmark.ahk 에 있음
+
+
 
 ; NumpadMult 복합 기능
 NumpadMult:: {
