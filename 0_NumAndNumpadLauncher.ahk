@@ -524,23 +524,35 @@ Numpad3:: {
     ActivateOrCycleEx("Stephen Ulibarri ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s1-l1-project-167126411?collection=2331829"', true)
 }
 
+;4::
+;Numpad4:: {
+;    global capsComboUsed := true
+;    OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
+;}
+
 4::
 Numpad4:: {
     global capsComboUsed := true
-    OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
+    ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", false)
 }
 
 5::
 Numpad5:: {
     global capsComboUsed := true
-    OpenSite("5", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
+    OpenSite("5", "치지직|CHZZK", "https://chzzk.naver.com/")
 }
 
 6::
 Numpad6:: {
     global capsComboUsed := true
-    OpenSite("6", "YouTube", "https://www.youtube.com/")
+    OpenSite("6", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
 }
+
+;6::
+;Numpad6:: {
+;    global capsComboUsed := true
+;    OpenSite("6", "YouTube", "https://www.youtube.com/")
+;}
 
 7::
 Numpad7:: {
