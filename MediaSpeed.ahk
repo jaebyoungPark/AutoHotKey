@@ -241,7 +241,7 @@ if WinActive("ahk_exe devenv.exe")
 
 ; [9] Blender
 if WinActive("ahk_exe blender.exe") {
-    if (elapsed < 400) {
+    if (elapsed < 200) {
         Send "{Ctrl up}{Shift up}{Alt up}"
         Sleep 50
         SendEvent "{Alt down}p{Alt up}"

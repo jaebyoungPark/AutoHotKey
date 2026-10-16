@@ -315,10 +315,20 @@ ToolTip("▶")
 
 NumLock:: OpenSite("9", "Epic Games Documentation|Epic Developer Community", "https://dev.epicgames.com/documentation/")
 
+; ==================================================
+; NumpadAdd (+) 키 수정 (유튜브 환경에서 Shift + .)
+; ==================================================
 $NumpadAdd::
 {
+    if WinActive("YouTube") {
+        Send("{Shift Down}{.}{Shift Up}")
+        ToolTip("⏩ Faster (Shift + .)")
+        SetTimer(() => ToolTip(), -200)
+        return
+    }
+
     if KeyWait("NumpadAdd", "T0.2") {
-        ; 단독 입력 시 동작
+        ; 단독 입력 시 동작 없음
     } else {
         KeyWait("NumpadAdd")
     }
@@ -344,13 +354,26 @@ $F3:: {
         OpenSite("F3", "Claude", "https://claude.ai/")
     }
 }
-NumpadSub:: OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
+; ==================================================
+; NumpadSub (-) 키 수정 (유튜브 환경에서 Shift + ,)
+; ==================================================
+NumpadSub:: {
+    if WinActive("YouTube") {
+        Send("{Shift Down}{,}{Shift Up}")
+        ToolTip("⏪ Slower (Shift + ,)")
+        SetTimer(() => ToolTip(), -200)
+        return
+    }
+
+    ; 유튜브가 아닐 때는 기존 Gemini 사이트 열기 유지
+    OpenSite("NumpadSub", "Gemini", "https://gemini.google.com/")
+}
 F4::         OpenSite("F4", "Gemini", "https://gemini.google.com/")
 
-; 최소화 / 전체화면
+; 스페이스바 / 전체화면
 Numpad0:: {
     if KeyWait("Numpad0", "T0.27")
-        WinMinimize("A")
+        Send("{Space}")
     else
         Send("{F11}"), KeyWait("Numpad0")
 }
@@ -382,15 +405,31 @@ $NumpadDiv:: HandleCtrlShiftA() ;OpenBookmark.ahk 에 있음
 
 
 
-; NumpadMult 복합 기능
+; ==================================================
+; ==================================================
+; NumpadMult (*) 키 복합 기능 로직 (짧게: 기존 동작 / 길게: Ctrl + Win + /)
+; ==================================================
 NumpadMult:: {
-    if WinActive("ahk_exe ChatGPT.exe")
-        return Send("{Down 2}")
-    if WinActive("ahk_exe Photos.exe")
-        return Send("{Right}")
-    if WinActive("ahk_class UnrealWindow")
-        return MoveMouseToOtherMonitor()
-    Send "^{Tab}"
+    if KeyWait("NumpadMult", "T0.22") {
+        ; --- [짧게 누를 때] 기존 동작 유지 ---
+        if WinActive("ahk_exe ChatGPT.exe")
+            return Send("{Down 2}")
+        if WinActive("ahk_exe Photos.exe")
+            return Send("{Right}")
+        if WinActive("ahk_class UnrealWindow")
+            return MoveMouseToOtherMonitor()
+        
+        ; 기본 동작: 스페이스바 입력 및 툴팁 표시
+        Send("{Space}")
+        ToolTip("␣ Space")
+        SetTimer(() => ToolTip(), -200)
+    } else {
+        ; --- [0.3초 이상 길게 누를 때] ---
+        SendInput("^#/")
+        ToolTip("⌨️ ^#/")
+        SetTimer(() => ToolTip(), -200)
+        KeyWait("NumpadMult") ; 키를 뗄 때까지 대기
+    }
 }
 
 ; ==================================================
