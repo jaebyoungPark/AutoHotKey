@@ -481,6 +481,12 @@ z:: {
     SendInput("{Blind}" . A_ThisHotkey)
 }
 
+1::
+Numpad1:: {
+    global capsComboUsed := true
+    ActivateOrCycleEx("Unreal Editor|언리얼 에디터", "", false)
+}
+
 ;1::
 ;Numpad1:: {
 ;    global capsComboUsed := true
@@ -488,17 +494,17 @@ z:: {
 ;}
 
 ;블렌더 사용중이라 일단 주석처리하고, 유튜브로 사용함.
-1::
-Numpad1:: {
+2::
+Numpad2:: {
     global capsComboUsed := true
     VSCodeSmartLauncher()
 }
 
-2::
-Numpad2:: {
-    global capsComboUsed := true
-    OpenSite("2", "YouTube", "https://www.youtube.com/")
-}
+;2::
+;Numpad2:: {
+;    global capsComboUsed := true
+;    OpenSite("2", "YouTube", "https://www.youtube.com/")
+;}
 
 ;3::
 ;Numpad3:: {
@@ -542,17 +548,17 @@ Numpad5:: {
     OpenSite("5", "치지직|CHZZK", "https://chzzk.naver.com/")
 }
 
-6::
-Numpad6:: {
-    global capsComboUsed := true
-    OpenSite("6", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
-}
-
 ;6::
 ;Numpad6:: {
 ;    global capsComboUsed := true
-;    OpenSite("6", "YouTube", "https://www.youtube.com/")
+;    OpenSite("6", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
 ;}
+
+6::
+Numpad6:: {
+    global capsComboUsed := true
+    OpenSite("6", "YouTube", "https://www.youtube.com/")
+}
 
 7::
 Numpad7:: {
