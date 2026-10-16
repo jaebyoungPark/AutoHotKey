@@ -1,8 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
 #HotIf WinActive("ahk_exe explorer.exe")
 
-; Alt(!) + 마우스 좌클릭(LButton)
-!LButton:: {
+; Alt(!) +Ctrl(^) + 마우스 좌클릭(LButton)
+!^LButton:: {
     ; 마우스 클릭 위치의 파일이 정상적으로 먼저 선택되도록 실행
     Click()
     Sleep(50)

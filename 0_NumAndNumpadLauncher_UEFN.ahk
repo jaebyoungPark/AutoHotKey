@@ -198,6 +198,17 @@ OpenEdgeApp(searchTitle, url) {
     Run('msedge.exe --new-window "' . url . '"')
 }
 
+; 언리얼 전용 깔끔한 활성화 함수
+ActivateUnrealClean(searchTitle) {
+    if hwnd := WinExist(searchTitle) {
+        if (WinGetMinMax("ahk_id " hwnd) = -1)
+            WinRestore("ahk_id " hwnd)
+        
+        ; 내부 창 포커스 꼬임 방지를 위해 최상단 강제 트릭 없이 곧바로 활성화
+        WinActivate("ahk_id " hwnd)
+    }
+}
+
 
 ; 개발 환경 판별 함수
 IsDevEnvironment() => (WinActive("ahk_exe UE4Editor.exe") || WinActive("ahk_exe UnrealEditor.exe") || WinActive("ahk_exe UnrealEditorFortnite-Win64-Shipping.exe") || InStr(WinGetTitle("A"), "Unreal Editor") || WinActive("ahk_class UnrealWindow") || WinActive("ahk_exe devenv.exe") || WinActive("ahk_exe code.exe"))
@@ -484,9 +495,10 @@ z:: {
 1::
 Numpad1:: {
     global capsComboUsed := true
-    ActivateOrCycleEx("Unreal Editor|언리얼 에디터", "", false)
+    ; 언리얼 에디터, UEFN, UE4 에디터 중 무엇이든 매칭되도록 정규식 패턴 지정
+    ActivateUnrealClean("ahk_exe (UnrealEditor|UE4Editor|UnrealEditorFortnite-Win64-Shipping)\.exe") 
 }
-
+1
 ;1::
 ;Numpad1:: {
 ;    global capsComboUsed := true

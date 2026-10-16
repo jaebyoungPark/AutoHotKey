@@ -49,7 +49,7 @@
 #Include TeleportMouseCursor.ahk
 #Include MoveCursor.ahk
 #Include MouseHighlight.ahk
-#Include OpenHotkeyWithNotepad.ahk
+#Include OpenNotepad.ahk
 
 #Include VC_SelectLine.ahk
 #Include ShowCornerFrame.ahk

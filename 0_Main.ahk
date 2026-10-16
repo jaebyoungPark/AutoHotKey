@@ -2,7 +2,7 @@
 #SingleInstance Force
 
 HotKeyList := [
-    "RButton", "XButton1", "XButton2", "MButton", "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton",
+    "RButton", "XButton1", "XButton2", "MButton", "LButton", "+!LButton", "+!RButton", "^LButton", "~LButton", "!LButton", "!^lbutton"
     "+WheelUp", "^+WheelDown", "!WheelUp", "!WheelDown", "+WheelUp", "+WheelDown", "^!WheelUp", "^!WheelDown",
     "$^1", "$^2", "^3", "^4", "+1", "+2", "+3", "+4", "8", "$^+=", "^!+p", "^!+o", "$^+a",
     "#+-", "#+=:", "#'", "+!'", "+!;", "^``", "^+``", "^SC028", "^+SC028",
