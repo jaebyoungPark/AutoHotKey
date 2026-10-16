@@ -481,25 +481,24 @@ z:: {
     SendInput("{Blind}" . A_ThisHotkey)
 }
 
+;1::
+;Numpad1:: {
+;    global capsComboUsed := true
+;    ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+;}
+
+;블렌더 사용중이라 일단 주석처리하고, 유튜브로 사용함.
 1::
 Numpad1:: {
     global capsComboUsed := true
-    ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
+    VSCodeSmartLauncher()
 }
-
-;블렌더 사용중이라 일단 주석처리하고, 유튜브로 사용함.
-;2::
-;Numpad2:: {
-;    global capsComboUsed := true
-;    VSCodeSmartLauncher()
-;}
 
 2::
 Numpad2:: {
     global capsComboUsed := true
     OpenSite("2", "YouTube", "https://www.youtube.com/")
 }
-
 
 ;3::
 ;Numpad3:: {
@@ -513,10 +512,16 @@ Numpad2:: {
 ;    OpenSite("3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
 ;}
 
+;3::
+;Numpad3:: {
+;   global capsComboUsed := true
+;    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+;}
+
 3::
 Numpad3:: {
     global capsComboUsed := true
-    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
+    ActivateOrCycleEx("Stephen Ulibarri ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s1-l1-project-167126411?collection=2331829"', true)
 }
 
 4::
