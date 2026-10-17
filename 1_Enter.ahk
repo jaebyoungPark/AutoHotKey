@@ -196,24 +196,26 @@ if (isHolding)
 
 }
 
-; Esc → 홀드 중이면 해제 / 아니면 원래 Esc 그대로
+/*
+왜 만든 핫키인지 까먹었고, 당장 포트나이트에서 esc가 안먹혀서 일단은 주석처리 함
+Esc → 홀드 중이면 해제 / 아니면 원래 Esc 그대로
 Esc::
 {
-global isHolding
+    global isHolding
 
-if (isHolding)
-{
-    Send "{LButton Up}"
-    isHolding := false
-    ToolTip "Left Click"
-    SetTimer () => ToolTip(), -800
+    if (isHolding)
+    {
+        Send "{LButton Up}"
+        isHolding := false
+        ToolTip "Left Click"
+        SetTimer () => ToolTip(), -800
+    }
+    else
+    {
+        Send "{Esc}"
+    }
 }
-else
-{
-    Send "{Esc}"
-}
-
-}
+*/
 
 +Enter::
 {

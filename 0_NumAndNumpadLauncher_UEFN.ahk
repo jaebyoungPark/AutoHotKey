@@ -447,200 +447,129 @@ NumpadMult:: {
 ; [CapsLock + 알파벳/숫자 단축키 설정]
 ; ==================================================
 
-global capsComboUsed := false
+; ==================================================
+; [CapsLock + 숫자/F1/` 단축키]
+; 누르는 즉시 대소문자 토글, 조합 키를 쓰면 누르기 전 상태로 복구
+; ==================================================
 
-*CapsLock::
-{
-    global capsComboUsed := false
-    KeyWait("CapsLock")
-    
+global capsComboUsed := false
+global capsHeld := false
+global capsPrev := false
+
+; 조합 키 사용 시 호출: 홀드당 한 번만 원래 상태로 복구
+CapsCombo() {
+    global capsComboUsed, capsPrev
     if (!capsComboUsed) {
-        Send("{Blind}{CapsLock}")
+        capsComboUsed := true
+        SetCapsLockState(capsPrev)
     }
+}
+
+*CapsLock:: {
+    global capsComboUsed, capsHeld, capsPrev
+    if capsHeld          ; 키 반복 입력 무시
+        return
+    capsHeld := true
+    capsComboUsed := false
+    capsPrev := GetKeyState("CapsLock", "T")
+    SetCapsLockState(!capsPrev)     ; 누르는 즉시 토글
+}
+
+*CapsLock up:: {
+    global capsHeld
+    capsHeld := false
 }
 
 #HotIf GetKeyState("CapsLock", "P")
 
-a::
-b::
-c::
-d::
-e::
-f::
-g::
-h::
-i::
-j::
-k::
-l::
-m::
-n::
-o::
-p::
-q::
-r::
-s::
-t::
-u::
-v::
-w::
-x::
-y::
-z:: {
-    global capsComboUsed := true
-    SetCapsLockState(!GetKeyState("CapsLock", "T"))
-    SendInput("{Blind}" . A_ThisHotkey)
-}
-
 1::
 Numpad1:: {
-    global capsComboUsed := true
-    ; 언리얼 에디터, UEFN, UE4 에디터 중 무엇이든 매칭되도록 정규식 패턴 지정
-    ActivateUnrealClean("ahk_exe (UnrealEditor|UE4Editor|UnrealEditorFortnite-Win64-Shipping)\.exe") 
+    CapsCombo()
+    ActivateUnrealClean("ahk_exe (UnrealEditor|UE4Editor|UnrealEditorFortnite-Win64-Shipping)\.exe")
 }
-1
-;1::
-;Numpad1:: {
-;    global capsComboUsed := true
-;    ActivateOrCycleEx("ahk_exe i)blender\.exe ahk_class GHOST_WindowClass", "blender.exe", false)
-;}
 
-;블렌더 사용중이라 일단 주석처리하고, 유튜브로 사용함.
 2::
 Numpad2:: {
-    global capsComboUsed := true
+    CapsCombo()
     VSCodeSmartLauncher()
 }
 
-;2::
-;Numpad2:: {
-;    global capsComboUsed := true
-;    OpenSite("2", "YouTube", "https://www.youtube.com/")
-;}
-
-;3::
-;Numpad3:: {
-;    global capsComboUsed := true
-;    OpenSite("3", "친절한 블렌더", "https://www.inflearn.com/...")
-;}
-
-;3::
-;Numpad3:: {
-;    global capsComboUsed := true
-;    OpenSite("3", "Coloso|콜로소", "https://coloso.co.kr/classroom/236440")
-;}
-
-;3::
-;Numpad3:: {
-;   global capsComboUsed := true
-;    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
-;}
-
 3::
 Numpad3:: {
-    global capsComboUsed := true
+    CapsCombo()
     ActivateOrCycleEx("Stephen Ulibarri ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s1-l1-project-167126411?collection=2331829"', true)
 }
 
-;4::
-;Numpad4:: {
-;    global capsComboUsed := true
-;    OpenSite("4", "치지직|CHZZK", "https://chzzk.naver.com/")
-;}
-
 4::
 Numpad4:: {
-    global capsComboUsed := true
+    CapsCombo()
     ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", false)
 }
 
 5::
 Numpad5:: {
-    global capsComboUsed := true
+    CapsCombo()
     OpenSite("5", "치지직|CHZZK", "https://chzzk.naver.com/")
 }
 
-;6::
-;Numpad6:: {
-;    global capsComboUsed := true
-;    OpenSite("6", "SOOP|아프리카|Afreeca", "https://www.sooplive.com/")
-;}
-
 6::
 Numpad6:: {
-    global capsComboUsed := true
+    CapsCombo()
     OpenSite("6", "YouTube", "https://www.youtube.com/")
 }
 
 7::
 Numpad7:: {
-    global capsComboUsed := true
+    CapsCombo()
     OpenSite("7", "GOOGLE|구글", "https://www.google.com/")
 }
 
 8::
 Numpad8:: {
-    global capsComboUsed := true
+    CapsCombo()
     OpenSite("8", "Photos", "ms-photos:")
 }
 
 9::
 Numpad9:: {
-    global capsComboUsed := true
+    CapsCombo()
     CenterMouseAndExecuteMacro()
 }
 
 0::
 Numpad0:: {
-    global capsComboUsed := true
+    CapsCombo()
     WinMinimize("A")
 }
 
 F1:: {
-    global capsComboUsed := true
-
+    CapsCombo()
     ToolTip("🦴 RigPractice.blend")
     SetTimer(() => ToolTip(), -1000)
-
     Run('"E:\Programs\blender.exe" "G:\AllBlender\RigPractice.blend"')
 }
 
-
-;웹으로 연 챗지피티는 크롬에서 식별 불가능해서, 그냥 엣지로 챗지피티만 열고 엣지를 토글하는 방식으로 챗지피티를 여는 로직임.
-; CapsLock + ` → Edge가 있으면 기존 Edge 활성화 / 없으면 새 Edge 실행
 SC029:: {
-    global capsComboUsed := true
-
+    CapsCombo()
     ToolTip("🤖 ChatGPT (Edge)")
     SetTimer(() => ToolTip(), -300)
 
-    ; 현재 실행 중인 Edge 창 찾기
     edgeWindows := WinGetList("ahk_exe msedge.exe")
-
-    ; Edge가 이미 하나라도 있으면 새 창을 만들지 않고 기존 창 활성화
     if (edgeWindows.Length > 0) {
         hwnd := edgeWindows[1]
-
-        ; 최소화되어 있으면 복원
         if (WinGetMinMax("ahk_id " hwnd) = -1)
             WinRestore("ahk_id " hwnd)
-
-        ; 기존 Edge 활성화
         WinActivate("ahk_id " hwnd)
         WinWaitActive("ahk_id " hwnd, , 0.5)
-
-        ; 활성화가 안 되면 강제로 앞으로 가져오기
         if !WinActive("ahk_id " hwnd) {
             WinSetAlwaysOnTop(1, "ahk_id " hwnd)
             Sleep 50
             WinSetAlwaysOnTop(0, "ahk_id " hwnd)
             WinActivate("ahk_id " hwnd)
         }
-
         return
     }
-
-    ; Edge가 하나도 없을 때만 ChatGPT Edge 새로 실행
     Run('msedge.exe --new-window "https://chatgpt.com/"')
 }
+
 #HotIf
