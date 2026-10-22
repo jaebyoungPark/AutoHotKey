@@ -1,15 +1,12 @@
-﻿
-#Requires AutoHotkey v2.0
+﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; ==========================================
 ; 설정 변수
 ; ==========================================
-global HighlightInterval := 5000   ; 사라진 후 0.5초 뒤 재출현
 global MoveResetInterval := 1000  ; 마우스 움직인 후 다시 그려질 때까지의 대기 시간 (1초)
-global CircleRadius := 500       
-global InnerRadius := 490        
-global TargetAlpha := 70
+global LineWidth := 50         ; 모니터 양쪽 세로선의 두께 (픽셀)
+global TargetAlpha := 70          ; 투명도 (0 ~ 255)
 
 global FadeInDuration := 300
 global CircleDuration := 3500
@@ -23,10 +20,11 @@ global FadeMode := 0
 
 global BaseMouseX := 0
 global BaseMouseY := 0
+global BaseMonitorIndex := 1
 
 ; 💡 알록달록 색상 관련 변수
-global ColorHue := 0             ; 현재 색상 값 (0 ~ 360)
-global ColorSpeed := 2           ; 색상이 변하는 속도 (숫자가 클수록 빠르게 변함)
+global ColorHue := 0              ; 현재 색상 값 (0 ~ 360)
+global ColorSpeed := 2            ; 색상이 변하는 속도
 
 ; ==========================================
 ; F11 핫키
@@ -51,11 +49,11 @@ ToggleHighlight() {
     IsActive := !IsActive
 
     if (IsActive) {
-        ToolTip("마우스 하이라이트: 켜짐")
+        ToolTip("모니터 양쪽 세로선 하이라이트: 켜짐")
         SetTimer(() => ToolTip(), -1000)
         ShowHighlight()
     } else {
-        ToolTip("마우스 하이라이트: 꺼짐")
+        ToolTip("모니터 양쪽 세로선 하이라이트: 꺼짐")
         SetTimer(() => ToolTip(), -1000)
         StopAllTimers()
         DestroyHighlight()
@@ -68,16 +66,16 @@ StopAllTimers() {
     SetTimer(FadeAnimate, 0)
     SetTimer(CheckMouseMovement, 0)
     SetTimer(SwitchToFadeOut, 0)
-    SetTimer(ChangeColorAnimate, 0) ; 💡 색상 타이머도 정지
+    SetTimer(ChangeColorAnimate, 0)
 }
 
 ; ==========================================
-; 원 생성
+; 세로선 생성 (모니터 좌우측)
 ; ==========================================
 ShowHighlight() {
-    global HighlightGui, CircleRadius, InnerRadius
+    global HighlightGui, LineWidth
     global CurrentAlpha, FadeMode, FadeInDuration, FadingSteps
-    global BaseMouseX, BaseMouseY
+    global BaseMouseX, BaseMouseY, BaseMonitorIndex
 
     StopAllTimers()
     DestroyHighlight()
@@ -85,51 +83,79 @@ ShowHighlight() {
     CoordMode("Mouse", "Screen")
     MouseGetPos(&mouseX, &mouseY)
     
+    mLeft := 0, mTop := 0, mRight := A_ScreenWidth, mBottom := A_ScreenHeight
+    currentMonitor := 1
+    
+    monCount := MonitorGetCount()
+    Loop monCount {
+        if MonitorGetWorkArea(A_Index, &l, &t, &r, &b) {
+            if (mouseX >= l && mouseX <= r && mouseY >= t && mouseY <= b) {
+                currentMonitor := A_Index
+                mLeft := l, mTop := t, mRight := r, mBottom := b
+                break
+            }
+        }
+    }
+
     BaseMouseX := mouseX
     BaseMouseY := mouseY
+    BaseMonitorIndex := currentMonitor
 
-    HighlightGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20")
+    monitorWidth := mRight - mLeft
+    ; 💡 작업바와의 미세한 충돌 및 깜빡임 방지를 위해 높이를 2픽셀 줄임
+    monitorHeight := (b - mTop) - 2
+
+    ; -DPIScale을 추가하여 모니터 배율에 따른 크기/위치 왜곡 방지
+    HighlightGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x20 -DPIScale")
     
-    ; 초기 색상을 가져와 지정합니다.
     initialColor := HSVtoRGB(ColorHue, 100, 100)
     HighlightGui.BackColor := initialColor
 
-    diameter := CircleRadius * 2
-    HighlightGui.Show("X" (mouseX - CircleRadius) " Y" (mouseY - CircleRadius)
-        " W" diameter " H" diameter " NoActivate")
+    ; 작업바를 제외하고 약간 여유를 둔 영역으로 GUI 생성
+    HighlightGui.Show("X" mLeft " Y" mTop " W" monitorWidth " H" monitorHeight " NoActivate")
 
     CurrentAlpha := 0
     WinSetTransparent(CurrentAlpha, HighlightGui.Hwnd)
     
-    hRgnOuter := DllCall("gdi32\CreateEllipticRgn", "Int", 0, "Int", 0, "Int", diameter, "Int", diameter, "Ptr")
-    innerOffset := CircleRadius - InnerRadius
-    innerDiameter := innerOffset + (InnerRadius * 2)
-    hRgnInner := DllCall("gdi32\CreateEllipticRgn", "Int", innerOffset, "Int", innerOffset, "Int", innerDiameter, "Int", innerDiameter, "Ptr")
+    ; 왼쪽 세로선 영역 생성
+    hRgnLeft := DllCall("gdi32\CreateRectRgn", "Int", 0, "Int", 0, "Int", LineWidth, "Int", monitorHeight, "Ptr")
+    ; 오른쪽 세로선 영역 생성
+    hRgnRight := DllCall("gdi32\CreateRectRgn", "Int", monitorWidth - LineWidth, "Int", 0, "Int", monitorWidth, "Int", monitorHeight, "Ptr")
     
-    DllCall("gdi32\CombineRgn", "Ptr", hRgnOuter, "Ptr", hRgnOuter, "Ptr", hRgnInner, "Int", 3)
-    DllCall("user32\SetWindowRgn", "Ptr", HighlightGui.Hwnd, "Ptr", hRgnOuter, "Int", 1)
-    DllCall("gdi32\DeleteObject", "Ptr", hRgnInner)
+    ; 두 영역을 합침 (RGN_OR = 2)
+    DllCall("gdi32\CombineRgn", "Ptr", hRgnLeft, "Ptr", hRgnLeft, "Ptr", hRgnRight, "Int", 2)
+    DllCall("user32\SetWindowRgn", "Ptr", HighlightGui.Hwnd, "Ptr", hRgnLeft, "Int", 1)
+    DllCall("gdi32\DeleteObject", "Ptr", hRgnRight)
 
     FadeMode := 1
     stepTime := FadeInDuration / FadingSteps
     SetTimer(FadeAnimate, stepTime)
     
     SetTimer(CheckMouseMovement, 10)
-    
-    ; 💡 원이 켜져 있는 동안 실시간으로 색상을 바꾸는 타이머 가동 (30ms 주기)
     SetTimer(ChangeColorAnimate, 30)
 }
 
 ; ==========================================
-; 실시간 마우스 이동 감지
+; 실시간 마우스 이동 및 모니터 변경 감지
 ; ==========================================
 CheckMouseMovement() {
-    global MoveResetInterval, BaseMouseX, BaseMouseY
+    global MoveResetInterval, BaseMouseX, BaseMouseY, BaseMonitorIndex
     
     CoordMode("Mouse", "Screen")
     MouseGetPos(&cX, &cY)
     
-    if (cX != BaseMouseX || cY != BaseMouseY) {
+    targetMon := 1
+    monCount := MonitorGetCount()
+    Loop monCount {
+        if MonitorGetWorkArea(A_Index, &l, &t, &r, &b) {
+            if (cX >= l && cX <= r && cY >= t && cY <= b) {
+                targetMon := A_Index
+                break
+            }
+        }
+    }
+    
+    if (targetMon != BaseMonitorIndex || cX != BaseMouseX || cY != BaseMouseY) {
         StopAllTimers()
         DestroyHighlight()
         SetTimer(ShowHighlight, -MoveResetInterval)
@@ -171,7 +197,7 @@ FadeAnimate() {
             SetTimer(FadeAnimate, 0)
             currentStep := 0
             SetTimer(CheckMouseMovement, 0)
-            SetTimer(ChangeColorAnimate, 0) ; 💡 사라질 때 색상 타이머 종료
+            SetTimer(ChangeColorAnimate, 0)
 
             DestroyHighlight()
             SetTimer(ShowHighlight, -500)
@@ -198,27 +224,23 @@ DestroyHighlight() {
 }
 
 ; ==========================================
-; 💡 알록달록 색상 변경 함수
+; 알록달록 색상 변경 함수
 ; ==========================================
 ChangeColorAnimate() {
     global HighlightGui, ColorHue, ColorSpeed
     if !(HighlightGui is Gui)
         return
 
-    ; 색상(Hue) 값을 계속 증가시켜 무지개색 효과 유도
     ColorHue := Mod(ColorHue + ColorSpeed, 360)
     rgbColor := HSVtoRGB(ColorHue, 100, 100)
-    
-    ; GUI의 배경색 실시간 변경
     HighlightGui.BackColor := rgbColor
 }
 
-; 💡 HSV(색상, 채도, 명도)를 HEX(RGB) 코드로 변환해주는 헬퍼 함수
+; HSV를 HEX 코드로 변환하는 헬퍼 함수
 HSVtoRGB(h, s, v) {
     s /= 100, v /= 100
     if (s == 0) {
-        hex := Format("{:02X}{:02X}{:02X}", Integer(v*255), Integer(v*255), Integer(v*255))
-        return hex
+        return Format("{:02X}{:02X}{:02X}", Integer(v*255), Integer(v*255), Integer(v*255))
     }
     
     h /= 60
