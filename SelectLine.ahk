@@ -24,6 +24,7 @@ IsSelectLineTarget()
 
     return WinActive("ahk_exe devenv.exe")
         || WinActive("ahk_exe notepad.exe")
+        || WinActive("ahk_exe Code.exe")
         || InStr(title, "Visual Studio")
 }
 
@@ -55,9 +56,20 @@ IsSelectLineTarget()
     ; -----------------------------------------------------
     if (holdTime < 250)
     {
+        ; VS Code 환경일 때만 2번 클릭 및 툴팁 표시
+        if WinActive("ahk_exe Code.exe")
+        {
+            ToolTip "2번 클릭 실행", x + 12, y + 12
+            SetTimer () => ToolTip(), -600
 
-
-        Send "{Home}+{End}"
+            ; 마우스 왼쪽 버튼 2회 연속 클릭 (더블 클릭)
+            Click 2
+        }
+        else
+        {
+            ; 다른 프로그램에서는 기존처럼 한 줄 선택
+            Send "{Home}+{End}"
+        }
     }
     ; -----------------------------------------------------
     ; 길게 누름 (드래그/홀드)

@@ -1,4 +1,10 @@
-﻿;======================================
+﻿; 알아서 하고싶은 모드 하나만 주석해제해서 써라
+
+#Include 0_NumAndNumpadLauncher_UEFN.ahk
+;#Include 0_NumAndNumpadLauncher_Blender.ahk
+
+
+;======================================
 ;Utility
 ;======================================
 
@@ -14,8 +20,7 @@
 #Include 0_Toggle_Suspend.ahk
 #Include 0_ToggleNumPad_Suspend.ahk
 
-#Include 0_NumAndNumpadLauncher_UEFN.ahk
-;#Include 0_NumAndNumpadLauncher_Blender.ahk
+
 
 ;======================================
 ;Toggle

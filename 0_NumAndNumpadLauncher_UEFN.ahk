@@ -473,11 +473,27 @@ CapsCombo() {
     capsComboUsed := false
     capsPrev := GetKeyState("CapsLock", "T")
     SetCapsLockState(!capsPrev)     ; 누르는 즉시 토글
+
+; ⏱️ CapsLock이 눌릴 때마다 기존 10초 타이머를 초기화하고 새로 등록
+    SetTimer(CheckAndTurnOffCapsLock, 0)
 }
 
 *CapsLock up:: {
     global capsHeld
     capsHeld := false
+
+; ⏱️ CapsLock 키를 뗄 때부터 10초(10000ms) 카운트다운 시작
+    ; 음수(-)를 지정하면 정확히 1회만 실행됩니다.
+    SetTimer(CheckAndTurnOffCapsLock, -10000)
+}
+
+; ⏱️ 10초 후 호출될 함수: CapsLock이 켜져(True) 있다면 끔(False)
+CheckAndTurnOffCapsLock() {
+    if GetKeyState("CapsLock", "T") {
+        SetCapsLockState(false)
+        ToolTip("🔒 CapsLock 자동 꺼짐 (10초 경과)")
+        SetTimer(() => ToolTip(), -1500)
+    }
 }
 
 #HotIf GetKeyState("CapsLock", "P")

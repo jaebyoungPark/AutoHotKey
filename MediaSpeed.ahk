@@ -223,13 +223,19 @@ if (isUnrealMouseOver) {
     }
 }
 
-; [8] Visual Studio / VS Code
-if WinActive("ahk_exe devenv.exe")
-    || WinActive("ahk_exe Code.exe") {
+; [8] Visual Studio / VS Code (마우스 위치 기준 안전 활성화 + Ctrl + / 주석 토글)
+if WinActive("ahk_exe devenv.exe") 
+    || WinActive("ahk_exe Code.exe") 
+    || InStr(mouseTitle, "Visual Studio") 
+    || InStr(mouseTitle, "Visual Studio Code") {
+    
+    ; ⚠️ 안전 장치: 커서가 있는 창을 확실히 클릭해서 활성화
+    EnsureWindowActive(mouseHwnd)
+
     if (elapsed < 200) {
-        Send "^+s"
-        ToolTip "전체 저장 완료 😄"
-        SetTimer(() => ToolTip(), -1000)
+        ToolTip "💬 주석 토글 (Ctrl + /)"
+        SetTimer(() => ToolTip(), -600)
+        Send "^/"
     }
     else if (elapsed < 600) {
         ToolTip "Def"

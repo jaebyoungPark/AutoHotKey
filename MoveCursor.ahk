@@ -1,14 +1,16 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 CoordMode "Mouse", "Screen"
+
 ; ==============================
 ; 🔧 전역 설정값
 ; ==============================
-global MoveStepNormalSlow := 3.0
-global MoveStepNormalFast := 7.5
+global MoveStepNormalSlow := 2
+global MoveStepNormalFast := 5
 global NormalAccelTime    := 350
 global MoveInterval       := 10
-global VerticalRatio      := 0.7  ; 대각선 이동 시 수직 비율
+global VerticalRatio      := 0.7   ; 대각선 이동 시 수직 비율
+
 ; ==============================
 ; 📐 좌표 제한 (RShift 전용)
 ; ==============================
@@ -16,10 +18,12 @@ ClampRShift(val, min, max)
 {
     return val < min ? min : (val > max ? max : val)
 }
+
 ; ==============================
 ; 🔒 RShift 단독 방지
 ; ==============================
 ~RShift::Return
+
 ; ==============================
 ; 🔹 툴팁 함수
 ; ==============================
@@ -30,6 +34,7 @@ ShowTooltip(msg) {
 RemoveTooltip() {
     ToolTip
 }
+
 ; ==============================
 ; 🔹 방향키 이동 함수
 ; ==============================
@@ -39,6 +44,7 @@ SendArrow(key, amount, withShift := false) {
     else
         Send "{" key " " amount "}"
 }
+
 ; ==============================
 ; 🔹 시간 기반 처리 함수
 ; ==============================
@@ -73,6 +79,7 @@ HandleShiftKey(key, shortAction, longAction, longActionWithShift := "", shortMsg
         }
     }
 }
+
 ; ==============================
 ; ▶ RShift + 1칸 이동 (a/s/d/f)
 ; ==============================
@@ -112,9 +119,24 @@ RShift & f:: HandleShiftKey("f"
     , "▼ 1칸 선택"
     , "⏬ 페이지 아래로"
 )
+
 ; ==============================
-; ▶ RShift + 3칸 이동 (q/w/e/r)
+; ▶ RShift + z / x (6칸 이동)
 ; ==============================
+RShift & z::
+{
+    isLShift := GetKeyState("LShift", "P")
+    SendArrow("Left", 6, isLShift)
+    ShowTooltip(isLShift ? "◀◀◀ 6칸 선택" : "◀◀◀ 6칸")
+}
+
+RShift & x::
+{
+    isLShift := GetKeyState("LShift", "P")
+    SendArrow("Right", 6, isLShift)
+    ShowTooltip(isLShift ? "▶▶▶ 6칸 선택" : "▶▶▶ 6칸")
+}
+
 ; ==============================
 ; ▶ RShift + q (왼쪽 이동) - 3단계
 ; ==============================
@@ -301,20 +323,6 @@ RShift & r::
     }
 }
 
-
-
-#Requires AutoHotkey v2.0
-#SingleInstance Force
-CoordMode "Mouse", "Screen"
-
-; ==============================
-; 🔧 전역 설정값
-; ==============================
-global MoveStepNormalSlow := 2
-global MoveStepNormalFast := 5
-global MoveInterval       := 10
-global VerticalRatio      := 0.7
-
 ; ==============================
 ; Win 키 단독 입력 방지
 ; ==============================
@@ -353,16 +361,13 @@ MoveMouseWin()
         if (!isLeft && !isRight && !isUp && !isDown)
             break
 
-        ; ==============================
-        ; 🔥 속도 모드 (Alt / Shift / Ctrl)
-        ; ==============================
         isLAlt   := GetKeyState("LAlt", "P")
         isLShift := GetKeyState("LShift", "P")
         isLCtrl  := GetKeyState("LCtrl", "P")
 
         if (isLAlt)
         {
-            baseStep := 0.7                          ; 🎯 초정밀
+            baseStep := 0.7                      ; 🎯 초정밀
         }
         else if (isLCtrl)
         {
@@ -379,9 +384,6 @@ MoveMouseWin()
 
         step := baseStep
 
-        ; ==============================
-        ; 대각선 보정
-        ; ==============================
         isDiagonal := (isLeft || isRight) && (isUp || isDown)
         verticalStep := isDiagonal ? (step * VerticalRatio) : step
 
