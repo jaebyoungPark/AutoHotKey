@@ -5,7 +5,7 @@
 ; 설정 변수
 ; ==========================================
 global MoveResetInterval := 1000  ; 마우스 움직인 후 다시 그려질 때까지의 대기 시간 (1초)
-global LineWidth := 50         ; 모니터 양쪽 세로선의 두께 (픽셀)
+global LineWidth := 100         ; 모니터 양쪽 세로선의 두께 (픽셀)
 global TargetAlpha := 70          ; 투명도 (0 ~ 255)
 
 global FadeInDuration := 300
@@ -24,7 +24,7 @@ global BaseMonitorIndex := 1
 
 ; 💡 알록달록 색상 관련 변수
 global ColorHue := 0              ; 현재 색상 값 (0 ~ 360)
-global ColorSpeed := 2            ; 색상이 변하는 속도
+global ColorSpeed := 0.5          ; 색상이 변하는 속도
 
 ; ==========================================
 ; F11 핫키
@@ -166,53 +166,38 @@ CheckMouseMovement() {
 ; 페이드 애니메이션
 ; ==========================================
 FadeAnimate() {
-    global HighlightGui, TargetAlpha, CurrentAlpha, FadeMode, FadingSteps
-    global CircleDuration
+global HighlightGui, TargetAlpha, CurrentAlpha, FadeMode, FadingSteps
 
-    static currentStep := 0
+static currentStep := 0
 
-    if !(HighlightGui is Gui) {
+if !(HighlightGui is Gui) {
+    SetTimer(FadeAnimate, 0)
+    currentStep := 0
+    return
+}
+
+; 페이드 인
+if (FadeMode == 1) {
+    currentStep++
+    CurrentAlpha := TargetAlpha * (currentStep / FadingSteps)
+
+    if (currentStep >= FadingSteps) {
+        CurrentAlpha := TargetAlpha
+        WinSetTransparent(Integer(TargetAlpha), HighlightGui.Hwnd)
+
         SetTimer(FadeAnimate, 0)
         currentStep := 0
         return
     }
 
-    currentStep++
-
-    if (FadeMode == 1) {
-        CurrentAlpha := TargetAlpha * (currentStep / FadingSteps)
-
-        if (currentStep >= FadingSteps) {
-            WinSetTransparent(Integer(TargetAlpha), HighlightGui.Hwnd)
-            SetTimer(FadeAnimate, 0)
-            currentStep := 0
-            SetTimer(SwitchToFadeOut, -CircleDuration)
-            return
-        }
-    }
-    else {
-        CurrentAlpha := TargetAlpha * (1 - (currentStep / FadingSteps))
-
-        if (CurrentAlpha <= 0 || currentStep >= FadingSteps) {
-            SetTimer(FadeAnimate, 0)
-            currentStep := 0
-            SetTimer(CheckMouseMovement, 0)
-            SetTimer(ChangeColorAnimate, 0)
-
-            DestroyHighlight()
-            SetTimer(ShowHighlight, -500)
-            return
-        }
-    }
-
     WinSetTransparent(Max(1, Integer(CurrentAlpha)), HighlightGui.Hwnd)
 }
 
+}
+
 SwitchToFadeOut() {
-    global FadeMode, FadeOutDuration, FadingSteps
-    FadeMode := 2
-    stepTime := FadeOutDuration / FadingSteps
-    SetTimer(FadeAnimate, stepTime)
+; 자동 페이드 아웃 사용 안 함
+return
 }
 
 DestroyHighlight() {

@@ -37,6 +37,8 @@ IsSelectLineTarget()
 {
     global LStartTime
 
+
+
     LStartTime := A_TickCount
 }
 
