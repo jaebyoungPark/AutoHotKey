@@ -482,20 +482,33 @@ CapsCombo() {
     global capsHeld
     capsHeld := false
 
-; ⏱️ CapsLock 키를 뗄 때부터 10초(10000ms) 카운트다운 시작
-    ; 음수(-)를 지정하면 정확히 1회만 실행됩니다.
-    SetTimer(CheckAndTurnOffCapsLock, -10000)
+    ; CapsLock을 뗀 시점부터 키보드 입력 유휴 시간 확인
+    SetTimer(CheckAndTurnOffCapsLock, 250)
 }
 
-; ⏱️ 10초 후 호출될 함수: CapsLock이 켜져(True) 있다면 끔(False)
+; 마지막 키보드 입력으로부터 5초간 입력이 없을 때 CapsLock 끄기
 CheckAndTurnOffCapsLock() {
-    if GetKeyState("CapsLock", "T") {
-        SetCapsLockState(false)
-        ToolTip("🔒 CapsLock 자동 꺼짐 (10초 경과)")
-        SetTimer(() => ToolTip(), -1500)
+    ; CapsLock이 꺼져 있으면 타이머 종료
+    if !GetKeyState("CapsLock", "T") {
+        SetTimer(CheckAndTurnOffCapsLock, 0)
+        return
     }
-}
 
+    ; CapsLock을 누르고 있는 동안에는 대기
+    if GetKeyState("CapsLock", "P")
+        return
+
+    ; 마지막 키보드 입력 후 5초가 지나지 않았으면 계속 확인
+    if (A_TimeIdleKeyboard < 5000)
+        return
+
+    ; 5초간 키보드 입력이 없으면 CapsLock 끄기
+    SetCapsLockState(false)
+    SetTimer(CheckAndTurnOffCapsLock, 0)
+
+    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 5초 없음)")
+    SetTimer(() => ToolTip(), -500)
+}
 #HotIf GetKeyState("CapsLock", "P")
 
 1::
@@ -513,7 +526,8 @@ Numpad2:: {
 3::
 Numpad3:: {
     CapsCombo()
-    ActivateOrCycleEx("Stephen Ulibarri ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s1-l1-project-167126411?collection=2331829"', true)
+    ; "Patreon" 또는 "Stephen Ulibarri" 중 안정적으로 인식되는 키워드로 변경
+    ActivateOrCycleEx("Patreon ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s2-l8-tuples-167235312?collection=2331829"', true)
 }
 
 4::

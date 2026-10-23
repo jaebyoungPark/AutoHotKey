@@ -64,7 +64,7 @@
 #Include RCtrl.ahk
 #Include VerticalMouse.ahk
 #Include SaveFile.ahk
-#Include AutoSwitchToEng.ahk
+;#Include AutoSwitchToEng.ahk
 
 ;#Include OpenMemory.ahk
 
