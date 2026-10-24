@@ -24,26 +24,29 @@ HandleCtrlAltShiftP()
         title := ""
     }
 
-    ; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
-    if (
-        elapsed < 200
-        && isReleased
-        && !InStr(title, "Udemy")
-        && !InStr(title, "YouTube")
-        && !InStr(title, "블렌더")
-        && !InStr(title, "콜로소")
-    ) {
-        ToggleVirtualLock()
+; [최우선] 200ms 미만으로 짧게 뗐을 때 -> 가상 잠금 즉시 토글
+if (
+    elapsed < 200
+    && isReleased
+    && !InStr(title, "Udemy")
+    && !InStr(title, "YouTube")
+    && !InStr(title, "블렌더")
+    && !InStr(title, "콜로소")
+    && !WinActive("ahk_exe GOM64.EXE")
+) {
+    ToggleVirtualLock()
+    return
+}
+
+; [1] GOM64
+if WinActive("ahk_exe GOM64.EXE") {
+    if (elapsed < 250) {
+        SendInput "+{SC028}"
+        ToolTip "GOM64: Shift + '"
+        SetTimer(() => ToolTip(), -700)
         return
     }
-
-    ; [1] GOM64
-    if WinActive("ahk_exe GOM64.EXE") {
-        if (elapsed < 250) {
-            Send "c"
-            return
-        }
-    }
+}
 
     ; [3] 콜로소 학습 페이지 (마우스 위치 창 활성화 -> 스피드업 ccc)
     if InStr(title, "콜로소") {

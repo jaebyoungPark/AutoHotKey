@@ -4,9 +4,9 @@
 ; ========================================== 
 ; 설정 변수 
 ; ========================================== 
-global MoveResetInterval := 4000  ; 마우스가 멈춘 후 다시 그려질 때까지의 대기 시간 (5초) 
+global MoveResetInterval := 300  ; 마우스가 멈춘 후 다시 그려질 때까지의 대기 시간 (3초) 
 global MoveThreshold := 5        ; 마우스가 이 픽셀 이상 움직여야 '움직임'으로 감지 (미세 떨림 무시)
-global LineWidth := 100           ; 모니터 양쪽 세로선의 두께 (픽셀) 
+global LineWidth := 120           ; 모니터 양쪽 세로선의 두께 (픽셀) 
 global TargetAlpha := 70          ; 투명도 (0 ~ 255) 
  
 global FadeInDuration := 500 
@@ -24,7 +24,7 @@ global BaseMonitorIndex := 1
  
 ; 💡 알록달록 색상 관련 변수 
 global ColorHue := 0              ; 현재 색상 값 (0 ~ 360) 
-global ColorSpeed := 0.5          ; 색상이 변하는 속도 
+global ColorSpeed := 1          ; 색상이 변하는 속도 
  
 ; ========================================== 
 ; F11 핫키 

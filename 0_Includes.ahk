@@ -57,7 +57,7 @@
 #Include OpenNotepad.ahk
 
 #Include VC_SelectLine.ahk
-#Include ShowCornerFrame.ahk
+
 #Include Blender_Shift+Num.ahk
 #Include Blender_CameraFix.ahk
 #Include Blender_Animation.ahk
@@ -65,6 +65,7 @@
 #Include VerticalMouse.ahk
 #Include SaveFile.ahk
 #Include AutoSwitchToEng.ahk
+#Include ShiftOnlyFirstCapital.ahk
 
 ;#Include OpenMemory.ahk
 
