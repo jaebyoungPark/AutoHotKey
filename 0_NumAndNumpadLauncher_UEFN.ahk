@@ -499,7 +499,7 @@ CheckAndTurnOffCapsLock() {
         return
 
     ; 마지막 키보드 입력 후 5초가 지나지 않았으면 계속 확인
-    if (A_TimeIdleKeyboard < 5000)
+    if (A_TimeIdleKeyboard < 2500)
         return
 
     ; 5초간 키보드 입력이 없으면 CapsLock 끄기
