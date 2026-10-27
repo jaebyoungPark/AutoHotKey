@@ -520,7 +520,18 @@ Numpad1:: {
 2::
 Numpad2:: {
     CapsCombo()
-    VSCodeSmartLauncher()
+
+    ; 기존 동작: VS Code가 실행 중이 아니면 새로 실행
+    ; VSCodeSmartLauncher()
+
+    ; VS Code가 실행 중일 때만 기존 창 활성화
+    if (ProcessExist("Code.exe") || ProcessExist("code.exe")) {
+        if hwnd := WinExist("ahk_exe Code.exe") {
+            if (WinGetMinMax("ahk_id " hwnd) = -1)
+                WinRestore("ahk_id " hwnd)
+            WinActivate("ahk_id " hwnd)
+        }
+    }
 }
 
 3::
@@ -573,10 +584,12 @@ Numpad0:: {
 }
 
 F1:: {
-    CapsCombo()
-    ToolTip("🦴 RigPractice.blend")
-    SetTimer(() => ToolTip(), -1000)
-    Run('"E:\Programs\blender.exe" "G:\AllBlender\RigPractice.blend"')
+    if hwnd := WinExist("ahk_exe FortniteClient-Win64-Shipping.exe") {
+        if (WinGetMinMax("ahk_id " hwnd) = -1)
+            WinRestore("ahk_id " hwnd)
+
+        WinActivate("ahk_id " hwnd)
+    }
 }
 
 SC029:: {

@@ -64,11 +64,10 @@
 #Include RCtrl.ahk
 #Include VerticalMouse.ahk
 #Include SaveFile.ahk
-#Include AutoSwitchToEng.ahk
 #Include ShiftOnlyFirstCapital.ahk
 
 ;#Include OpenMemory.ahk
-
+;#Include AutoSwitchToEng.ahk
 
 
 
