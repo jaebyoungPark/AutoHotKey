@@ -19,30 +19,36 @@
             ; 사용자가 Alt 키를 물리적으로 뗄 때까지 대기
             KeyWait("Alt")
 
-            ; 메모장 실행 및 PID 획득
-            Run('notepad.exe "' filePath '"',,, &notepadPID)
-
-            if (WinWait("ahk_pid " notepadPID,, 1.5)) {
-                winTitle := "ahk_pid " notepadPID
-                WinActivate(winTitle)
-
-                ; 만약의 경우를 대비한 최상단 쐐기 포커스
-                WinSetAlwaysOnTop(1, winTitle)
-                Sleep(50)
-                WinSetAlwaysOnTop(0, winTitle)
-                WinActivate(winTitle)
-
-                ; 열기 완료 후 툴팁 변경 및 0.8초 뒤 자동으로 꺼지게 설정
-                ToolTip("열기 완료!")
+            ; Notepad++ 우선 실행
+            try {
+                Run('notepad++.exe "' filePath '"')
+                
+                ToolTip("Notepad++로 여는 중...")
                 SetTimer(() => ToolTip(), -800)
-            } else {
-                ; 실행 실패 시 툴팁 즉시 끄기
-                ToolTip()
+
+            } catch {
+                ; Notepad++ 실행 자체가 실패한 경우에만 기존 메모장 실행
+                Run('notepad.exe "' filePath '"',,, &notepadPID)
+
+                if (WinWait("ahk_pid " notepadPID,, 1.5)) {
+                    winTitle := "ahk_pid " notepadPID
+                    WinActivate(winTitle)
+
+                    WinSetAlwaysOnTop(1, winTitle)
+                    Sleep(50)
+                    WinSetAlwaysOnTop(0, winTitle)
+                    WinActivate(winTitle)
+
+                    ToolTip("메모장으로 열기 완료!")
+                    SetTimer(() => ToolTip(), -800)
+                } else {
+                    ToolTip()
+                }
+            
             }
         }
     }
 }
-
 GetSelectedFile() {
     activeHwnd := WinActive("A")
     try {

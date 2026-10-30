@@ -173,13 +173,13 @@ RShift & q::
     {
         if (isLShift)
         {
-            Send("+{Left 9}")
-            ShowTooltip("⏮ 9칸 선택")
+            Send("+{Left 15}")
+            ShowTooltip("⏮ 15칸 선택")
         }
         else
         {
-            Send("{Left 9}")
-            ShowTooltip("⏮ 9칸")
+            Send("{Left 15}")
+            ShowTooltip("⏮ 15칸")
         }
     }
     else
@@ -233,13 +233,13 @@ RShift & w::
     {
         if (isLShift)
         {
-            Send("+{Right 9}")
-            ShowTooltip("⏭ 9칸 선택")
+            Send("+{Right 15}")
+            ShowTooltip("⏭ 15칸 선택")
         }
         else
         {
-            Send("{Right 9}")
-            ShowTooltip("⏭ 9칸")
+            Send("{Right 15}")
+            ShowTooltip("⏭ 15칸")
         }
     }
     else
