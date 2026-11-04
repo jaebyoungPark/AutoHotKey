@@ -1,7 +1,7 @@
 ﻿; 알아서 하고싶은 모드 하나만 주석해제해서 써라
 
-#Include 0_NumAndNumpadLauncher_UEFN.ahk
-;#Include 0_NumAndNumpadLauncher_Blender.ahk
+;#Include 0_NumAndNumpadLauncher_UEFN.ahk
+#Include 0_NumAndNumpadLauncher_Blender.ahk
 
 
 ;======================================

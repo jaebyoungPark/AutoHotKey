@@ -454,39 +454,9 @@ CheckAndTurnOffCapsLock() {
     ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 5초 없음)")
     SetTimer(() => ToolTip(), -1500)
 }
-}
+
 
 #HotIf GetKeyState("CapsLock", "P")
-
-a::
-b::
-c::
-d::
-e::
-f::
-g::
-h::
-i::
-j::
-k::
-l::
-m::
-n::
-o::
-p::
-q::
-r::
-s::
-t::
-u::
-v::
-w::
-x::
-y::
-z:: {
-    CapsCombo()
-    SendInput("{Blind}" . A_ThisHotkey)
-}
 
 1::
 Numpad1:: {
