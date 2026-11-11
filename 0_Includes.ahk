@@ -66,8 +66,11 @@
 #Include SaveFile.ahk
 #Include ShiftOnlyFirstCapital.ahk
 
+
 ;#Include OpenMemory.ahk
 ;#Include AutoSwitchToEng.ahk
+
+
 
 
 
