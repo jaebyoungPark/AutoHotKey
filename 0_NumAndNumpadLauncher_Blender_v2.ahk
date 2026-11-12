@@ -1,5 +1,6 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
+#MaxThreadsPerHotkey 2
 SetTitleMatchMode("RegEx")
 
 ; [함수 1] 창 활성화 / 순환 / 최소화
@@ -77,10 +78,11 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
             WinActivate("ahk_id " targetHwnd)
         }
 
-; 크롬 창 복원 후 화면이 까맣게 변하는 현상 방지 (WinAPI 강제 재렌더링 방식)
+; 이거다.. 깜빡거림과 작업표시줄 보였다 사라짐까지 잡을수 있음 투명도를 이용해서.
 if WinActive("ahk_exe chrome.exe") {
-    WinActivate("ahk_class Shell_TrayWnd")
-    WinActivate("ahk_id " targetHwnd)
+    WinSetTransparent(254, "ahk_id " targetHwnd) ; 투명도를 미세하게 조절 (255가 완전 불투명)
+    Sleep(10)
+    WinSetTransparent("Off", "ahk_id " targetHwnd)   ; 즉시 원래대로 복구
 }
 
         WinIndexes[searchTitle] := currentIndex

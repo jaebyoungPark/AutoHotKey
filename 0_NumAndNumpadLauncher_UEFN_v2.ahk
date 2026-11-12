@@ -1,23 +1,21 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
+#MaxThreadsPerHotkey 2
 SetTitleMatchMode("RegEx")
 
-; [함수 1] 창 활성화 / 순환 / 최소화 (실패 알림 및 강제 활성화 강화 버전)
+; [함수 1] 창 활성화 / 순환 / 최소화
 ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     static WinIndexes := Map()
     if !WinIndexes.Has(searchTitle)
         WinIndexes[searchTitle] := 1
-    
+
     windows := WinGetList(searchTitle)
     count := windows.Length
 
-    ; ----------------------------------------------------
     ; CASE 1: 창이 하나도 안 켜져 있는 경우 (실행 시도)
-    ; ----------------------------------------------------
     if (count = 0) {
         if (runCommand != "") {
             Run(runCommand)
-            ; 2.5초 동안 창이 뜨길 기다림
             if WinWait(searchTitle, , 2.5) {
                 if hwnd := WinExist(searchTitle) {
                     coords := GetMouseMonitorCoords()
@@ -27,10 +25,9 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
                 }
             }
         }
-        
-        ; ❌ [실패 알림 1] 프로그램 실행 명령을 내렸으나 창 감지에 실패한 경우
+
         ToolTip("⚠️ 창을 찾을 수 없거나 실행에 실패했습니다.`n조건: " . searchTitle)
-        SetTimer(() => ToolTip(), -3000) ; 3초 후 툴팁 삭제
+        SetTimer(() => ToolTip(), -3000)
         return
     }
 
@@ -40,15 +37,22 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     currentIndex := WinIndexes[searchTitle]
     activeHwnd := WinActive("A")
 
-    ; ----------------------------------------------------
-    ; CASE 2: 이미 해당 창이 활성화되어 있는 경우
-    ; ----------------------------------------------------
-    if (activeHwnd = windows[currentIndex]) {
+    ; 현재 활성 창이 매칭 목록의 몇 번째인지 찾기 (0이면 매칭 창이 활성 상태가 아님)
+    activeIdx := 0
+    for i, h in windows {
+        if (h = activeHwnd) {
+            activeIdx := i
+            break
+        }
+    }
+
+    ; CASE 2: 매칭된 창이 이미 활성화되어 있는 경우
+    if (activeIdx > 0) {
         if (count > 1) {
-            ; 창이 여러 개일 경우: 다음 창으로 인덱스 이동
-            currentIndex := (currentIndex >= count) ? 1 : currentIndex + 1
+            ; 창이 여러 개: 활성 창의 다음 창으로 이동
+            currentIndex := (activeIdx >= count) ? 1 : activeIdx + 1
         } else if (cycleTabIfSingle) {
-            ; 창이 1개이고 크롬 등 웹브라우저 탭 순환 모드일 때
+            ; 창이 1개 + 탭 순환 모드: 탭 이동이 안 되면 최소화
             currentTitle := WinGetTitle("A")
             Send "^{Tab}"
             Sleep 30
@@ -57,55 +61,49 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
                     Send "^+{Tab}"
                     Sleep 20
                 }
-                WinMinimize(windows[currentIndex])
-                return
+                WinMinimize(windows[1])
             }
             return
         } else {
-            ; 창이 1개이고 일반 프로그램일 때: 최소화
-            WinMinimize(windows[currentIndex])
+            ; 창이 1개 + 일반 프로그램: 최소화
+            WinMinimize(windows[1])
             return
         }
     }
 
-    ; ----------------------------------------------------
-    ; CASE 3: 창은 있으나 뒤에 숨어있는 경우 (활성화 시도)
-    ; ----------------------------------------------------
+    ; CASE 3: 대상 창 활성화
+    targetHwnd := windows[currentIndex]
+
     try {
-        targetHwnd := windows[currentIndex]
-        
-        if (WinGetMinMax(targetHwnd) = -1)
-            WinRestore(targetHwnd)
-            
-        WinActivate(targetHwnd)
-        WinWaitActive(targetHwnd, , 0.2) ; 0.2초간 활성화 대기
-        
-        ; 💥 [강제 우회] 0.2초 대기 후에도 활성화가 안 되었다면 (윈도우 먹통 버그 발생 시)
-        if (!WinActive(targetHwnd)) {
-            WinMinimize(targetHwnd)
-            Sleep 50
-            WinRestore(targetHwnd)
-            WinActivate(targetHwnd)
-            
-            ; 항상 위 레이어로 강제 견인 후 해제
-            WinSetAlwaysOnTop(1, targetHwnd)
-            WinSetAlwaysOnTop(0, targetHwnd)
-            WinWaitActive(targetHwnd, , 0.2)
+        ; 최소화 상태(-1)라면 먼저 정상 크기로 복원
+        if (WinGetMinMax("ahk_id " targetHwnd) = -1)
+            WinRestore("ahk_id " targetHwnd)
+
+        WinActivate("ahk_id " targetHwnd)
+        WinWaitActive("ahk_id " targetHwnd, , 0.3)
+
+        ; 활성화가 안 됐다면 AlwaysOnTop으로 강제 견인
+        if (!WinActive("ahk_id " targetHwnd)) {
+            WinSetAlwaysOnTop(1, "ahk_id " targetHwnd)
+            Sleep 30
+            WinSetAlwaysOnTop(0, "ahk_id " targetHwnd)
+            WinActivate("ahk_id " targetHwnd)
+            WinWaitActive("ahk_id " targetHwnd, , 0.2)
         }
-        
-        ; ❌ [실패 알림 2] 창이 존재함에도 OS 포커스 잠금 등으로 활성화에 최종 실패한 경우
-        if (!WinActive(targetHwnd)) {
+
+        ; 최종 실패 알림
+        if (!WinActive("ahk_id " targetHwnd)) {
             ToolTip("❌ 창 활성화 실패 (프로세스가 응답하지 않음)")
             SetTimer(() => ToolTip(), -2000)
         }
 
-        ; 크롬 창 복원 후 검은 화면(블랙 스크린) 방지 (작동 확인된 바탕화면 우회 렌더링 방식 적용)
+        ; 크롬 복원 후 검은 화면 방지 (투명도 미세 조절로 재렌더링)
         if WinActive("ahk_exe chrome.exe") {
-            Sleep 20
-            WinActivate("ahk_class Shell_TrayWnd")
-            WinActivate("ahk_id " targetHwnd)
+            WinSetTransparent(254, "ahk_id " targetHwnd)
+            Sleep(10)
+            WinSetTransparent("Off", "ahk_id " targetHwnd)
         }
-        
+
         WinIndexes[searchTitle] := currentIndex
     } catch as err {
         ToolTip("⚠️ 창 활성화 중 오류 발생: " . err.Message)
