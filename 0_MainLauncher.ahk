@@ -1,22 +1,26 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; =========================================================
-; [MAIN LAUNCHER] - 모든 경로 상대 경로(유연화) 완료 버전
-; =========================================================
+; [핵심 해결책] 스크립트가 어디서 실행되든 현재 파일이 있는 폴더를 작업 디렉토리로 강제 고정합니다.
+SetWorkingDir A_ScriptDir
 
 global MainRunning := false
 
-; [경로 유연화] 현재 실행 중인 런처와 동일한 폴더의 0_Main.ahk 지정
+; 경로를 명확한 절대 경로로 조합합니다.
 MainPath := A_ScriptDir "\0_Main.ahk"
-; [경로 유연화] 스크립트 실행 폴더 내의 "Sounds" 폴더 지정
 soundDir := A_ScriptDir "\Sounds\"
+soundFile := soundDir "notify_Amplified.wav"
+
+; [디버깅용] 사운드 파일이 실제로 존재하는지 체크합니다 (없으면 에러 메시지 표시)
+if !FileExist(soundFile) {
+    MsgBox "사운드 파일을 찾을 수 없습니다!`n경로 확인: " soundFile, "파일 경로 오류", "Icon!"
+}
 
 ; ---------------------------------------------------------
 ; ★ [자동 실행 구역] 스크립트 켜지자마자 Main을 바로 실행합니다.
 ; ---------------------------------------------------------
 if FileExist(MainPath) {
-    SoundPlay soundDir "notify_Amplified.wav"
+    SoundPlay soundFile
     Run MainPath
     global MainRunning := true
     ToolTip "LAUNCHER START: MAIN ON"

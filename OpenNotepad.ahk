@@ -1,65 +1,72 @@
 ﻿#Requires AutoHotkey v2.0
+#SingleInstance Force
 #HotIf WinActive("ahk_exe explorer.exe")
 
 ; Ctrl + Shift + Z
 ^+z:: {
-    ; 마우스 클릭 위치의 파일이 정상적으로 먼저 선택되도록 실행
     Click()
     Sleep(50)
 
     filePath := GetSelectedFile()
-    if (filePath != "") {
-        if (!InStr(FileGetAttrib(filePath), "D")) {
-            ; 파일 이름만 추출해서 툴팁에 보여주기 위함
-            SplitPath(filePath, &fileName)
+    if (filePath = "")
+        return
+    if InStr(FileGetAttrib(filePath), "D")
+        return
 
-            ; 마우스 커서 위치에 "메모장으로 여는 중..." 툴팁 표시
-            ToolTip("메모장으로 여는 중\n▶ " fileName)
+    SplitPath(filePath, &fileName)
 
-            ; 사용자가 Alt 키를 물리적으로 뗄 때까지 대기
-            KeyWait("Alt")
+    notepadPath := FindNotepadPP()
+    if (notepadPath = "") {
+        ToolTip("Notepad++ 경로를 찾을 수 없습니다.")
+        SetTimer(() => ToolTip(), -2000)
+        return
+    }
 
-            ; Notepad++ 우선 실행
-            try {
-                Run('notepad++.exe "' filePath '"')
-                
-                ToolTip("Notepad++로 여는 중...")
-                SetTimer(() => ToolTip(), -800)
+    ToolTip("Notepad++로 여는 중`n▶ " fileName)
+    KeyWait("Alt")
 
-            } catch {
-                ; Notepad++ 실행 자체가 실패한 경우에만 기존 메모장 실행
-                Run('notepad.exe "' filePath '"',,, &notepadPID)
-
-                if (WinWait("ahk_pid " notepadPID,, 1.5)) {
-                    winTitle := "ahk_pid " notepadPID
-                    WinActivate(winTitle)
-
-                    WinSetAlwaysOnTop(1, winTitle)
-                    Sleep(50)
-                    WinSetAlwaysOnTop(0, winTitle)
-                    WinActivate(winTitle)
-
-                    ToolTip("메모장으로 열기 완료!")
-                    SetTimer(() => ToolTip(), -800)
-                } else {
-                    ToolTip()
-                }
-            
-            }
-        }
+    try {
+        Run('"' notepadPath '" "' filePath '"')
+        SetTimer(() => ToolTip(), -800)
+    } catch as err {
+        ToolTip("Notepad++ 실행 실패!`n" err.Message)
+        SetTimer(() => ToolTip(), -2000)
     }
 }
+
+#HotIf
+
+FindNotepadPP() {
+    candidates := [
+        A_ProgramFiles "\Notepad++\notepad++.exe",
+        EnvGet("ProgramFiles(x86)") "\Notepad++\notepad++.exe",
+        EnvGet("LOCALAPPDATA") "\Programs\Notepad++\notepad++.exe"
+    ]
+    for p in candidates {
+        if FileExist(p)
+            return p
+    }
+
+    ; 레지스트리 App Paths 확인
+    for root in ["HKLM", "HKCU"] {
+        try {
+            p := RegRead(root "\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\notepad++.exe")
+            if FileExist(p)
+                return p
+        }
+    }
+    return ""
+}
+
 GetSelectedFile() {
     activeHwnd := WinActive("A")
     try {
         for window in ComObject("Shell.Application").Windows {
             if (window.hwnd == activeHwnd) {
-                for item in window.Document.SelectedItems {
+                for item in window.Document.SelectedItems
                     return item.Path
-                }
             }
         }
     }
     return ""
 }
-#HotIf
