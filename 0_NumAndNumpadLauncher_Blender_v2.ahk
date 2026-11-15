@@ -79,10 +79,15 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
         }
 
 ; 이거다.. 깜빡거림과 작업표시줄 보였다 사라짐까지 잡을수 있음 투명도를 이용해서.
+; 크롬 창 복원 후 검은 화면 방지 (바탕화면 경유 + 투명도 254 최적화 방식)
 if WinActive("ahk_exe chrome.exe") {
-    WinSetTransparent(254, "ahk_id " targetHwnd) ; 투명도를 미세하게 조절 (255가 완전 불투명)
-    Sleep(10)
-    WinSetTransparent("Off", "ahk_id " targetHwnd)   ; 즉시 원래대로 복구
+    WinSetTransparent(254, "ahk_id " targetHwnd)
+
+    WinActivate("ahk_class Progman")
+    Sleep 15
+    WinActivate("ahk_id " targetHwnd)
+
+    WinSetTransparent("Off", "ahk_id " targetHwnd)
 }
 
         WinIndexes[searchTitle] := currentIndex
@@ -432,8 +437,8 @@ CheckAndTurnOffCapsLock() {
     SetCapsLockState(false)
     SetTimer(CheckAndTurnOffCapsLock, 0)
 
-    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 5초 없음)")
-    SetTimer(() => ToolTip(), -1500)
+    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 0.5초 없음)")
+    SetTimer(() => ToolTip(), -500)
 }
 
 

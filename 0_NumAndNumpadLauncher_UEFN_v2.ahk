@@ -4,7 +4,7 @@
 SetTitleMatchMode("RegEx")
 
 ; [함수 1] 창 활성화 / 순환 / 최소화
-ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
+ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
     static WinIndexes := Map()
     if !WinIndexes.Has(searchTitle)
         WinIndexes[searchTitle] := 1
@@ -47,29 +47,42 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := true) {
     }
 
     ; CASE 2: 매칭된 창이 이미 활성화되어 있는 경우
-    if (activeIdx > 0) {
-        if (count > 1) {
-            ; 창이 여러 개: 활성 창의 다음 창으로 이동
-            currentIndex := (activeIdx >= count) ? 1 : activeIdx + 1
-        } else if (cycleTabIfSingle) {
-            ; 창이 1개 + 탭 순환 모드: 탭 이동이 안 되면 최소화
-            currentTitle := WinGetTitle("A")
-            Send "^{Tab}"
-            Sleep 30
-            if (WinGetTitle("A") = currentTitle || !WinActive(searchTitle)) {
-                if !WinActive(searchTitle) {
-                    Send "^+{Tab}"
-                    Sleep 20
-                }
-                WinMinimize(windows[1])
-            }
-            return
-        } else {
-            ; 창이 1개 + 일반 프로그램: 최소화
-            WinMinimize(windows[1])
-            return
-        }
+    ;if (activeIdx > 0) {
+    ;    if (count > 1) {
+    ;        ; 창이 여러 개: 활성 창의 다음 창으로 이동
+    ;        currentIndex := (activeIdx >= count) ? 1 : activeIdx + 1
+    ;    } else if (cycleTabIfSingle) {
+    ;        ; 창이 1개 + 탭 순환 모드: 탭 이동이 안 되면 최소화
+    ;        currentTitle := WinGetTitle("A")
+    ;        Send "^{Tab}"
+    ;        Sleep 30
+    ;        if (WinGetTitle("A") = currentTitle || !WinActive(searchTitle)) {
+    ;            if !WinActive(searchTitle) {
+    ;                Send "^+{Tab}"
+    ;                Sleep 20
+    ;            }
+    ;            WinMinimize(windows[1])
+    ;        }
+    ;        return
+    ;    } else {
+    ;        ; 창이 1개 + 일반 프로그램: 최소화
+    ;        WinMinimize(windows[1])
+    ;        return
+    ;    }
+    ;}
+
+; CASE 2: 매칭된 창이 이미 활성화되어 있는 경우
+if (activeIdx > 0) {
+    if (count > 1) {
+        ; 창이 여러 개: 활성 창의 다음 창으로 이동
+        currentIndex := (activeIdx >= count) ? 1 : activeIdx + 1
+    } else {
+        ; 창이 1개: 바로 최소화
+        WinMinimize(windows[1])
+        return
     }
+}
+
 
     ; CASE 3: 대상 창 활성화
     targetHwnd := windows[currentIndex]
@@ -428,7 +441,7 @@ CheckAndTurnOffCapsLock() {
     SetCapsLockState(false)
     SetTimer(CheckAndTurnOffCapsLock, 0)
 
-    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 5초 없음)")
+    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 0.5초 없음)")
     SetTimer(() => ToolTip(), -500)
 }
 
@@ -452,12 +465,16 @@ Numpad2:: {
     }
 }
 
+;3::
+;Numpad3:: {
+;    CapsCombo()
+;    ActivateOrCycleEx("Patreon ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s2-l8-tuples-167235312?collection=2331829"', true)
+;}
 3::
 Numpad3:: {
     CapsCombo()
-    ActivateOrCycleEx("Patreon ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s2-l8-tuples-167235312?collection=2331829"', true)
+    OpenSite("3", "YouTube", "https://www.youtube.com/")
 }
-
 4::
 Numpad4:: {
     CapsCombo()

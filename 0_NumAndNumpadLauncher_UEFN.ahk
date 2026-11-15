@@ -506,7 +506,7 @@ CheckAndTurnOffCapsLock() {
     SetCapsLockState(false)
     SetTimer(CheckAndTurnOffCapsLock, 0)
 
-    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 5초 없음)")
+    ToolTip("🔒 CapsLock 자동 꺼짐 (키보드 입력 0.5초 없음)")
     SetTimer(() => ToolTip(), -500)
 }
 #HotIf GetKeyState("CapsLock", "P")

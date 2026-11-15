@@ -1,6 +1,8 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+;키보드나 마우스 버튼을 누르면 화면에 어떤 키를 눌렀는지 실시간으로 표시해 주는 프로그램
+
 ; 멀티 모니터 DPI 차이로 인한 좌표 오차 방지 (Per-Monitor DPI Aware 선언)
 DllCall("SetProcessDpiAwarenessContext", "ptr", -4)
 

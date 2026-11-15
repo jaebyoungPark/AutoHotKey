@@ -2,8 +2,11 @@
 
 ;#Include 0_NumAndNumpadLauncher_UEFN.ahk
 ;#Include 0_NumAndNumpadLauncher_UEFN_v2.ahk
+
 ;#Include 0_NumAndNumpadLauncher_Blender.ahk
 #Include 0_NumAndNumpadLauncher_Blender_v2.ahk
+
+;#Include 0_NumAndNumpadLauncher_STT.ahk
 
 
 ;======================================
@@ -30,6 +33,11 @@
 
 ;#Include ToggleSuspend.ahk
 
+
+;======================================
+;Alt + Capslock + Alphabet
+;======================================
+#Include !Capslock.ahk
 
 
 
