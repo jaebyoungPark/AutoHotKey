@@ -516,9 +516,37 @@ Numpad0:: {
 
 F1:: {
     CapsCombo()
+
+    BlenderPath := "E:\Programs\blender.exe"
+    BlendFile := "G:\All\All_Blender\RigPractice.blend"
+
     ToolTip("🦴 RigPractice.blend")
     SetTimer(() => ToolTip(), -1000)
-    Run('"E:\Programs\blender.exe" "G:\AllBlender\RigPractice.blend"')
+
+    ; 파일 존재 여부 확인
+    if !FileExist(BlendFile) {
+        ToolTip("⚠️ Blender 파일을 찾을 수 없음")
+        SetTimer(() => ToolTip(), -2000)
+        return
+    }
+
+    ; 이미 실행 중인 Blender에서 해당 파일이 열려 있는지 확인
+    for hwnd in WinGetList("ahk_exe blender.exe") {
+        try {
+            Title := WinGetTitle("ahk_id " hwnd)
+
+            if InStr(Title, "RigPractice.blend") {
+                if (WinGetMinMax("ahk_id " hwnd) = -1)
+                    WinRestore("ahk_id " hwnd)
+
+                WinActivate("ahk_id " hwnd)
+                return
+            }
+        }
+    }
+
+    ; 열려 있지 않으면 기존 파일 실행
+    Run('"' BlenderPath '" "' BlendFile '"')
 }
 
 SC029:: {

@@ -95,34 +95,31 @@ if (activeIdx > 0) {
         WinActivate("ahk_id " targetHwnd)
         WinWaitActive("ahk_id " targetHwnd, , 0.3)
 
-        ; 활성화가 안 됐다면 AlwaysOnTop으로 강제 견인
         if (!WinActive("ahk_id " targetHwnd)) {
             WinSetAlwaysOnTop(1, "ahk_id " targetHwnd)
             Sleep 30
             WinSetAlwaysOnTop(0, "ahk_id " targetHwnd)
             WinActivate("ahk_id " targetHwnd)
-            WinWaitActive("ahk_id " targetHwnd, , 0.2)
         }
 
-        ; 최종 실패 알림
-        if (!WinActive("ahk_id " targetHwnd)) {
-            ToolTip("❌ 창 활성화 실패 (프로세스가 응답하지 않음)")
-            SetTimer(() => ToolTip(), -2000)
-        }
+; 이거다.. 깜빡거림과 작업표시줄 보였다 사라짐까지 잡을수 있음 투명도를 이용해서.
+; 크롬 창 복원 후 검은 화면 방지 (바탕화면 경유 + 투명도 254 최적화 방식)
+if WinActive("ahk_exe chrome.exe") {
+    WinSetTransparent(254, "ahk_id " targetHwnd)
 
-        ; 크롬 복원 후 검은 화면 방지 (투명도 미세 조절로 재렌더링)
-        if WinActive("ahk_exe chrome.exe") {
-            WinSetTransparent(254, "ahk_id " targetHwnd)
-            Sleep(10)
-            WinSetTransparent("Off", "ahk_id " targetHwnd)
-        }
+    WinActivate("ahk_class Progman")
+    Sleep 15
+    WinActivate("ahk_id " targetHwnd)
+
+    WinSetTransparent("Off", "ahk_id " targetHwnd)
+}
 
         WinIndexes[searchTitle] := currentIndex
     } catch as err {
         ToolTip("⚠️ 창 활성화 중 오류 발생: " . err.Message)
         SetTimer(() => ToolTip(), -3000)
     }
-}
+}   ; ← ActivateOrCycleEx 함수 닫기 (이게 빠져 있었음)
 
 ; [함수 2] 사이트 열기 (짧게: 전환 / 길게: 새 탭)
 OpenSite(keyName, searchTitle, url) {
@@ -465,16 +462,16 @@ Numpad2:: {
     }
 }
 
-;3::
-;Numpad3:: {
-;    CapsCombo()
-;    ActivateOrCycleEx("Patreon ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s2-l8-tuples-167235312?collection=2331829"', true)
-;}
 3::
 Numpad3:: {
     CapsCombo()
-    OpenSite("3", "YouTube", "https://www.youtube.com/")
+    ActivateOrCycleEx("Patreon ahk_exe chrome.exe", 'chrome.exe --new-window "https://www.patreon.com/DruidMechanics/posts/s2-l8-tuples-167235312?collection=2331829"', true)
 }
+;3::
+;Numpad3:: {
+;    CapsCombo()
+;    OpenSite("3", "YouTube", "https://www.youtube.com/")
+;}
 4::
 Numpad4:: {
     CapsCombo()
