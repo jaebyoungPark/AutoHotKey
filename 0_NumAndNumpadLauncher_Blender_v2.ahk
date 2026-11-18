@@ -3,10 +3,14 @@
 #MaxThreadsPerHotkey 2
 SetTitleMatchMode("RegEx")
 
+global actionToken := 0
+
 ; [함수 1] 창 활성화 / 순환 / 최소화
 ; 창 1개: 탭 이동 없이 활성 상태면 최소화, 아니면 활성화
 ; 창 여러 개: 활성 창 다음 창으로 순환 (탭 순회 없음)
 ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
+    global actionToken
+    myToken := actionToken
     static WinIndexes := Map()
     if !WinIndexes.Has(searchTitle)
         WinIndexes[searchTitle] := 1
@@ -19,6 +23,8 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
         if (runCommand != "") {
             Run(runCommand)
             if WinWait(searchTitle, , 2.5) {
+                if (myToken != actionToken)   ; 그 사이 다른 단축키가 눌림 → 취소
+                    return
                 if hwnd := WinExist(searchTitle) {
                     coords := GetMouseMonitorCoords()
                     try WinMove(coords.X, coords.Y, , , "ahk_id " hwnd)
@@ -28,6 +34,8 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
             }
         }
 
+        if (myToken != actionToken)
+            return
         ToolTip("⚠️ 창을 찾을 수 없거나 실행에 실패했습니다.`n조건: " . searchTitle)
         SetTimer(() => ToolTip(), -3000)
         return
@@ -39,7 +47,6 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
     currentIndex := WinIndexes[searchTitle]
     activeHwnd := WinActive("A")
 
-    ; 현재 활성 창이 매칭 목록의 몇 번째인지 찾기 (0이면 매칭 창이 활성 상태가 아님)
     activeIdx := 0
     for i, h in windows {
         if (h = activeHwnd) {
@@ -51,10 +58,8 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
     ; CASE 2: 매칭된 창이 이미 활성화되어 있는 경우
     if (activeIdx > 0) {
         if (count > 1) {
-            ; 창이 여러 개: 활성 창의 다음 창으로 이동 (창 단위 순회만)
             currentIndex := (activeIdx >= count) ? 1 : activeIdx + 1
         } else {
-            ; 창이 1개: 탭 이동 없이 바로 최소화
             WinMinimize(windows[1])
             return
         }
@@ -64,47 +69,62 @@ ActivateOrCycleEx(searchTitle, runCommand := "", cycleTabIfSingle := false) {
     targetHwnd := windows[currentIndex]
 
     try {
-        ; 최소화 상태(-1)라면 먼저 정상 크기로 복원
         if (WinGetMinMax("ahk_id " targetHwnd) = -1)
             WinRestore("ahk_id " targetHwnd)
 
+        if (myToken != actionToken)
+            return
         WinActivate("ahk_id " targetHwnd)
         WinWaitActive("ahk_id " targetHwnd, , 0.3)
+
+        if (myToken != actionToken)
+            return
 
         if (!WinActive("ahk_id " targetHwnd)) {
             WinSetAlwaysOnTop(1, "ahk_id " targetHwnd)
             Sleep 30
             WinSetAlwaysOnTop(0, "ahk_id " targetHwnd)
+            if (myToken != actionToken)
+                return
             WinActivate("ahk_id " targetHwnd)
         }
 
-; 이거다.. 깜빡거림과 작업표시줄 보였다 사라짐까지 잡을수 있음 투명도를 이용해서.
-; 크롬 창 복원 후 검은 화면 방지 (바탕화면 경유 + 투명도 254 최적화 방식)
-if WinActive("ahk_exe chrome.exe") {
-    WinSetTransparent(254, "ahk_id " targetHwnd)
+        ; 크롬 창 복원 후 검은 화면 방지 (바탕화면 경유 + 투명도 254)
+        if WinActive("ahk_exe chrome.exe") {
+            WinSetTransparent(254, "ahk_id " targetHwnd)
 
-    WinActivate("ahk_class Progman")
-    Sleep 15
-    WinActivate("ahk_id " targetHwnd)
+            WinActivate("ahk_class Progman")
+            Sleep 15
+            if (myToken = actionToken)
+                WinActivate("ahk_id " targetHwnd)
 
-    WinSetTransparent("Off", "ahk_id " targetHwnd)
-}
+            WinSetTransparent("Off", "ahk_id " targetHwnd)
+        }
 
         WinIndexes[searchTitle] := currentIndex
     } catch as err {
         ToolTip("⚠️ 창 활성화 중 오류 발생: " . err.Message)
         SetTimer(() => ToolTip(), -3000)
     }
-}   ; ← ActivateOrCycleEx 함수 닫기 (이게 빠져 있었음)
+}
 
 ; [함수 2] 사이트 열기 (짧게: 전환 / 길게: 새 탭)
 OpenSite(keyName, searchTitle, url) {
+    global actionToken
+    myToken := actionToken
+
     if KeyWait(keyName, "T0.27") {
+        if (myToken != actionToken)
+            return
         ActivateOrCycleEx(searchTitle . " ahk_exe chrome.exe", 'chrome.exe --new-window "' . url . '"', false)
     } else {
+        if (myToken != actionToken)
+            return
         if WinActive("ahk_exe chrome.exe") {
             Send "^t"
             Sleep 150
+            if (myToken != actionToken)
+                return
             SendText url
             Send "{Enter}"
         } else {
@@ -393,7 +413,9 @@ global capsPrev := false
 
 ; 조합 키 사용 시 호출: 홀드당 한 번만 원래 상태로 복구
 CapsCombo() {
-    global capsComboUsed, capsPrev
+    global capsComboUsed, capsPrev, actionToken
+    actionToken += 1          ; 새 동작 시작 → 이전 동작은 모두 무효화
+
     if (!capsComboUsed) {
         capsComboUsed := true
         SetCapsLockState(capsPrev)
