@@ -59,9 +59,9 @@
 #Include ScrollWithMouse.ahk
 
 #Include MouseLeftPressed.ahk
-#Include GoRight.ahk
+#Include ^+=.ahk
+#Include ^+F11.ahk
 #Include ToggleComments.ahk
-#Include GoLeft.ahk
 #Include AltTapMove.ahk
 #Include SelectLine.ahk
 

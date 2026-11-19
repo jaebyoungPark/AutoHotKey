@@ -1,5 +1,6 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
+;파일명 : ^+F11.ahk
 
 ; 함수에 확인할 키 이름을 인자로 받도록 수정
 HandleTimedHotkey(keyName)
@@ -13,12 +14,20 @@ HandleTimedHotkey(keyName)
     ; [1] 250ms 이하로 짧게 눌렀을 때
     if (elapsed <= 250)
     {
-        if WinExist("A") && WinActive("ahk_exe devenv.exe")
+        ; [1] GOM64
+if WinActive("ahk_exe GOM64.EXE")
+{
+    SendInput "{Blind}^+{Left}"
+    return
+}
+        ; [2] Visual Studio
+        else if WinActive("ahk_exe devenv.exe")
         {
             SendInput "^+f"
             Sleep 100
             SendInput "{Enter}"
         }
+        ; [3] 기타 프로그램
         else 
         {
             MouseGetPos ,, &mouseHwnd
@@ -45,7 +54,7 @@ HandleTimedHotkey(keyName)
 ; ==============================================================================
 ; 단축키 구역
 ; ==============================================================================
-^+F11::
+$^+F11::
 {
     HandleTimedHotkey("F11")
 }
