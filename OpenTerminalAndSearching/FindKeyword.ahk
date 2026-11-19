@@ -2,7 +2,7 @@
 #SingleInstance Force
 
 TargetDir := "E:\Programs\MyGits\AutoHotKey\Auto_HotKey"
-kw := "자동 꺼짐"
+kw := "gom64"
 safeKw := StrReplace(kw, "'", "''")
 
 psCommand := "powershell.exe -NoExit -Command `""

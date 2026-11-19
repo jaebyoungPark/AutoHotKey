@@ -1,5 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
+; 파일명 : MediaSpeed.ahk
+;^!+o 과 ^!+p 전부 있음. 
+
 
 ; 언리얼이나 비주얼스튜디오의 컴파일이나 저장은 절대 Main 의MouseOverExe 같은 커서인식으로 active 여부를 판별하지
 ; 말고, 너가 직접 마우스 클릭해서 활성화 시키고 winactive 로 실행해. 안그러면 저장 안될 가능성이 있어서 진짜 위험하다. 
@@ -41,7 +44,7 @@ if (
 ; [1] GOM64
 if WinActive("ahk_exe GOM64.EXE") {
     if (elapsed < 250) {
-        SendInput "+{SC028}"
+        SendInput "+{SC028 2}"
         ToolTip "GOM64: Shift + '"
         SetTimer(() => ToolTip(), -700)
         return
@@ -137,7 +140,7 @@ MouseGetPos ,, &mouseHwnd
 ; [1] GOM64
 if WinActive("ahk_exe GOM64.EXE") {
     if (elapsed < 250) {
-        Send "x"
+        Send "xx"
         return
     }
 }

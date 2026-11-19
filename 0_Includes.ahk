@@ -1,12 +1,16 @@
-﻿; 알아서 하고싶은 모드 하나만 주석해제해서 써라
+﻿; 파일명 : ㅇ0_Includes.ahk
+; 알아서 하고싶은 모드 하나만 주석해제해서 써라
+
 
 ;#Include 0_NumAndNumpadLauncher_UEFN.ahk
-#Include 0_NumAndNumpadLauncher_UEFN_v2.ahk
+;#Include 0_NumAndNumpadLauncher_UEFN_v2.ahk
 
 ;#Include 0_NumAndNumpadLauncher_Blender.ahk
 ;#Include 0_NumAndNumpadLauncher_Blender_v2.ahk
 
 ;#Include 0_NumAndNumpadLauncher_STT.ahk
+
+#Include 0_NumAndNumpadLauncher_Ble_Gom.ahk
 
 
 ;======================================
@@ -49,7 +53,7 @@
 #Include OpenBookmark.ahk
 #Include WinTap.ahk
 #Include SwitchCPP.ahk
-#Include MediaSpeed.ahk
+#Include ^!+o&p.ahk
 #Include ToggleSubstitute.ahk
 #Include Volume.ahk
 #Include ScrollWithMouse.ahk
@@ -131,27 +135,26 @@
 
 
 ;======================================
-;ctrl + 숫자
+;ctrl
 ;======================================
 
-#Include Ctrl+1.ahk
-#Include Ctrl+2.ahk
-#Include Ctrl+3.ahk
-#Include Ctrl+4.ahk
-#Include Ctrl+8.ahk
+#Include Ctrl\Ctrl+1.ahk
+#Include Ctrl\Ctrl+2.ahk
+#Include Ctrl\Ctrl+3.ahk
+#Include Ctrl\Ctrl+4.ahk
+#Include Ctrl\Ctrl+8.ahk
 
+;#Include Ctrl\Ctrl+C.ahk
 
-;#Include Ctrl+C.ahk
-
-#Include Ctrl+T.ahk
-#Include Ctrl+M.ahk
-#Include Ctrl+F.ahk
-#Include Ctrl+I.ahk
-#Include Ctrl+U.ahk
-#Include Ctrl+P.ahk
-#Include Ctrl+;'.ahk
-#Include Ctrl+`.ahk
-#Include Ctrl+L.ahk
+#Include Ctrl\Ctrl+T.ahk
+#Include Ctrl\Ctrl+M.ahk
+#Include Ctrl\Ctrl+F.ahk
+#Include Ctrl\Ctrl+I.ahk
+#Include Ctrl\Ctrl+U.ahk
+#Include Ctrl\Ctrl+P.ahk
+#Include Ctrl\Ctrl+;'.ahk
+#Include Ctrl\Ctrl+`.ahk
+#Include Ctrl\Ctrl+L.ahk
 
 #Include ^+W.ahk
 
