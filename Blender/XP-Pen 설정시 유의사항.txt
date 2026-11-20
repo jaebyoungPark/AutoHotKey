@@ -15,10 +15,12 @@
 
 3. Output 에서 Window Ink Relative Mode 선택. save as 로 json 파일 저장. 그럼 적용됨. 
 
-3. 블렌더 Tablet API 확인: Edit > Preferences > Input > Tablet에서 Tablet API가 Automatic 또는 Windows Ink로 되어 있는지 확인합니다.
-   Windows Ink 로 설정해야함.
+4. 블렌더 Tablet API 확인: Edit > Preferences > Input > Tablet에서 Tablet API가 Automatic 또는 Windows Ink로 되어 있는지 확인합니다.
+   Windows Ink 로 설정해야함. 
+  
+5. Mouse Utils 도 Plugin Manager 에서 받아라. 마우스처럼 인식해서, 블렌더 뷰포트에서 끝을 넘어갈때도 계속 화면을 컨트롤 할수 있게 해줌.
    
-4. 자동토글링도 오토핫키로 구현 가능한데, Window Ink Relative Mode 만으로도 일단은 충분해서 구현 안함. 
+6. 자동토글링도 오토핫키로 구현 가능한데, Window Ink Relative Mode 만으로도 일단은 충분해서 구현 안함. 
 
 
 https://github.com/X9VoiD/vmulti-bin/releases/tag/v1.0

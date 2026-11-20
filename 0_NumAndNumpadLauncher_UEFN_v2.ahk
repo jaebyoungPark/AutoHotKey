@@ -231,7 +231,7 @@ Numpad3:: {
 4::
 Numpad4:: {
     CapsCombo()
-    ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", false)
+    ActivateOrCycleEx("ahk_exe notepad++.exe", "C:\Program Files\Notepad++\notepad++.exe", false)
 }
 
 5::

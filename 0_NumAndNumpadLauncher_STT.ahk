@@ -4,6 +4,7 @@
 SetTitleMatchMode("RegEx")
 
 ; 파일명 : 0_NumAndNumpadLauncher_STT.ahk
+
 ; 함수/전역 상태(actionToken 등)는 0_Func_Modules.ahk 에서 가져옴 (같은 폴더에 두기)
 
 #Include "0_Func_Modules.ahk"
@@ -220,7 +221,7 @@ Numpad3:: {
 4::
 Numpad4:: {
     CapsCombo()
-    ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", false)
+    ActivateOrCycleEx("ahk_exe notepad++.exe", "C:\Program Files\Notepad++\notepad++.exe", false)
 }
 
 5::

@@ -77,7 +77,9 @@
 #Include Blender/Blender_Animation.ahk
 #Include Blender/Blender_SwitchDrawMode.ahk
 #Include Blender/Blender_XP-Pen_Binding.ahk
-
+#Include Blender/Blender_Orthographic.ahk
+#Include Blender/Blender_CursorToMiddle.ahk
+#Include Blender/Blender_DragBeyondEdge.ahk
 
 #Include RCtrl.ahk
 

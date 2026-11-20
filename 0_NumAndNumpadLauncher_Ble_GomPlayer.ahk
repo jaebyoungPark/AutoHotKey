@@ -2,7 +2,9 @@
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
 SetTitleMatchMode("RegEx")
-;파일명 : 0_NumAndNumpadLauncher_Blender_v2.ahk 이며, 0_Func_Modules.ahk 에 있는 함수를 쓰는 중
+
+;파일명 : 0_NumAndNumpadLauncher_Blender_v2.ahk
+; 0_Func_Modules.ahk 에 있는 함수를 쓰는 중
 
 #Include "0_Func_Modules.ahk"
 
@@ -200,7 +202,7 @@ Numpad3:: {
 4::
 Numpad4:: {
     CapsCombo()
-    ActivateOrCycleEx("ahk_class Notepad", "notepad.exe", false)
+    ActivateOrCycleEx("ahk_exe notepad++.exe", "C:\Program Files\Notepad++\notepad++.exe", false)
 }
 
 5::
