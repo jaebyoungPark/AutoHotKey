@@ -1,6 +1,6 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
-
+;파일명 : Blender_Animation.ahk
 #HotIf WinActive("ahk_exe blender.exe")
 
 ^[::

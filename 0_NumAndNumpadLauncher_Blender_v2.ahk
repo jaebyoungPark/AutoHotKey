@@ -176,6 +176,7 @@ NumpadMult:: {
     SetTimer(CheckAndTurnOffCapsLock, 250)
 }
 
+;위와 다른 차이는 이 HotIf 존재 유무임
 #HotIf GetKeyState("CapsLock", "P")
 
 1::
@@ -191,10 +192,16 @@ Numpad2:: {
         WinActivate("ahk_exe UnrealEditor.exe")
 }
 
+;3::
+;Numpad3:: {
+;    CapsCombo()
+;    OpenSite("3", "YouTube", "https://www.youtube.com/")
+;}
+
 3::
 Numpad3:: {
     CapsCombo()
-    OpenSite("3", "YouTube", "https://www.youtube.com/")
+    OpenSite("3", "Udemy|유데미", "https://www.udemy.com/")
 }
 
 4::

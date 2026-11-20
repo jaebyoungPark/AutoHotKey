@@ -2,7 +2,7 @@
 #SingleInstance Force
 
 TargetDir := "E:\Programs\MyGits\AutoHotKey\Auto_HotKey"
-kw := "gom64"
+kw := "Chrome"
 safeKw := StrReplace(kw, "'", "''")
 
 psCommand := "powershell.exe -NoExit -Command `""

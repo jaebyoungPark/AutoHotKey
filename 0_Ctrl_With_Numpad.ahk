@@ -21,8 +21,12 @@ Numpad1::
 
 Numpad8::
 {
-    Send "+'"
-    ToolTip "'"
+    if InStr(WinGetTitle("A"), "Udemy")
+        Send "+{Right}"
+    else
+        Send "+'"
+
+    ToolTip "→"
     SetTimer () => ToolTip(), -500
 }
 
@@ -33,3 +37,9 @@ Numpad2::
     SetTimer () => ToolTip(), -500
 }
 
+Numpad5::
+{
+    Send "{Space}"
+    ToolTip "␣"
+    SetTimer () => ToolTip(), -500
+}

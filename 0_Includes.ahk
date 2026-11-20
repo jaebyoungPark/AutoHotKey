@@ -6,11 +6,11 @@
 ;#Include 0_NumAndNumpadLauncher_UEFN_v2.ahk
 
 ;#Include 0_NumAndNumpadLauncher_Blender.ahk
-;#Include 0_NumAndNumpadLauncher_Blender_v2.ahk
+#Include 0_NumAndNumpadLauncher_Blender_v2.ahk
 
 ;#Include 0_NumAndNumpadLauncher_STT.ahk
 
-#Include 0_NumAndNumpadLauncher_Ble_Gom.ahk
+;#Include 0_NumAndNumpadLauncher_Ble_Gom.ahk
 
 
 ;======================================
@@ -72,11 +72,15 @@
 
 #Include VC_SelectLine.ahk
 
-#Include Blender_Shift+Num.ahk
-#Include Blender_CameraFix.ahk
-#Include Blender_Animation.ahk
+#Include Blender/Blender_Shift+Num.ahk
+#Include Blender/Blender_CameraFix.ahk
+#Include Blender/Blender_Animation.ahk
+#Include Blender/Blender_SwitchDrawMode.ahk
+#Include Blender/Blender_XP-Pen_Binding.ahk
+
+
 #Include RCtrl.ahk
-#Include VerticalMouse.ahk
+
 #Include SaveFile.ahk
 #Include ShiftOnlyFirstCapital.ahk
 
